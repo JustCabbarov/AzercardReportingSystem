@@ -1,0 +1,112 @@
+[2026-03-17 04:55:52] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 04:55:57] [ERR] An error occurred using the connection to database 'AzercardDB' on server 'tcp://localhost:5433'.
+[2026-03-17 04:55:57] [ERR] An exception occurred while iterating over the results of a query for context type 'RMS.Persitence.Data.AppDbContext'.
+System.InvalidOperationException: An exception has been raised that is likely due to a transient failure.
+ ---> Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+[2026-03-17 04:55:57] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 04:57:12] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 04:57:13] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:13] [INF] Access token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:13] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:13] [INF] Refresh token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:13] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:14] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 04:57:14] [INF] Login uğurlu: elicabbarov88@gmail.com, UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Refresh token yenilənir.
+[2026-03-17 05:00:24] [INF] Refresh token axtarılır.
+[2026-03-17 05:00:24] [INF] Refresh token ləğv edilir.
+[2026-03-17 05:00:24] [INF] Token uğurla ləğv edildi.
+[2026-03-17 05:00:24] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Access token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Refresh token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:00:24] [INF] Refresh token uğurla yeniləndi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:06:22] [INF] Login cəhdi: elicabbrov88@gmail.com
+[2026-03-17 05:06:23] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:07:59] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:08:00] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Access token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Refresh token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:08:00] [INF] Login uğurlu: elicabbarov88@gmail.com, UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Refresh token yenilənir.
+[2026-03-17 05:12:43] [INF] Refresh token axtarılır.
+[2026-03-17 05:12:43] [INF] Refresh token ləğv edilir.
+[2026-03-17 05:12:43] [INF] Token uğurla ləğv edildi.
+[2026-03-17 05:12:43] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Access token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Refresh token uğurla yaradıldı. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:12:43] [INF] Refresh token uğurla yeniləndi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:39:06] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:39:08] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:39:08] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:39:08] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:39:08] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:42:33] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:42:35] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:42:35] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:42:35] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:42:35] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:43:04] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:44:29] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:44:30] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:44:30] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:44:30] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:44:30] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:44:57] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:50:30] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:50:32] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:50:32] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:50:32] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:50:32] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:50:58] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:52:26] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:52:28] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:52:28] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:52:28] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:52:28] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:55:55] [INF] Login cəhdi: elicabbarob88@gmail.com
+[2026-03-17 05:55:56] [WRN] İstifadəçi tapılmadı: elicabbarob88@gmail.com
+[2026-03-17 05:55:57] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:56:07] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:56:08] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:56:08] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:56:08] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:56:08] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:58:08] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:58:08] [WRN] Şifrə yanlışdır: elicabbarov88@gmail.com
+[2026-03-17 05:58:08] [ERR] An unhandled exception has occurred while executing the request.
+[2026-03-17 05:58:13] [INF] Login cəhdi: elicabbarov88@gmail.com
+[2026-03-17 05:58:13] [INF] Access token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:58:13] [INF] Refresh token yaradılır. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:58:13] [INF] Yeni refresh token əlavə edilir. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
+[2026-03-17 05:58:13] [INF] Refresh token uğurla əlavə edildi. UserId: "18659849-63a0-431c-8537-39faafa7c2ac"
