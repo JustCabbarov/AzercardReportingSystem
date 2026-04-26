@@ -17,10 +17,11 @@ namespace RMS.Presentation.ExceptionHandler
             _logger.LogError(exception, "An unhandled exception occurred: {Message}", exception.Message);
 
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
             await httpContext.Response.WriteAsJsonAsync(new
             {
                 StatusCode = 500,
-                Message = "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin."
+                Message = exception.Message
             }, cancellationToken);
 
             return true;

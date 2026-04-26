@@ -3,6 +3,94 @@
   "WorkspaceRootPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\exceptionhandler\\invalidcredentialsexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\exceptionhandler\\invalidcredentialsexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\exceptionhandler\\notfoundexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\exceptionhandler\\notfoundexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\exceptionhandler\\nullexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\exceptionhandler\\nullexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\exceptionhandler\\unauthorizedexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\exceptionhandler\\unauthorizedexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.contract\\dtos\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\dtos\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\controllers\\system\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\system\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.persitence\\repositories\\system\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\system\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.persitence\\extension\\repositoryregistrationextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\extension\\repositoryregistrationextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.persitence\\repositories\\system\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\system\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\exceptionhandler\\globalexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\exceptionhandler\\globalexceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\controllers\\system\\positioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\system\\positioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\controllers\\system\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\system\\departmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.persitence\\repositories\\system\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\system\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.application\\extensions\\applicationserviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\extensions\\applicationserviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.contract\\services\\system\\iauthorizeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\services\\system\\iauthorizeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.contract\\dtos\\userfilterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\dtos\\userfilterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.contract\\dtos\\paginatedresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\dtos\\paginatedresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.contract\\dtos\\departmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\dtos\\departmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.application\\services\\system\\tokenhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\services\\system\\tokenhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.application\\services\\system\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\services\\system\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.presentation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.application\\exceptions\\invalidcredentialsexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\exceptions\\invalidcredentialsexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azericard reporting system\\rms.persitence\\repositories\\oracle\\marketbenchmarkrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\oracle\\marketbenchmarkrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -30,7 +118,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,7 +130,293 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UnauthorizedExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\UnauthorizedExceptionHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\ExceptionHandler\\UnauthorizedExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\UnauthorizedExceptionHandler.cs",
+              "RelativeToolTip": "RMS.Presentation\\ExceptionHandler\\UnauthorizedExceptionHandler.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAiwB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:08:49.201Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\AuthController.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\System\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\AuthController.cs",
+              "RelativeToolTip": "RMS.Presentation\\Controllers\\System\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:00:34.335Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\UserDTO.cs",
+              "RelativeDocumentMoniker": "RMS.Contract\\DTOs\\UserDTO.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\UserDTO.cs",
+              "RelativeToolTip": "RMS.Contract\\DTOs\\UserDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:04:56.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "NullExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\NullExceptionHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\ExceptionHandler\\NullExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\NullExceptionHandler.cs",
+              "RelativeToolTip": "RMS.Presentation\\ExceptionHandler\\NullExceptionHandler.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAiwCIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:08:39.588Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "NotFoundExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\NotFoundExceptionHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\ExceptionHandler\\NotFoundExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\NotFoundExceptionHandler.cs",
+              "RelativeToolTip": "RMS.Presentation\\ExceptionHandler\\NotFoundExceptionHandler.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAiwCIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:08:28.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "InvalidCredentialsExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\InvalidCredentialsExceptionHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\ExceptionHandler\\InvalidCredentialsExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\InvalidCredentialsExceptionHandler.cs",
+              "RelativeToolTip": "RMS.Presentation\\ExceptionHandler\\InvalidCredentialsExceptionHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T12:58:13.642Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\System\\GenericRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\GenericRepository.cs",
+              "RelativeToolTip": "RMS.Persitence\\Repositories\\System\\GenericRepository.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAuwAsAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:07:09.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RepositoryRegistrationExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
+              "RelativeDocumentMoniker": "RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
+              "RelativeToolTip": "RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAASwBIAAABVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:09:08.266Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RefreshTokenRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\RefreshTokenRepository.cs",
+              "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\System\\RefreshTokenRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\RefreshTokenRepository.cs",
+              "RelativeToolTip": "RMS.Persitence\\Repositories\\System\\RefreshTokenRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:08:58.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GlobalExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\GlobalExceptionHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\ExceptionHandler\\GlobalExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\ExceptionHandler\\GlobalExceptionHandler.cs",
+              "RelativeToolTip": "RMS.Presentation\\ExceptionHandler\\GlobalExceptionHandler.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAiwB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:08:03.797Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PositionController.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\PositionController.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\System\\PositionController.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\PositionController.cs",
+              "RelativeToolTip": "RMS.Presentation\\Controllers\\System\\PositionController.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAiwEAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:07:51.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "DepartmentController.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\DepartmentController.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\System\\DepartmentController.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Controllers\\System\\DepartmentController.cs",
+              "RelativeToolTip": "RMS.Presentation\\Controllers\\System\\DepartmentController.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAiwEEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:07:42.675Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "NotificationRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\NotificationRepository.cs",
+              "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\System\\NotificationRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\System\\NotificationRepository.cs",
+              "RelativeToolTip": "RMS.Persitence\\Repositories\\System\\NotificationRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:07:08.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ApplicationServiceExtensions.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
+              "RelativeDocumentMoniker": "RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
+              "RelativeToolTip": "RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAADgvxYAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:06:02.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "IAuthorizeService.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\Services\\System\\IAuthorizeService.cs",
+              "RelativeDocumentMoniker": "RMS.Contract\\Services\\System\\IAuthorizeService.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\Services\\System\\IAuthorizeService.cs",
+              "RelativeToolTip": "RMS.Contract\\Services\\System\\IAuthorizeService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:05:57.031Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserFilterDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\UserFilterDTO.cs",
+              "RelativeDocumentMoniker": "RMS.Contract\\DTOs\\UserFilterDTO.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\UserFilterDTO.cs",
+              "RelativeToolTip": "RMS.Contract\\DTOs\\UserFilterDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:04:25.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "PaginatedResult.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\PaginatedResult.cs",
+              "RelativeDocumentMoniker": "RMS.Contract\\DTOs\\PaginatedResult.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\PaginatedResult.cs",
+              "RelativeToolTip": "RMS.Contract\\DTOs\\PaginatedResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:03:36.846Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "DepartmentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\DepartmentDTO.cs",
+              "RelativeDocumentMoniker": "RMS.Contract\\DTOs\\DepartmentDTO.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\DTOs\\DepartmentDTO.cs",
+              "RelativeToolTip": "RMS.Contract\\DTOs\\DepartmentDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:02:44.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "TokenHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\System\\TokenHandler.cs",
+              "RelativeDocumentMoniker": "RMS.Application\\Services\\System\\TokenHandler.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\System\\TokenHandler.cs",
+              "RelativeToolTip": "RMS.Application\\Services\\System\\TokenHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:01:50.172Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\System\\AuthService.cs",
+              "RelativeDocumentMoniker": "RMS.Application\\Services\\System\\AuthService.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\System\\AuthService.cs",
+              "RelativeToolTip": "RMS.Application\\Services\\System\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T13:01:10.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "InvalidCredentialsException.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Exceptions\\InvalidCredentialsException.cs",
+              "RelativeDocumentMoniker": "RMS.Application\\Exceptions\\InvalidCredentialsException.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Exceptions\\InvalidCredentialsException.cs",
+              "RelativeToolTip": "RMS.Application\\Exceptions\\InvalidCredentialsException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T12:58:59.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Program.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Program.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Presentation\\Program.cs",
+              "RelativeToolTip": "RMS.Presentation\\Program.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T12:50:30.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
               "Title": "MarketBenchmarkService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\Oracle\\MarketBenchmarkService.cs",
               "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\MarketBenchmarkService.cs",
@@ -50,12 +424,11 @@
               "RelativeToolTip": "RMS.Application\\Services\\Oracle\\MarketBenchmarkService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T12:00:32.512Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-26T12:00:32.512Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 24,
               "Title": "MarketBenchmark.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\Entities\\Oracle\\MarketBenchmark.cs",
               "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\MarketBenchmark.cs",
@@ -63,12 +436,11 @@
               "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\MarketBenchmark.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAkwCUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T11:36:43.126Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-26T11:36:43.126Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 22,
               "Title": "MarketBenchmarkRepository.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\Repositories\\Oracle\\MarketBenchmarkRepository.cs",
               "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\MarketBenchmarkRepository.cs",
@@ -76,12 +448,11 @@
               "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\MarketBenchmarkRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T11:36:31.943Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-26T11:36:31.943Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 25,
               "Title": "AzMapService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\Oracle\\AzMapService.cs",
               "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\AzMapService.cs",
@@ -89,12 +460,11 @@
               "RelativeToolTip": "RMS.Application\\Services\\Oracle\\AzMapService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T11:36:27.196Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-26T11:36:27.196Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 26,
               "Title": "AlertService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Application\\Services\\Oracle\\AlertService.cs",
               "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\AlertService.cs",
@@ -102,8 +472,7 @@
               "RelativeToolTip": "RMS.Application\\Services\\Oracle\\AlertService.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T11:24:23.284Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-23T11:24:23.284Z"
             }
           ]
         },

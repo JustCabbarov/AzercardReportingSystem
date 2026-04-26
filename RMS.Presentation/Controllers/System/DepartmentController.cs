@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RMS.Contract.DTOs;
+using RMS.Contract.Services;
 using RMS.Contract.Services.System;
 using RMS.Domain.Entities;
 
-namespace RMS.Presentation.Controllers.System
+namespace RMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -35,19 +37,22 @@ namespace RMS.Presentation.Controllers.System
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDepartmentById(Guid id)
         {
-            var result = await _departmentService.GetByIdAsync(id);
+            var result = await _departmentService.GetByIdAsync(id,
+                q => q.Include(d => d.Employees));
             if (result == null)
                 return NotFound();
 
             return Ok(result);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments()
         {
-            var result = await _departmentService.GetAllAsync();
+            var result = await _departmentService.GetAllAsync(
+                q => q.Include(d => d.Employees));
             return Ok(result);
         }
-        [HttpPut("{id}")]
+        [HttpPut("Update")]
         public async Task<IActionResult> UpdateDepartment(DepartmentDTO departmentDto)
         {
             var result = await _departmentService.UpdateAsync(departmentDto);

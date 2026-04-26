@@ -2,7 +2,7 @@
 using RMS.Contract.DTOs;
 using RMS.Domain.Entities;
 
-namespace RMS.Contract.Services.System
+namespace RMS.Contract.Services
 {
     public interface IAuthService
     {
@@ -13,6 +13,9 @@ namespace RMS.Contract.Services.System
         Task<IdentityResult> CreateRoleAsync(CreateRoleDTO role);
         Task<IList<AppUser>> GetUserByRoleIdAsync(Guid roleId);
         Task<IdentityResult> RemoveRoleAsync(Guid userId, string roleName);
-        
+        Task<UserDTO> GetUserByJWTToken(string jwtToken);
+        Task<PaginatedResult<UserDTO>> GetAllUser(UserFilterDTO filter);
+        Task<List<CreateRoleDTO>> GetAllRolesAsync();
+
     }
 }

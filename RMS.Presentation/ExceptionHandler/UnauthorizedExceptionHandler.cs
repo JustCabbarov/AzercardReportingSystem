@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using RMS.Application.Exceptions;
 
 namespace Presentation.ExceptionHandler
 {
@@ -13,16 +14,16 @@ namespace Presentation.ExceptionHandler
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if (exception is not UnauthorizedAccessException unauthorizedAccessException)
+            if (exception is not UnauthorizedException unauthorizedException)
                 return false;
 
-            _logger.LogError(unauthorizedAccessException, "UnauthorizedAccessException occurred: {Message}", unauthorizedAccessException.Message);
+            _logger.LogError(unauthorizedException, "UnauthorizedException occurred: {Message}", unauthorizedException.Message);
 
             httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await httpContext.Response.WriteAsJsonAsync(new
             {
                 StatusCode = 401,
-                Message = "Bu əməliyyat üçün icazəniz yoxdur."
+                Message = unauthorizedException.Message
             }, cancellationToken);
 
             return true;

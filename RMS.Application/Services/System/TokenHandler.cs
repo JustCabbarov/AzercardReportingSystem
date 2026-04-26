@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RMS.Contract.DTOs;
+
 using RMS.Contract.Services.System;
 using RMS.Domain.Entities;
+using RMS.Domain.Repositories;
 using RMS.Domain.Repositories.System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RMS.Application.Services.System
+namespace RMS.Application.Services
 {
     public class TokenHandler : ITokenHandler
     {
@@ -63,13 +66,13 @@ namespace RMS.Application.Services.System
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public Task<string> CreateRefreshTokenAsync(AppUser user)
+        public async Task<string> CreateRefreshTokenAsync(AppUser user)
         {
             _logger.LogInformation("Refresh token yaradılır. UserId: {UserId}", user.Id);
 
             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-            return Task.FromResult(refreshToken);
+            return refreshToken;
         }
 
 
@@ -77,7 +80,7 @@ namespace RMS.Application.Services.System
         {
             _logger.LogInformation("Refresh token yenilənir.");
 
-           
+
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
 
             if (storedToken is null || storedToken.IsRevoked || storedToken.ExpiresAt < DateTime.UtcNow)
@@ -86,7 +89,7 @@ namespace RMS.Application.Services.System
                 throw new UnauthorizedAccessException("Refresh token yanlış və ya müddəti bitib.");
             }
 
-            
+
             await _refreshTokenRepository.RevokeTokenAsync(refreshToken);
 
             var newAccessToken = await CreateAccessTokenAsync(storedToken.User!);
@@ -117,7 +120,7 @@ namespace RMS.Application.Services.System
             _logger.LogInformation("Token uğurla ləğv edildi.");
         }
 
-        public Task<bool> ValidateTokenAsync(string token)
+        public async Task<bool> ValidateTokenAsync(string token)
         {
             _logger.LogInformation("Token doğrulanır.");
 
@@ -140,7 +143,7 @@ namespace RMS.Application.Services.System
 
             _logger.LogInformation("Token uğurla doğrulandı.");
 
-            return Task.FromResult(true);
+            return true;
         }
     }
 }

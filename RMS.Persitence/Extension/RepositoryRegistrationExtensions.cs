@@ -5,6 +5,7 @@ using RMS.Domain.Entities;
 using RMS.Domain.Repositories.Oracle;
 using RMS.Domain.Repositories.System;
 using RMS.Persitence.Data;
+using RMS.Persitence.Repositories;
 using RMS.Persitence.Repositories.Oracle;
 using RMS.Persitence.Repositories.System;
 

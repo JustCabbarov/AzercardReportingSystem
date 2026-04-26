@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RMS.Domain.Entities;
+using RMS.Domain.Repositories;
 using RMS.Domain.Repositories.System;
 using RMS.Persitence.Data;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RMS.Persitence.Repositories.System
+namespace RMS.Persitence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
     {

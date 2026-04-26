@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RMS.Application.Exceptions;
 using RMS.Contract.DTOs;
+using RMS.Contract.Services;
 using RMS.Contract.Services.System;
 using RMS.Domain.Entities;
 
-namespace RMS.Presentation.Controllers.System
+namespace RMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -56,7 +57,7 @@ namespace RMS.Presentation.Controllers.System
         }
 
         [HttpPost("assign-role")]
-        
+
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleDTO request)
         {
             await _authService.AssignRoleAsync(request.UserId, request.RoleName);
@@ -64,7 +65,7 @@ namespace RMS.Presentation.Controllers.System
         }
 
         [HttpPost("create-role")]
-        
+
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleDTO request)
         {
             var result = await _authService.CreateRoleAsync(request);
@@ -76,7 +77,7 @@ namespace RMS.Presentation.Controllers.System
         }
 
         [HttpDelete("remove-role")]
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> RemoveRole([FromBody] AssignRoleDTO request)
         {
             var result = await _authService.RemoveRoleAsync(request.UserId, request.RoleName);
@@ -88,7 +89,7 @@ namespace RMS.Presentation.Controllers.System
         }
 
         [HttpGet("users/{roleId}")]
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> GetRoleUsers(Guid roleId)
         {
             var users = await _authService.GetUserByRoleIdAsync(roleId);
@@ -108,7 +109,7 @@ namespace RMS.Presentation.Controllers.System
             }
 
         }
-        [Authorize]
+
         [HttpPost("SendResetOtp")]
 
         public async Task<IActionResult> SendResetOtp([FromBody] OTPrequest request)
@@ -116,5 +117,41 @@ namespace RMS.Presentation.Controllers.System
             await _passwordResetService.SendOtpAsync(request);
             return Ok(new { Message = "Password reset OTP sent successfully" });
         }
+
+        [HttpGet("GetCurrentUserData")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+
+            var token = HttpContext.Request.Headers["Authorization"]
+                .ToString()
+                .Replace("Bearer ", "");
+
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new { message = "Token tapılmadı" });
+
+            var data = await _authService.GetUserByJWTToken(token);
+
+            if (data == null)
+                return Unauthorized(new { message = "Token etibarsız və ya müddəti bitib" });
+
+            return Ok(data);
+        }
+
+        [HttpGet("GetAllUsers")]
+        [Authorize]
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserFilterDTO filter)
+        {
+            var result = await _authService.GetAllUser(filter);
+            return Ok(result);
+        }
+        [HttpGet("GetAllRoles")]
+        [Authorize]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var result = await _authService.GetAllRolesAsync();
+            return Ok(result);
+        }
+
     }
 }

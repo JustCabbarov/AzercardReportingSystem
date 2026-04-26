@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RMS.Application.Services;
 using RMS.Application.Services.Oracle;
 using RMS.Application.Services.Oracle.MLForcasting;
 using RMS.Application.Services.System;
+using RMS.Contract.Services;
 using RMS.Contract.Services.Oracle;
 using RMS.Contract.Services.System;
 using RMS.Persitence.Repositories;

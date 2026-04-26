@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Presentation.ExceptionHandler;
+using RMS.Application.Exceptions;
 using RMS.Application.Extensions;
 using RMS.Application.Services.System;
+
 using RMS.Domain.Entities;
 using RMS.Persitence.Data;
 using RMS.Persitence.Extensions;
+using RMS.Presentation.ExceptionHandler;
 using Serilog;
 using System.Text;
 
@@ -18,17 +22,11 @@ namespace RMS.Presentation
     {
         public static void Main(string[] args)
         {
-            // =========================
-            // ?? BUILDER CONFIGURATION
-            // =========================
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = builder.Configuration.GetConnectionString("PostgreSqlConnection");
 
-
-            // =========================
-            // ?? LOGGING (SERILOG)
-            // =========================
+            // LOGGING
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
                 .Enrich.FromLogContext()
@@ -36,49 +34,32 @@ namespace RMS.Presentation
 
             builder.Host.UseSerilog();
 
-
-            // =========================
-            // ?? DATABASE (POSTGRESQL)
-            // =========================
+            // DATABASE
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
+            // LAYERS
+            builder.Services.AddApplicationServices();
+            builder.Services.AddRepositories();
 
-            // =========================
-            // ?? CUSTOM LAYERS (APPLICATION & REPOSITORY)
-            // =========================
-            builder.Services.AddApplicationServices(); // Business logic layer
-            builder.Services.AddRepositories();        // Data access layer
-
-
-            // =========================
-            // ?? CONTROLLERS & SWAGGER
-            // =========================
+            // CONTROLLERS
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
-
-            // =========================
-            // ?? IDENTITY (USER MANAGEMENT)
-            // =========================
+            // IDENTITY
             builder.Services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
-
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-
-            // =========================
-            // ?? AUTHENTICATION (JWT)
-            // =========================
+            // JWT
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -92,24 +73,17 @@ namespace RMS.Presentation
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-
                     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
                     ValidAudience = builder.Configuration["JwtSettings:Audience"],
-
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
                 };
             });
 
-            // ================= Swagger =================
-            builder.Services.AddEndpointsApiExplorer();
+            // SWAGGER
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Task Management API",
-                    Version = "v1"
-                });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Task Management API", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -138,40 +112,44 @@ namespace RMS.Presentation
             });
 
             builder.Services.Configure<JwtOption>(builder.Configuration.GetSection("JwtOption"));
-            // =========================
-            // ?? AUTOMAPPER (OBJECT MAPPING)
-            // =========================
-            builder.Services.AddAutoMapper(m =>
-                m.AddProfile(new CustomProfile()));
 
+            // AUTOMAPPER
+            builder.Services.AddAutoMapper(m => m.AddProfile(new CustomProfile()));
 
-          
+            builder.Services.AddExceptionHandler<NullExceptionHandler>();
+            builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+            builder.Services.AddExceptionHandler<UnauthorizedExceptionHandler>();
+
+            builder.Services.AddExceptionHandler<InvalidCredentialsExceptionHandler>();
+
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>(); // ?n sona
+            builder.Services.AddProblemDetails();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("cors",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
             var app = builder.Build();
 
+            app.UseExceptionHandler();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
+            app.UseRouting();
 
-           
-            app.UseAuthentication(); 
-
+            app.UseCors("cors");
+            app.UseAuthentication();
             app.UseAuthorization();
 
-
-            // =========================
-            // ?? ENDPOINTS
-            // =========================
             app.MapControllers();
 
-
-            // =========================
-            // ?? RUN APP
-            // =========================
             app.Run();
         }
     }

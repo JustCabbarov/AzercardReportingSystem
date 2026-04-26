@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace RMS.Contract.DTOs
 {
-    public class DepartmentDTO
+    public class UserDTO
     {
-
         public Guid Id { get; set; }
-
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
-        public List<Guid>? Employees { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public List<string> RoleName { get; set; }
     }
 }

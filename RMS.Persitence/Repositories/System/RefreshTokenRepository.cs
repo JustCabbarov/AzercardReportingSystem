@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RMS.Domain.Entities;
 using RMS.Domain.Repositories.System;
 using RMS.Persitence.Data;
+using RMS.Persitence.Repositories;
 using RMS.Persitence.Repositories.System;
 
 public class RefreshTokenRepository : GenericRepository<RefreshToken>, IRefreshTokenRepository

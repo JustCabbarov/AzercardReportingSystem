@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "AssignRole",
     "RelativePath": "api/Auth/assign-role",
     "HttpMethod": "POST",
@@ -16,7 +16,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "CreateRole",
     "RelativePath": "api/Auth/create-role",
     "HttpMethod": "POST",
@@ -32,7 +32,68 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "Method": "GetAllRoles",
+    "RelativePath": "api/Auth/GetAllRoles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/Auth/GetAllUsers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Role",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DepartmentId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "PositionId",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "Method": "GetCurrentUser",
+    "RelativePath": "api/Auth/GetCurrentUserData",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
     "HttpMethod": "POST",
@@ -48,7 +109,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "Logout",
     "RelativePath": "api/Auth/logout",
     "HttpMethod": "POST",
@@ -64,7 +125,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "Refresh",
     "RelativePath": "api/Auth/refresh",
     "HttpMethod": "POST",
@@ -80,7 +141,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "Register",
     "RelativePath": "api/Auth/register",
     "HttpMethod": "POST",
@@ -96,7 +157,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "RemoveRole",
     "RelativePath": "api/Auth/remove-role",
     "HttpMethod": "DELETE",
@@ -112,7 +173,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "ResetPassword",
     "RelativePath": "api/Auth/ResetPassword",
     "HttpMethod": "POST",
@@ -128,7 +189,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "SendResetOtp",
     "RelativePath": "api/Auth/SendResetOtp",
     "HttpMethod": "POST",
@@ -144,7 +205,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.AuthController",
     "Method": "GetRoleUsers",
     "RelativePath": "api/Auth/users/{roleId}",
     "HttpMethod": "GET",
@@ -563,7 +624,7 @@
     ]
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
     "Method": "AddDepartment",
     "RelativePath": "api/Department",
     "HttpMethod": "POST",
@@ -579,7 +640,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
     "Method": "GetAllDepartments",
     "RelativePath": "api/Department",
     "HttpMethod": "GET",
@@ -589,7 +650,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
     "Method": "DeleteDepartment",
     "RelativePath": "api/Department/{id}",
     "HttpMethod": "DELETE",
@@ -605,7 +666,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
     "Method": "GetDepartmentById",
     "RelativePath": "api/Department/{id}",
     "HttpMethod": "GET",
@@ -621,9 +682,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
     "Method": "UpdateDepartment",
-    "RelativePath": "api/Department/{id}",
+    "RelativePath": "api/Department/Update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -631,11 +692,6 @@
       {
         "Name": "departmentDto",
         "Type": "RMS.Contract.DTOs.DepartmentDTO",
-        "IsRequired": true
-      },
-      {
-        "Name": "id",
-        "Type": "",
         "IsRequired": true
       }
     ],
@@ -1045,7 +1101,7 @@
     ]
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.PositionController",
     "Method": "AddPosition",
     "RelativePath": "api/Position",
     "HttpMethod": "POST",
@@ -1061,7 +1117,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.PositionController",
     "Method": "GetAllPositions",
     "RelativePath": "api/Position",
     "HttpMethod": "GET",
@@ -1071,7 +1127,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.PositionController",
     "Method": "DeletePosition",
     "RelativePath": "api/Position/{id}",
     "HttpMethod": "DELETE",
@@ -1087,7 +1143,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.PositionController",
     "Method": "GetPositionById",
     "RelativePath": "api/Position/{id}",
     "HttpMethod": "GET",
@@ -1103,9 +1159,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.PositionController",
     "Method": "UpdatePosition",
-    "RelativePath": "api/Position/{id}",
+    "RelativePath": "api/Position/Update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1113,11 +1169,6 @@
       {
         "Name": "positionDto",
         "Type": "RMS.Contract.DTOs.Position.PositionDTO",
-        "IsRequired": true
-      },
-      {
-        "Name": "id",
-        "Type": "",
         "IsRequired": true
       }
     ],

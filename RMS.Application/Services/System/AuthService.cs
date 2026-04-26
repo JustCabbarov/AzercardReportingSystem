@@ -1,13 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RMS.Application.Exceptions;
 using RMS.Contract.DTOs;
+using RMS.Contract.Services;
 using RMS.Contract.Services.System;
 using RMS.Domain.Entities;
+using RMS.Domain.Repositories;
 using RMS.Domain.Repositories.System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
-namespace RMS.Application.Services.System
+namespace RMS.Application.Services
 {
+
 
     public class AuthService : IAuthService
     {
@@ -19,6 +28,7 @@ namespace RMS.Application.Services.System
         private readonly IGenericRepository<Employee> _employeeRepository;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
+        private readonly IMapper _mapper;
 
         public AuthService(
             UserManager<AppUser> userManager,
@@ -48,20 +58,20 @@ namespace RMS.Application.Services.System
             if (user is null)
             {
                 _logger.LogWarning("İstifadəçi tapılmadı: {Email}", loginDTO.Email);
-                throw new UnauthorizedAccessException("Email və ya şifrə yanlışdır.");
+                throw new InvalidCredentialsException("Email və ya şifrə yanlışdır.");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, lockoutOnFailure: true);
             if (!result.Succeeded)
             {
                 _logger.LogWarning("Şifrə yanlışdır: {Email}", loginDTO.Email);
-                throw new UnauthorizedAccessException("Email və ya şifrə yanlışdır.");
+                throw new InvalidCredentialsException("Email və ya şifrə yanlışdır.");
             }
 
             var accessToken = await _tokenService.CreateAccessTokenAsync(user);
             var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
 
-            
+
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
                 Token = refreshToken,
@@ -98,22 +108,22 @@ namespace RMS.Application.Services.System
             if (!createResult.Succeeded)
                 throw new Exception(string.Join(", ", createResult.Errors.Select(e => e.Description)));
 
-           
+
             var employee = new Employee
             {
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
-               
+
                 Phone = registerDTO.Phone,
                 DepartmentId = registerDTO.DepartmentId,
                 PositionId = registerDTO.PositionId,
                 IsActive = true,
-                AppUserId = user.Id   
+                AppUserId = user.Id
             };
 
             await _employeeRepository.AddAsync(employee);
 
-           
+
             await _userManager.AddToRoleAsync(user, "User");
 
             _logger.LogInformation("Qeydiyyat uğurlu: {Email}, UserId: {UserId}", registerDTO.Email, user.Id);
@@ -177,6 +187,124 @@ namespace RMS.Application.Services.System
             return result;
         }
 
-      
+        public async Task<UserDTO> GetUserByJWTToken(string jwtToken)
+        {
+            _logger.LogInformation("GetUserByJWTToken başladı. Token: {Token}", jwtToken[..20]);
+
+            if (jwtToken.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                jwtToken = jwtToken.Substring(7);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (!tokenHandler.CanReadToken(jwtToken))
+                throw new UnauthorizedAccessException("Token oxunmadı");
+
+            var jwtSecurityToken = tokenHandler.ReadJwtToken(jwtToken);
+            _logger.LogInformation("Token oxundu. Claims: {Claims}",
+                string.Join(", ", jwtSecurityToken.Claims.Select(c => $"{c.Type}={c.Value}")));
+
+            var userId = jwtSecurityToken.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier
+                                  || c.Type == "nameid"
+                                  || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            _logger.LogInformation("UserId: {UserId}", userId);
+
+            if (string.IsNullOrEmpty(userId))
+                throw new UnauthorizedAccessException("Token-də user tapılmadı");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            _logger.LogInformation("User: {Email}", user?.Email);
+
+            if (user is null)
+                throw new KeyNotFoundException("İstifadəçi tapılmadı");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            _logger.LogInformation("Roles: {Roles}", string.Join(", ", roles));
+
+
+
+            var userDTO = new UserDTO
+            {
+                Id = user.Id,
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                RoleName = roles?.ToList() ?? new List<string>()
+            };
+
+
+            _logger.LogInformation("GetUserByJWTToken uğurla tamamlandı");
+
+            return userDTO;
+        }
+
+
+
+        public async Task<PaginatedResult<UserDTO>> GetAllUser(UserFilterDTO filter)
+        {
+            var query = _userManager.Users
+                .Include(u => u.Employee)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.Search))
+                query = query.Where(u => u.UserName.ToLower().StartsWith(filter.Search.ToLower()) ||
+                                         u.Email.ToLower().StartsWith(filter.Search.ToLower()));
+            if (!string.IsNullOrEmpty(filter.Role))
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(filter.Role);
+                var userIds = usersInRole.Select(u => u.Id);
+                query = query.Where(u => userIds.Contains(u.Id));
+            }
+
+            if (filter.DepartmentId.HasValue)
+                query = query.Where(u => u.Employee != null &&
+                                         u.Employee.DepartmentId == filter.DepartmentId);
+
+            if (filter.PositionId.HasValue)
+                query = query.Where(u => u.Employee != null &&
+                                         u.Employee.PositionId == filter.PositionId);
+
+            var totalCount = query.Count();
+
+            var users = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+            var userDtos = new List<UserDTO>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDtos.Add(new UserDTO
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    RoleName = roles.ToList()
+                });
+            }
+
+            return new PaginatedResult<UserDTO>
+            {
+                Items = userDtos,
+                TotalCount = totalCount,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize
+            };
+        }
+
+        public async Task<List<CreateRoleDTO>> GetAllRolesAsync()
+        {
+            var roles = await _roleManager.Roles
+                .Select(r => new CreateRoleDTO
+                {
+                    Name = r.Name,
+                    Description = r.Description
+                })
+                .ToListAsync();
+
+            return roles;
+        }
     }
 }
