@@ -222,14 +222,14 @@
         }
       }
     },
-    "/api/Auth/roles/{userId}": {
+    "/api/Auth/users/{roleId}": {
       "get": {
         "tags": [
           "Auth"
         ],
         "parameters": [
           {
-            "name": "userId",
+            "name": "roleId",
             "in": "path",
             "required": true,
             "schema": {
@@ -303,6 +303,749 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/AzMap": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/month": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/region/{regionNameClean}": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "regionNameClean",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/device/{deviceType}": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "deviceType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/city/{cityClean}": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "cityClean",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/bank/{bankName}/amount-by-region": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/bank/{bankName}/device-count": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/month": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/product/{productType}": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "productType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/bank/{bankName}/segment/{segment}": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardActivity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/bank/{bankName}/avg-contactless-rate": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/bank/{bankName}/segment-distribution": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -431,6 +1174,718 @@
         }
       }
     },
+    "/api/MarketBenchmark": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/month": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/ranked": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "regionNameClean",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmark"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/bank/{bankName}/market-share": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/bank/{bankName}/card-share": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/bank/{bankName}/rank": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/first-month": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "firstMonth",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}/segment/{segment}": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}/inactive": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewCardActivation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}/avg-activation-rate": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}/segment-distribution": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/bank/{bankName}/avg-months-to-first-use": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Position": {
       "post": {
         "tags": [
@@ -554,6 +2009,705 @@
           }
         }
       }
+    },
+    "/api/SectorSpend": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/bank/{bankName}/month": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/mcc/{mccGroup}": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "mccGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/bank/{bankName}/share-of-wallet": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/bank/{bankName}/top-mcc": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "topN",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectorSpend"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SectorSpend/bank/{bankName}/channel-distribution": {
+      "get": {
+        "tags": [
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/bank/{bankName}": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/month": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/country/{country}": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "country",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/bank/{bankName}/issuing": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/bank/{bankName}/acquiring": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorldMapTransaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WorldMap/heatmap": {
+      "get": {
+        "tags": [
+          "WorldMap"
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -568,6 +2722,171 @@
           "roleName": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AzMapTransaction": {
+        "type": "object",
+        "properties": {
+          "reportDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionNameClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceCity": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceCityClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceCityCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "acquiringDeviceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "mccGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "retailCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionClass": {
+            "type": "string",
+            "nullable": true
+          },
+          "ctlsStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deviceCount": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CardActivity": {
+        "type": "object",
+        "properties": {
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionName": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionNameClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardBrandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardProductName": {
+            "type": "string",
+            "nullable": true
+          },
+          "productType": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentScheme": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactlessStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "expStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "status3D": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardType": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCards": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTransCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalTransAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalLocalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "contactlessCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "chipCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tokenCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeCardRatePct": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "contactlessRatePct": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "activitySegment": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -614,6 +2933,149 @@
           "password": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketBenchmark": {
+        "type": "object",
+        "properties": {
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionNameClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardBrandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "productType": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankTransAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "bankTransCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bankCardCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "marketTotalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "marketTotalCards": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "marketSharePct": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "cardSharePct": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "bankRank": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewCardActivation": {
+        "type": "object",
+        "properties": {
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardProductName": {
+            "type": "string",
+            "nullable": true
+          },
+          "cardBrandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "productType": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionNameClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "m1Cards": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "m1Trans": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "m1Amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "m1Active": {
+            "type": "boolean"
+          },
+          "m2Trans": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "m2Amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "m2Active": {
+            "type": "boolean"
+          },
+          "m3Trans": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "m3Amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "m3Active": {
+            "type": "boolean"
+          },
+          "monthsToFirstUse": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "avg3MActiveRate": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "activationSegment": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -715,6 +3177,119 @@
           "positionId": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SectorSpend": {
+        "type": "object",
+        "properties": {
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "regionNameClean": {
+            "type": "string",
+            "nullable": true
+          },
+          "mccGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "mcc": {
+            "type": "string",
+            "nullable": true
+          },
+          "mccName": {
+            "type": "string",
+            "nullable": true
+          },
+          "retailCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionClass": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceChannel": {
+            "type": "string",
+            "nullable": true
+          },
+          "operationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalLocalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "shareOfWalletPct": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorldMapTransaction": {
+        "type": "object",
+        "properties": {
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceCountry": {
+            "type": "string",
+            "nullable": true
+          },
+          "sourceCountryCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetCountry": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetCountryCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentSystem": {
+            "type": "string",
+            "nullable": true
+          },
+          "isIssuing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isAcquiring": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int64"
           }
         },
         "additionalProperties": false

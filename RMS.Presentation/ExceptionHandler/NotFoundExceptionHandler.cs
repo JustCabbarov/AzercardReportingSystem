@@ -16,11 +16,17 @@ namespace RMS.Presentation.ExceptionHandler
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            if(exception is not NotFoundException notFoundException)
-            {
+            if (exception is not NotFoundException notFoundException)
                 return false;
-            }
+
             _logger.LogError(notFoundException, "NotFoundException occurred: {Message}", notFoundException.Message);
+
+            httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            await httpContext.Response.WriteAsJsonAsync(new
+            {
+                StatusCode = 404,
+                Message = notFoundException.Message
+            }, cancellationToken);
 
             return true;
         }

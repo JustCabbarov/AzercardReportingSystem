@@ -17,3 +17,23 @@ C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Applicati
 C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Appl.9FC594CD.Up2Date
 C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Persitence.dll
 C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Persitence.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Application.deps.json
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Application.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Application.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Contract.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Persitence.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Contract.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Persitence.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\bin\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.csproj.AssemblyReference.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.AssemblyInfoInputs.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.AssemblyInfo.cs
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.csproj.CoreCompileInputs.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.sourcelink.json
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Appl.9FC594CD.Up2Date
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\refint\RMS.Application.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\RMS.Application.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Application\obj\Debug\net8.0\ref\RMS.Application.dll

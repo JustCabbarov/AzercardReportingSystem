@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "AssignRole",
     "RelativePath": "api/Auth/assign-role",
     "HttpMethod": "POST",
@@ -16,7 +16,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "CreateRole",
     "RelativePath": "api/Auth/create-role",
     "HttpMethod": "POST",
@@ -32,7 +32,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
     "HttpMethod": "POST",
@@ -48,7 +48,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "Logout",
     "RelativePath": "api/Auth/logout",
     "HttpMethod": "POST",
@@ -64,7 +64,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "Refresh",
     "RelativePath": "api/Auth/refresh",
     "HttpMethod": "POST",
@@ -80,7 +80,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "Register",
     "RelativePath": "api/Auth/register",
     "HttpMethod": "POST",
@@ -96,7 +96,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "RemoveRole",
     "RelativePath": "api/Auth/remove-role",
     "HttpMethod": "DELETE",
@@ -112,7 +112,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "ResetPassword",
     "RelativePath": "api/Auth/ResetPassword",
     "HttpMethod": "POST",
@@ -128,23 +128,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
-    "Method": "GetUserRoles",
-    "RelativePath": "api/Auth/roles/{userId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Guid",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.AuthController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
     "Method": "SendResetOtp",
     "RelativePath": "api/Auth/SendResetOtp",
     "HttpMethod": "POST",
@@ -160,7 +144,426 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.System.AuthController",
+    "Method": "GetRoleUsers",
+    "RelativePath": "api/Auth/users/{roleId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetAll",
+    "RelativePath": "api/AzMap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetByBank",
+    "RelativePath": "api/AzMap/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetAmountByRegion",
+    "RelativePath": "api/AzMap/bank/{bankName}/amount-by-region",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetDeviceCountByType",
+    "RelativePath": "api/AzMap/bank/{bankName}/device-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetByCity",
+    "RelativePath": "api/AzMap/city/{cityClean}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cityClean",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetByDeviceType",
+    "RelativePath": "api/AzMap/device/{deviceType}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceType",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetByMonth",
+    "RelativePath": "api/AzMap/month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "GetByRegion",
+    "RelativePath": "api/AzMap/region/{regionNameClean}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regionNameClean",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetAll",
+    "RelativePath": "api/CardActivity",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetByBank",
+    "RelativePath": "api/CardActivity/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetAvgContactlessRate",
+    "RelativePath": "api/CardActivity/bank/{bankName}/avg-contactless-rate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetSegmentDistribution",
+    "RelativePath": "api/CardActivity/bank/{bankName}/segment-distribution",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetByActivitySegment",
+    "RelativePath": "api/CardActivity/bank/{bankName}/segment/{segment}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "segment",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetByMonth",
+    "RelativePath": "api/CardActivity/month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "GetByProductType",
+    "RelativePath": "api/CardActivity/product/{productType}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productType",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
     "Method": "AddDepartment",
     "RelativePath": "api/Department",
     "HttpMethod": "POST",
@@ -176,7 +579,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
     "Method": "GetAllDepartments",
     "RelativePath": "api/Department",
     "HttpMethod": "GET",
@@ -186,7 +589,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
     "Method": "DeleteDepartment",
     "RelativePath": "api/Department/{id}",
     "HttpMethod": "DELETE",
@@ -202,7 +605,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
     "Method": "GetDepartmentById",
     "RelativePath": "api/Department/{id}",
     "HttpMethod": "GET",
@@ -218,7 +621,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.DepartmentController",
+    "ContainingType": "RMS.Presentation.Controllers.System.DepartmentController",
     "Method": "UpdateDepartment",
     "RelativePath": "api/Department/{id}",
     "HttpMethod": "PUT",
@@ -239,7 +642,410 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetAll",
+    "RelativePath": "api/MarketBenchmark",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetByBank",
+    "RelativePath": "api/MarketBenchmark/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetCardShare",
+    "RelativePath": "api/MarketBenchmark/bank/{bankName}/card-share",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetMarketShare",
+    "RelativePath": "api/MarketBenchmark/bank/{bankName}/market-share",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetBankRank",
+    "RelativePath": "api/MarketBenchmark/bank/{bankName}/rank",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetByMonth",
+    "RelativePath": "api/MarketBenchmark/month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetRanked",
+    "RelativePath": "api/MarketBenchmark/ranked",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionNameClean",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetAll",
+    "RelativePath": "api/NewCard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetByBank",
+    "RelativePath": "api/NewCard/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetAvgActivationRate",
+    "RelativePath": "api/NewCard/bank/{bankName}/avg-activation-rate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetAvgMonthsToFirstUse",
+    "RelativePath": "api/NewCard/bank/{bankName}/avg-months-to-first-use",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Double",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetInactiveCards",
+    "RelativePath": "api/NewCard/bank/{bankName}/inactive",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetSegmentDistribution",
+    "RelativePath": "api/NewCard/bank/{bankName}/segment-distribution",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetBySegment",
+    "RelativePath": "api/NewCard/bank/{bankName}/segment/{segment}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "segment",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "GetByFirstMonth",
+    "RelativePath": "api/NewCard/first-month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "firstMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
     "Method": "AddPosition",
     "RelativePath": "api/Position",
     "HttpMethod": "POST",
@@ -255,7 +1061,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
     "Method": "GetAllPositions",
     "RelativePath": "api/Position",
     "HttpMethod": "GET",
@@ -265,7 +1071,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
     "Method": "DeletePosition",
     "RelativePath": "api/Position/{id}",
     "HttpMethod": "DELETE",
@@ -281,7 +1087,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
     "Method": "GetPositionById",
     "RelativePath": "api/Position/{id}",
     "HttpMethod": "GET",
@@ -297,7 +1103,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.PositionController",
+    "ContainingType": "RMS.Presentation.Controllers.System.PositionController",
     "Method": "UpdatePosition",
     "RelativePath": "api/Position/{id}",
     "HttpMethod": "PUT",
@@ -316,5 +1122,382 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetAll",
+    "RelativePath": "api/SectorSpend",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetByBank",
+    "RelativePath": "api/SectorSpend/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetChannelDistribution",
+    "RelativePath": "api/SectorSpend/bank/{bankName}/channel-distribution",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetByBankAndMonth",
+    "RelativePath": "api/SectorSpend/bank/{bankName}/month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetWithShareOfWallet",
+    "RelativePath": "api/SectorSpend/bank/{bankName}/share-of-wallet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetTopMccGroups",
+    "RelativePath": "api/SectorSpend/bank/{bankName}/top-mcc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "topN",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetByMccGroup",
+    "RelativePath": "api/SectorSpend/mcc/{mccGroup}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mccGroup",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetAll",
+    "RelativePath": "api/WorldMap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetByBank",
+    "RelativePath": "api/WorldMap/bank/{bankName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetAcquiring",
+    "RelativePath": "api/WorldMap/bank/{bankName}/acquiring",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetIssuing",
+    "RelativePath": "api/WorldMap/bank/{bankName}/issuing",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetBySourceCountry",
+    "RelativePath": "api/WorldMap/country/{country}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "country",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetAmountByCountry",
+    "RelativePath": "api/WorldMap/heatmap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
+    "Method": "GetByMonth",
+    "RelativePath": "api/WorldMap/month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

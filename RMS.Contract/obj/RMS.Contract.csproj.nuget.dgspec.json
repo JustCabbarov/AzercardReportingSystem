@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj": {}
+    "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj",
         "projectName": "RMS.Contract",
-        "projectPath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\RMS.Contract.csproj",
         "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Contract\\obj\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj": {
-                "projectPath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj"
+              "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj": {
+                "projectPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj"
               }
             }
           }
@@ -87,14 +87,14 @@
         }
       }
     },
-    "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj",
         "projectName": "RMS.Domain",
-        "projectPath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\RMS.Domain.csproj",
         "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Domain\\obj\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

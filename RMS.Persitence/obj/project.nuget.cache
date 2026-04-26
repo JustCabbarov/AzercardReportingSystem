@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4tBngGKtzQw=",
+  "dgSpecHash": "ht8CUJkuIVw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Huawei\\Desktop\\AzerCard Report\\AzeriCard Reporting System\\RMS.Persitence\\RMS.Persitence.csproj",
+  "projectFilePath": "C:\\Users\\Huawei\\Desktop\\AzeriCard Reporting System\\RMS.Persitence\\RMS.Persitence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Huawei\\.nuget\\packages\\dapper\\2.1.72\\dapper.2.1.72.nupkg.sha512",
     "C:\\Users\\Huawei\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
