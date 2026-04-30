@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
 
@@ -16,68 +15,82 @@ namespace RMS.Presentation.Controllers.Oracle
             _service = service;
         }
 
-        /// <summary>
-        /// Bütün sektor xərc məlumatlarını qaytarır.
-        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SectorSpend>>> GetAll(
+        public async Task<ActionResult<PagedResult<SectorSpend>>> GetAll(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
             CancellationToken ct = default)
         {
-            var result = await _service.GetAllAsync(ct);
+            var result = await _service.GetAllAsync(new PageRequest { Page = page, PageSize = pageSize }, ct);
             return Ok(result);
         }
 
-        /// <summary>
-        /// Bank adına görə sektor xərc məlumatlarını qaytarır.
-        /// </summary>
         [HttpGet("bank/{bankName}")]
-        public async Task<ActionResult<IEnumerable<SectorSpend>>> GetByBank(
-            string bankName, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<SectorSpend>>> GetByBank(
+            string bankName,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            CancellationToken ct = default)
         {
-            var result = await _service.GetByBankAsync(bankName, ct);
+            var result = await _service.GetByBankAsync(bankName, new PageRequest { Page = page, PageSize = pageSize }, ct);
             return Ok(result);
         }
 
-        /// <summary>
-        /// Bank + aya görə sektor xərc məlumatlarını qaytarır.
-        /// </summary>
         [HttpGet("bank/{bankName}/month")]
-        public async Task<ActionResult<IEnumerable<SectorSpend>>> GetByBankAndMonth(
+        public async Task<ActionResult<PagedResult<SectorSpend>>> GetByBankAndMonth(
             string bankName,
             [FromQuery] DateTime month,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
             CancellationToken ct = default)
         {
-            var result = await _service.GetByBankAndMonthAsync(bankName, month, ct);
+            var result = await _service.GetByBankAndMonthAsync(bankName, month, new PageRequest { Page = page, PageSize = pageSize }, ct);
             return Ok(result);
         }
 
-        /// <summary>
-        /// MCC qrupuna görə sektor xərc məlumatlarını qaytarır.
-        /// </summary>
         [HttpGet("mcc/{mccGroup}")]
-        public async Task<ActionResult<IEnumerable<SectorSpend>>> GetByMccGroup(
-            string mccGroup, CancellationToken ct = default)
-        {
-            var result = await _service.GetByMccGroupAsync(mccGroup, ct);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Share of Wallet məlumatları ilə birlikdə sektor xərclərini qaytarır.
-        /// </summary>
-        [HttpGet("bank/{bankName}/share-of-wallet")]
-        public async Task<ActionResult<IEnumerable<SectorSpend>>> GetWithShareOfWallet(
-            string bankName,
-            [FromQuery] DateTime month,
+        public async Task<ActionResult<PagedResult<SectorSpend>>> GetByMccGroup(
+            string mccGroup,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
             CancellationToken ct = default)
         {
-            var result = await _service.GetWithShareOfWalletAsync(bankName, month, ct);
+            var result = await _service.GetByMccGroupAsync(mccGroup, new PageRequest { Page = page, PageSize = pageSize }, ct);
             return Ok(result);
         }
 
-        /// <summary>
-        /// Bank + ay üzrə ən yüksək xərcli top N MCC qrupunu qaytarır. Default: top 10.
-        /// </summary>
+        [HttpGet("filter")]
+        public async Task<ActionResult<PagedResult<SectorSpend>>> Filter(
+            [FromQuery] string? bankName = null,
+            [FromQuery] DateTime? month = null,
+            [FromQuery] string? mccGroup = null,
+            [FromQuery] string? sourceChannel = null,
+            [FromQuery] string? operationType = null,
+            [FromQuery] string? sourceCityCategory = null,
+            [FromQuery] string? sourceCountryCategory = null,
+            [FromQuery] int? isAcquiring = null,
+            [FromQuery] int? isIssuing = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 50,
+            CancellationToken ct = default)
+        {
+            var f = new SectorSpend
+            {
+                BankName = bankName ?? "",
+                ReportMonth = month ?? default,
+                MccGroup = mccGroup ?? "",
+                SourceChannel = sourceChannel ?? "",
+                OperationType = operationType ?? "",
+                SourceCityCategory = sourceCityCategory ?? "",
+                SourceCountryCategory = sourceCountryCategory ?? "",
+                IsAcquiring = isAcquiring,
+                IsIssuing = isIssuing
+            };
+
+            var result = await _service.FilterAsync(f, new PageRequest { Page = page, PageSize = pageSize }, ct);
+            return Ok(result);
+        }
+
         [HttpGet("bank/{bankName}/top-mcc")]
         public async Task<ActionResult<IEnumerable<SectorSpend>>> GetTopMccGroups(
             string bankName,
@@ -89,9 +102,6 @@ namespace RMS.Presentation.Controllers.Oracle
             return Ok(result);
         }
 
-        /// <summary>
-        /// Onlayn vs oflayn kanal paylanmasını (%) qaytarır.
-        /// </summary>
         [HttpGet("bank/{bankName}/channel-distribution")]
         public async Task<ActionResult<Dictionary<string, decimal>>> GetChannelDistribution(
             string bankName,
@@ -99,6 +109,19 @@ namespace RMS.Presentation.Controllers.Oracle
             CancellationToken ct = default)
         {
             var result = await _service.GetChannelDistributionAsync(bankName, month, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("bank/{bankName}/trend")]
+        public async Task<ActionResult<IEnumerable<SectorSpendTrend>>> GetTrend(
+            string bankName,
+            [FromQuery] string mccGroup,
+            CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(mccGroup))
+                return BadRequest("mccGroup parametri mütləqdir.");
+
+            var result = await _service.GetTrendAsync(bankName, mccGroup, ct);
             return Ok(result);
         }
     }

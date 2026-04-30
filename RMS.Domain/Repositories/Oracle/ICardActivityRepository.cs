@@ -1,18 +1,24 @@
-﻿using RMS.Domain.Entities.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Domain.Repositories.Oracle
 {
     public interface ICardActivityRepository
     {
-        Task<IEnumerable<CardActivity>> GetAllAsync(CancellationToken ct = default);
-        Task<IEnumerable<CardActivity>> GetByBankAsync(string bankName, CancellationToken ct = default);
-        Task<IEnumerable<CardActivity>> GetByMonthAsync(DateTime month, CancellationToken ct = default);
-        Task<IEnumerable<CardActivity>> GetByProductTypeAsync(string productType, CancellationToken ct = default);
-        Task<IEnumerable<CardActivity>> GetByActivitySegmentAsync(string bankName, string segment, CancellationToken ct = default);
+
+        Task<PagedResult<CardActivity>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<CardActivity>> GetByMonthAsync(
+            DateTime month, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<CardActivity>> GetByProductTypeAsync(
+            string productType, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<CardActivity>> GetByActivitySegmentAsync(
+            string bankName, string segment, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<CardActivity>> FilterAsync(
+            CardActivity f, PageRequest pageReq, CancellationToken ct = default);
     }
 }

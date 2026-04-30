@@ -16,17 +16,8 @@ namespace RMS.Presentation.Controllers.Oracle
             _service = service;
         }
 
-        /// <summary>
-        /// Bütün dünya xəritəsi tranzaksiyalarını qaytarır.
-        /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorldMapTransaction>>> GetAll(
-            CancellationToken ct = default)
-        {
-            var result = await _service.GetAllAsync(ct);
-            return Ok(result);
-        }
-
+     
+       
         /// <summary>
         /// Bank adına görə dünya xəritəsi tranzaksiyalarını qaytarır.
         /// </summary>
@@ -61,8 +52,9 @@ namespace RMS.Presentation.Controllers.Oracle
             return Ok(result);
         }
 
+        
         /// <summary>
-        /// Bankın issuing tranzaksiyalarını qaytarır.
+        /// Xarici kartların Azərbaycanda etdiyi tranzaksiyalar (inbound).
         /// </summary>
         [HttpGet("bank/{bankName}/issuing")]
         public async Task<ActionResult<IEnumerable<WorldMapTransaction>>> GetIssuing(
@@ -73,7 +65,7 @@ namespace RMS.Presentation.Controllers.Oracle
         }
 
         /// <summary>
-        /// Bankın acquiring tranzaksiyalarını qaytarır.
+        /// Azərbaycan kartlarının xaricdə etdiyi tranzaksiyalar (outbound).
         /// </summary>
         [HttpGet("bank/{bankName}/acquiring")]
         public async Task<ActionResult<IEnumerable<WorldMapTransaction>>> GetAcquiring(
@@ -82,16 +74,16 @@ namespace RMS.Presentation.Controllers.Oracle
             var result = await _service.GetAcquiringAsync(bankName, ct);
             return Ok(result);
         }
-
         /// <summary>
         /// Heat map üçün — hər ölkənin ümumi tranzaksiya məbləği.
         /// </summary>
         [HttpGet("heatmap")]
-        public async Task<ActionResult<Dictionary<string, decimal>>> GetAmountByCountry(
+        public async Task<ActionResult<Dictionary<string, decimal>>> GetAmountByCountry(string? bankName,
             [FromQuery] DateTime month,
             CancellationToken ct = default)
         {
-            var result = await _service.GetAmountByCountryAsync(month, ct);
+            
+            var result = await _service.GetAmountByCountryAsync(bankName, month, ct);
             return Ok(result);
         }
     }

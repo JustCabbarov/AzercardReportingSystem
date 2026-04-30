@@ -1,12 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RMS.Persitence.Repositories.Oracle
 {
@@ -26,59 +23,142 @@ namespace RMS.Persitence.Repositories.Oracle
             BANK_CARD_COUNT     AS BankCardCount,
             MARKET_TOTAL_AMOUNT AS MarketTotalAmount,
             MARKET_TOTAL_CARDS  AS MarketTotalCards
-        FROM MV_REQ7_BENCHMARK
+        FROM ALI_JABBAROV.PG_MV_REQ7_BENCHMARK
         """;
 
-        public async Task<IEnumerable<MarketBenchmark>> GetAllAsync(CancellationToken ct = default)
+        private Task<PagedResult<MarketBenchmark>> QueryAsync(
+            string? bankName,
+            DateTime? month,
+            string? regionNameClean,
+            PageRequest pageReq,
+            CancellationToken ct)
         {
-            var sql = SelectColumns + " ORDER BY REPORT_MONTH DESC";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<MarketBenchmark>(
-                new CommandDefinition(sql, cancellationToken: ct));
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
+                .AddMonth("REPORT_MONTH", "Month", month);
+
+            return QueryPagedAsync<MarketBenchmark>(
+                SelectColumns + $" {filter.WhereClause}",
+                "ReportMonth DESC",  // ← alias
+                pageReq,
+                filter.Parameters,
+                ct);
         }
 
-        public async Task<IEnumerable<MarketBenchmark>> GetByBankAsync(
-            string bankName, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE BANK_NAME = :BankName ORDER BY REPORT_MONTH DESC";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<MarketBenchmark>(
-                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
-        }
+        public Task<PagedResult<MarketBenchmark>> GetAllAsync(
+            PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, null, null, pageReq, ct);
 
-        public async Task<IEnumerable<MarketBenchmark>> GetByMonthAsync(
-            DateTime month, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE TRUNC(REPORT_MONTH,'MM') = TRUNC(:Month,'MM') ORDER BY BANK_NAME";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<MarketBenchmark>(
-                new CommandDefinition(sql, new { Month = month.Date }, cancellationToken: ct));
-        }
+        public Task<PagedResult<MarketBenchmark>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(bankName, null, null, pageReq, ct);
+
+        public Task<PagedResult<MarketBenchmark>> GetByMonthAsync(
+            DateTime month, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, month, null, pageReq, ct);
+
+        public Task<PagedResult<MarketBenchmark>> GetByBankAndMonthAsync(
+            string bankName, DateTime month, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(bankName, month, null, pageReq, ct);
 
         /// <summary>
         /// Həmin ay üçün bankları BANK_TRANS_AMOUNT-a görə sıralayır.
-        /// BankRank C# tərəfdə Select ilə təyin edilir.
+        /// BankRank C# tərəfdə təyin edilir.
         /// </summary>
-        public async Task<IEnumerable<MarketBenchmark>> GetRankedByMonthAsync(
+        public async Task<PagedResult<MarketBenchmark>> GetRankedByMonthAsync(
             DateTime month,
+            PageRequest pageReq,
             string? regionNameClean = null,
             CancellationToken ct = default)
         {
-            var sql = SelectColumns + " WHERE TRUNC(REPORT_MONTH,'MM') = TRUNC(:Month,'MM')";
+            var filter = new FilterBuilder()
+                .Add("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
+                .AddMonth("REPORT_MONTH", "Month", month);
 
-            if (!string.IsNullOrWhiteSpace(regionNameClean))
-                sql += " AND REGION_NAME_CLEAN = :Region";
+            var allSql = SelectColumns + $" {filter.WhereClause}";
+
+            using var conn = CreateConnection();
+            var rows = (await conn.QueryAsync<MarketBenchmark>(
+                new CommandDefinition(allSql, filter.Parameters, cancellationToken: ct)))
+                .GroupBy(r => r.BankName)
+                .Select(g => new
+                {
+                    BankTransAmount = g.Sum(x => x.BankTransAmount),
+                    Rows = g.ToList()
+                })
+                .OrderByDescending(g => g.BankTransAmount)
+                .SelectMany((g, i) => g.Rows.Select(r =>
+                {
+                    r.BankRank = i + 1;
+                    return r;
+                }))
+                .ToList();
+
+            return new PagedResult<MarketBenchmark>
+            {
+                Items = rows.Skip((pageReq.Page - 1) * pageReq.PageSize)
+                                 .Take(pageReq.PageSize),
+                TotalCount = rows.Count,
+                Page = pageReq.Page,
+                PageSize = pageReq.PageSize
+            };
+        }
+
+        public Task<PagedResult<MarketBenchmark>> FilterAsync(
+            MarketBenchmark f,
+            PageRequest pageReq,
+            CancellationToken ct = default)
+        {
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME = :BankName", "BankName", f.BankName)
+                .Add("REGION_NAME_CLEAN = :Region", "Region", f.RegionNameClean)
+                .Add("CARD_BRAND_NAME = :CardBrand", "CardBrand", f.CardBrandName)
+                .Add("PRODUCT_TYPE = :ProductType", "ProductType", f.ProductType)
+                .AddMonth("REPORT_MONTH", "Month",
+                    f.ReportMonth == default ? null : f.ReportMonth);
+
+            return QueryPagedAsync<MarketBenchmark>(
+                SelectColumns + $" {filter.WhereClause}",
+                "ReportMonth DESC",  // ← alias
+                pageReq,
+                filter.Parameters,
+                ct);
+        }
+
+        public async Task<IEnumerable<MarketBenchmarkTrend>> GetTrendAsync(
+       string bankName, CancellationToken ct = default)
+        {
+            var sql = """
+    SELECT
+        REPORT_MONTH        AS ReportMonth,
+        BANK_TRANS_AMOUNT   AS BankTransAmount,
+        MARKET_TOTAL_AMOUNT AS MarketTotalAmount,
+        BANK_CARD_COUNT     AS BankCardCount,
+        MARKET_TOTAL_CARDS  AS MarketTotalCards
+    FROM ALI_JABBAROV.PG_MV_REQ7_BENCHMARK
+    WHERE BANK_NAME = :BankName
+    ORDER BY REPORT_MONTH
+    """;
 
             using var conn = CreateConnection();
             var rows = await conn.QueryAsync<MarketBenchmark>(
-                new CommandDefinition(sql,
-                    new { Month = month.Date, Region = regionNameClean },
-                    cancellationToken: ct));
+                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
 
             return rows
-                .OrderByDescending(r => r.BankTransAmount)
-                .Select((r, i) => { r.BankRank = i + 1; return r; });
+                .GroupBy(r => r.ReportMonth)
+                .Select(g => new MarketBenchmarkTrend
+                {
+                    Month = g.Key,
+                    MarketSharePct = g.First().MarketTotalAmount > 0
+                        ? Math.Round(g.First().BankTransAmount / g.First().MarketTotalAmount * 100, 2)
+                        : 0,
+                    CardSharePct = g.First().MarketTotalCards > 0
+                        ? Math.Round((decimal)g.Sum(x => x.BankCardCount) / g.First().MarketTotalCards * 100, 2)
+                        : 0
+                })
+                .OrderBy(x => x.Month)
+                .ToList();
         }
     }
-
 }

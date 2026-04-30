@@ -1,18 +1,28 @@
-﻿using RMS.Domain.Entities.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Domain.Repositories.Oracle
 {
     public interface IMarketBenchmarkRepository
     {
-        Task<IEnumerable<MarketBenchmark>> GetAllAsync(CancellationToken ct = default);
-        Task<IEnumerable<MarketBenchmark>> GetByBankAsync(string bankName, CancellationToken ct = default);
-        Task<IEnumerable<MarketBenchmark>> GetByMonthAsync(DateTime month, CancellationToken ct = default);
-        Task<IEnumerable<MarketBenchmark>> GetRankedByMonthAsync(DateTime month, string? regionNameClean = null, CancellationToken ct = default);
-    }
+        Task<PagedResult<MarketBenchmark>> GetAllAsync(
+            PageRequest pageReq, CancellationToken ct = default);
 
+        Task<PagedResult<MarketBenchmark>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<MarketBenchmark>> GetByMonthAsync(
+            DateTime month, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<MarketBenchmark>> GetByBankAndMonthAsync(
+            string bankName, DateTime month, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<MarketBenchmark>> GetRankedByMonthAsync(
+            DateTime month, PageRequest pageReq, string? regionNameClean = null, CancellationToken ct = default);
+
+        Task<PagedResult<MarketBenchmark>> FilterAsync(
+            MarketBenchmark f, PageRequest pageReq, CancellationToken ct = default);
+        Task<IEnumerable<MarketBenchmarkTrend>> GetTrendAsync(
+    string bankName, CancellationToken ct = default);
+    }
 }

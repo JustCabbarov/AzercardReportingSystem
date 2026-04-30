@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using RMS.Domain.Entities;
+using RMS.Domain.Repositories;
 using RMS.Domain.Repositories.Oracle;
 using RMS.Domain.Repositories.System;
+
+using RMS.Persistence.Repositories.Oracle;
 using RMS.Persitence.Data;
 using RMS.Persitence.Repositories;
 using RMS.Persitence.Repositories.Oracle;
@@ -28,7 +31,8 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<IMarketBenchmarkRepository, MarketBenchmarkRepository>();
             services.AddScoped<ISectorSpendRepository, SectorSpendRepository>();
             services.AddScoped<INewCardRepository, NewCardRepository>();
-
+            services.AddScoped<IForecastRepository, ForecastRepository>();
+            services.AddSingleton<IModelStore, DiskModelStore>();
 
             return services;
         }

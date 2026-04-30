@@ -18,8 +18,7 @@ namespace RMS.Application.Services.Oracle
             _repo = repo;
         }
 
-        public Task<IEnumerable<WorldMapTransaction>> GetAllAsync(CancellationToken ct = default)
-            => _repo.GetAllAsync(ct);
+        
 
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAsync(
             string bankName, CancellationToken ct = default)
@@ -46,13 +45,24 @@ namespace RMS.Application.Services.Oracle
         /// SOURCE_COUNTRY null olanlar nəzərə alınmır.
         /// </summary>
         public async Task<Dictionary<string, decimal>> GetAmountByCountryAsync(
-            DateTime month, CancellationToken ct = default)
+     string? bankName,
+     DateTime? month,
+     CancellationToken ct = default)
         {
-            var data = await _repo.GetByMonthAsync(month, ct);
+            IEnumerable<WorldMapTransaction> data;
+
+            if (bankName is not null && month is not null)
+                data = await _repo.GetByBankAndMonthAsync(bankName, month.Value, ct);
+            else if (bankName is not null)
+                data = await _repo.GetByBankAsync(bankName, ct);
+            else if (month is not null)
+                data = await _repo.GetByMonthAsync(month.Value, ct);
+            else
+                data = await _repo.GetAllAsync(ct);
 
             return data
-                .Where(x => !string.IsNullOrWhiteSpace(x.SourceCountry))
-                .GroupBy(x => x.SourceCountry!)
+                .Where(x => !string.IsNullOrWhiteSpace(x.TargetCountry)) 
+                .GroupBy(x => x.TargetCountry!)
                 .ToDictionary(
                     g => g.Key,
                     g => g.Sum(x => x.TotalAmount));

@@ -434,26 +434,6 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
-    "Method": "GetAll",
-    "RelativePath": "api/CardActivity",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
     "Method": "GetByBank",
     "RelativePath": "api/CardActivity/bank/{bankName}",
     "HttpMethod": "GET",
@@ -464,11 +444,21 @@
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -557,11 +547,157 @@
         "Name": "segment",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.CardActivityController",
+    "Method": "Filter",
+    "RelativePath": "api/CardActivity/filter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegionNameClean",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CardBrandName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CardProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProductType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PaymentScheme",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContactlessStatus",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExpStatus",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status3D",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TotalCards",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "TotalTransCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "TotalTransAmount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "TotalLocalAmount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContactlessCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "ChipCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "TokenCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "ActiveCardRatePct",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContactlessRatePct",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ActivitySegment",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -583,11 +719,21 @@
         "Name": "month",
         "Type": "System.DateTime",
         "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -609,11 +755,21 @@
         "Name": "productType",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.CardActivity, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -698,16 +854,130 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
+    "Method": "Get",
+    "RelativePath": "api/Forecasting",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bank",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mcc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "horizon",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.ForecastResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
+    "Method": "GetAll",
+    "RelativePath": "api/Forecasting/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "horizon",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.ForecastResult, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
+    "Method": "Train",
+    "RelativePath": "api/Forecasting/train",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bank",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mcc",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
+    "Method": "TrainAll",
+    "RelativePath": "api/Forecasting/train/all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
+    "Method": "TrainGlobal",
+    "RelativePath": "api/Forecasting/train/global",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
     "Method": "GetAll",
     "RelativePath": "api/MarketBenchmark",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -729,104 +999,143 @@
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
-    "Method": "GetCardShare",
-    "RelativePath": "api/MarketBenchmark/bank/{bankName}/card-share",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
       },
       {
-        "Name": "month",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Decimal",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
-    "Method": "GetMarketShare",
-    "RelativePath": "api/MarketBenchmark/bank/{bankName}/market-share",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "month",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Decimal",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
-    "Method": "GetBankRank",
-    "RelativePath": "api/MarketBenchmark/bank/{bankName}/rank",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "month",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
+        "Name": "Page",
         "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "GetTrend",
+    "RelativePath": "api/MarketBenchmark/bank/{bankName}/trend",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmarkTrend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.MarketBenchmarkController",
+    "Method": "Filter",
+    "RelativePath": "api/MarketBenchmark/filter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegionNameClean",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CardBrandName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProductType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankTransAmount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankTransCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankCardCount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "MarketTotalAmount",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "MarketTotalCards",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "MarketSharePct",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "CardSharePct",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankRank",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -848,11 +1157,21 @@
         "Name": "month",
         "Type": "System.DateTime",
         "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -876,6 +1195,16 @@
         "IsRequired": false
       },
       {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
         "Name": "regionNameClean",
         "Type": "System.String",
         "IsRequired": false
@@ -883,7 +1212,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.MarketBenchmark, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -900,10 +1229,21 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -925,11 +1265,21 @@
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -967,32 +1317,6 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
-    "Method": "GetAvgMonthsToFirstUse",
-    "RelativePath": "api/NewCard/bank/{bankName}/avg-months-to-first-use",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Double",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
     "Method": "GetInactiveCards",
     "RelativePath": "api/NewCard/bank/{bankName}/inactive",
     "HttpMethod": "GET",
@@ -1003,11 +1327,21 @@
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1060,11 +1394,82 @@
         "Name": "segment",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.NewCardController",
+    "Method": "Filter",
+    "RelativePath": "api/NewCard/filter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "cardProductName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "cardBrandName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "productType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionNameClean",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "firstMonth",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1086,11 +1491,21 @@
         "Name": "firstMonth",
         "Type": "System.DateTime",
         "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.NewCardActivation, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1181,10 +1596,21 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1206,11 +1632,21 @@
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1268,42 +1704,21 @@
         "Name": "month",
         "Type": "System.DateTime",
         "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
-    "Method": "GetWithShareOfWallet",
-    "RelativePath": "api/SectorSpend/bank/{bankName}/share-of-wallet",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
       },
       {
-        "Name": "month",
-        "Type": "System.DateTime",
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1351,21 +1766,26 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
-    "Method": "GetByMccGroup",
-    "RelativePath": "api/SectorSpend/mcc/{mccGroup}",
+    "Method": "GetTrend",
+    "RelativePath": "api/SectorSpend/bank/{bankName}/trend",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "mccGroup",
+        "Name": "bankName",
         "Type": "System.String",
         "IsRequired": true
+      },
+      {
+        "Name": "mccGroup",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.SectorSpendTrend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1376,16 +1796,108 @@
     ]
   },
   {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.WorldMapController",
-    "Method": "GetAll",
-    "RelativePath": "api/WorldMap",
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "Filter",
+    "RelativePath": "api/SectorSpend/filter",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "month",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccGroup",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sourceChannel",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "operationType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sourceCityCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sourceCountryCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "isAcquiring",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "isIssuing",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.WorldMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.SectorSpendController",
+    "Method": "GetByMccGroup",
+    "RelativePath": "api/SectorSpend/mcc/{mccGroup}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mccGroup",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.SectorSpend, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1507,6 +2019,11 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
       {
         "Name": "month",
         "Type": "System.DateTime",

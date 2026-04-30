@@ -1,12 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RMS.Persitence.Repositories.Oracle
 {
@@ -27,7 +24,6 @@ namespace RMS.Persitence.Repositories.Oracle
             CONTACTLESS_STATUS   AS ContactlessStatus,
             EXP_STATUS           AS ExpStatus,
             STATUS_3D            AS Status3D,
-            CARD_TYPE            AS CardType,
             TOTAL_CARDS          AS TotalCards,
             TOTAL_TRANS_COUNT    AS TotalTransCount,
             TOTAL_TRANS_AMOUNT   AS TotalTransAmount,
@@ -36,50 +32,63 @@ namespace RMS.Persitence.Repositories.Oracle
             CHIP_COUNT           AS ChipCount,
             TOKEN_COUNT          AS TokenCount,
             ACTIVE_CARD_RATE_PCT AS ActiveCardRatePct
-        FROM MV_REQ6_CARD_ACTIVITY
+        FROM ALI_JABBAROV.PG_MV_REQ6_CARD_ACTIVITY
         """;
 
-        public async Task<IEnumerable<CardActivity>> GetAllAsync(CancellationToken ct = default)
+        private Task<PagedResult<CardActivity>> QueryAsync(
+            string? bankName,
+            DateTime? month,
+            string? productType,
+            string? cardBrandName,
+            decimal? minRate,
+            decimal? maxRate,
+            PageRequest pageReq,
+            CancellationToken ct)
         {
-            var sql = SelectColumns + " ORDER BY REPORT_MONTH DESC";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<CardActivity>(
-                new CommandDefinition(sql, cancellationToken: ct));
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("PRODUCT_TYPE = :ProductType", "ProductType", productType)
+                .Add("CARD_BRAND_NAME = :CardBrand", "CardBrand", cardBrandName)
+                .Add("ACTIVE_CARD_RATE_PCT >= :Min", "Min", minRate)
+                .Add("ACTIVE_CARD_RATE_PCT <= :Max", "Max", maxRate)
+                .AddMonth("REPORT_MONTH", "Month", month);
+
+            return QueryPagedAsync<CardActivity>(
+                SelectColumns + $" {filter.WhereClause}",
+                "ReportMonth DESC",
+                pageReq,
+                filter.Parameters,
+                ct);
         }
 
-        public async Task<IEnumerable<CardActivity>> GetByBankAsync(
-            string bankName, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE BANK_NAME = :BankName ORDER BY REPORT_MONTH DESC, CARD_PRODUCT_NAME";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<CardActivity>(
-                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
-        }
+        public Task<PagedResult<CardActivity>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(bankName, null, null, null, null, null, pageReq, ct);
 
-        public async Task<IEnumerable<CardActivity>> GetByMonthAsync(
-            DateTime month, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE TRUNC(REPORT_MONTH,'MM') = TRUNC(:Month,'MM') ORDER BY BANK_NAME";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<CardActivity>(
-                new CommandDefinition(sql, new { Month = month.Date }, cancellationToken: ct));
-        }
+        public Task<PagedResult<CardActivity>> GetByMonthAsync(
+            DateTime month, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, month, null, null, null, null, pageReq, ct);
 
-        public async Task<IEnumerable<CardActivity>> GetByProductTypeAsync(
-            string productType, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE PRODUCT_TYPE = :ProductType ORDER BY REPORT_MONTH DESC, BANK_NAME";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<CardActivity>(
-                new CommandDefinition(sql, new { ProductType = productType }, cancellationToken: ct));
-        }
+        public Task<PagedResult<CardActivity>> GetByProductTypeAsync(
+            string productType, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, null, productType, null, null, null, pageReq, ct);
+
+        public Task<PagedResult<CardActivity>> FilterAsync(
+            CardActivity f, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(
+                f.BankName,
+                f.ReportMonth == default ? null : f.ReportMonth,
+                f.ProductType,
+                f.CardBrandName,
+                null, null,
+                pageReq, ct);
 
         /// <summary>
         /// ActivitySegment C# entitydə hesablanır.
         /// Oracle-da ACTIVE_CARD_RATE_PCT aralığı ilə filter edilir.
         /// </summary>
-        public async Task<IEnumerable<CardActivity>> GetByActivitySegmentAsync(
-            string bankName, string segment, CancellationToken ct = default)
+        public Task<PagedResult<CardActivity>> GetByActivitySegmentAsync(
+            string bankName, string segment, PageRequest pageReq, CancellationToken ct = default)
         {
             var (min, max) = segment switch
             {
@@ -90,18 +99,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 _ => throw new ArgumentException($"Bilinməyən segment: {segment}")
             };
 
-            var sql = SelectColumns + """
-             WHERE BANK_NAME = :BankName
-               AND ACTIVE_CARD_RATE_PCT >= :Min
-               AND ACTIVE_CARD_RATE_PCT <= :Max
-             ORDER BY REPORT_MONTH DESC
-            """;
-
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<CardActivity>(
-                new CommandDefinition(sql,
-                    new { BankName = bankName, Min = min, Max = max },
-                    cancellationToken: ct));
+            return QueryAsync(bankName, null, null, null, min, max, pageReq, ct);
         }
     }
 }

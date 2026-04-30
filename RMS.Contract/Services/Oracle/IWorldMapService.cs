@@ -10,7 +10,7 @@ namespace RMS.Contract.Services.Oracle
     public interface IWorldMapService
     {
         /// <summary>Bütün dünya tranzaksiyalarını qaytarır.</summary>
-        Task<IEnumerable<WorldMapTransaction>> GetAllAsync(CancellationToken ct = default);
+       
 
         /// <summary>Bank üzrə dünya tranzaksiyalarını qaytarır.</summary>
         Task<IEnumerable<WorldMapTransaction>> GetByBankAsync(string bankName, CancellationToken ct = default);
@@ -28,6 +28,6 @@ namespace RMS.Contract.Services.Oracle
         Task<IEnumerable<WorldMapTransaction>> GetAcquiringAsync(string bankName, CancellationToken ct = default);
 
         /// <summary>Ölkə üzrə ümumi məbləği hesablayır (xəritə üçün heat map dəyəri).</summary>
-        Task<Dictionary<string, decimal>> GetAmountByCountryAsync(DateTime month, CancellationToken ct = default);
+        Task<Dictionary<string, decimal>> GetAmountByCountryAsync(string? bankName,DateTime? month,CancellationToken ct = default);
     }
 }

@@ -2,9 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace RMS.Persitence.Repositories.Oracle
 {
@@ -29,14 +26,12 @@ namespace RMS.Persitence.Repositories.Oracle
             TOTAL_AMOUNT          AS TotalAmount,
             TOTAL_COUNT           AS TotalCount,
             DEVICE_COUNT          AS DeviceCount
-        FROM public.pg_mv_req4_az_map
+        FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
         """;
 
         public async Task<IEnumerable<AzMapTransaction>> GetAllAsync(CancellationToken ct = default)
         {
-            // PostgreSQL: ORDER BY standart sintaksis, dəyişiklik lazım deyil
             var sql = SelectColumns + " ORDER BY REPORT_MONTH DESC";
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
                 new CommandDefinition(sql, cancellationToken: ct));
@@ -45,12 +40,10 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<IEnumerable<AzMapTransaction>> GetByBankAsync(
             string bankName, CancellationToken ct = default)
         {
-            // Boşluq əlavə edildi: "...az_map\n" + "WHERE..." → düzgün birləşir
             var sql = SelectColumns + """
-             WHERE BANK_NAME = @BankName
+             WHERE BANK_NAME = :BankName
              ORDER BY REPORT_MONTH DESC, REGION_NAME_CLEAN
             """;
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
                 new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
@@ -59,26 +52,22 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<IEnumerable<AzMapTransaction>> GetByMonthAsync(
             DateTime month, CancellationToken ct = default)
         {
-            // PostgreSQL: DATE_TRUNC('month', col) sintaksisi doğrudur
-            // Oracle-dakı TRUNC(col, 'MM') əvəzinə PostgreSQL DATE_TRUNC istifadə edilir
             var sql = SelectColumns + """
-             WHERE DATE_TRUNC('month', REPORT_MONTH) = DATE_TRUNC('month', @Month::timestamp)
+             WHERE TRUNC(REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')
              ORDER BY BANK_NAME, REGION_NAME_CLEAN
             """;
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { Month = month }, cancellationToken: ct));
+                new CommandDefinition(sql, new { Month = month.Date }, cancellationToken: ct));
         }
 
         public async Task<IEnumerable<AzMapTransaction>> GetByRegionAsync(
             string regionNameClean, CancellationToken ct = default)
         {
             var sql = SelectColumns + """
-             WHERE REGION_NAME_CLEAN = @Region
+             WHERE REGION_NAME_CLEAN = :Region
              ORDER BY REPORT_MONTH DESC, BANK_NAME
             """;
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
                 new CommandDefinition(sql, new { Region = regionNameClean }, cancellationToken: ct));
@@ -88,10 +77,9 @@ namespace RMS.Persitence.Repositories.Oracle
             string deviceType, CancellationToken ct = default)
         {
             var sql = SelectColumns + """
-             WHERE ACQUIRING_DEVICE_TYPE = @DeviceType
+             WHERE ACQUIRING_DEVICE_TYPE = :DeviceType
              ORDER BY REPORT_MONTH DESC
             """;
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
                 new CommandDefinition(sql, new { DeviceType = deviceType }, cancellationToken: ct));
@@ -101,10 +89,9 @@ namespace RMS.Persitence.Repositories.Oracle
             string cityClean, CancellationToken ct = default)
         {
             var sql = SelectColumns + """
-             WHERE SOURCE_CITY_CLEAN = @City
+             WHERE SOURCE_CITY_CLEAN = :City
              ORDER BY REPORT_MONTH DESC
             """;
-
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
                 new CommandDefinition(sql, new { City = cityClean }, cancellationToken: ct));

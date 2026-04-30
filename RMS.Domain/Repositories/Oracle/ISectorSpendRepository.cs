@@ -1,18 +1,11 @@
 ﻿using RMS.Domain.Entities.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RMS.Domain.Repositories.Oracle
+public interface ISectorSpendRepository
 {
-    public interface ISectorSpendRepository
-    {
-        Task<IEnumerable<SectorSpend>> GetAllAsync(CancellationToken ct = default);
-        Task<IEnumerable<SectorSpend>> GetByBankAsync(string bankName, CancellationToken ct = default);
-        Task<IEnumerable<SectorSpend>> GetByBankAndMonthAsync(string bankName, DateTime month, CancellationToken ct = default);
-        Task<IEnumerable<SectorSpend>> GetByMccGroupAsync(string mccGroup, CancellationToken ct = default);
-        Task<IEnumerable<SectorSpend>> GetWithShareOfWalletAsync(string bankName, DateTime month, CancellationToken ct = default);
-    }
+    Task<PagedResult<SectorSpend>> GetAllAsync(PageRequest pageReq, CancellationToken ct = default);
+    Task<PagedResult<SectorSpend>> GetByBankAsync(string bankName, PageRequest pageReq, CancellationToken ct = default);
+    Task<PagedResult<SectorSpend>> GetByBankAndMonthAsync(string bankName, DateTime month, PageRequest pageReq, CancellationToken ct = default);
+    Task<PagedResult<SectorSpend>> GetByMccGroupAsync(string mccGroup, PageRequest pageReq, CancellationToken ct = default);
+    Task<PagedResult<SectorSpend>> FilterAsync(SectorSpend f, PageRequest pageReq, CancellationToken ct = default);
+    Task<IEnumerable<SectorSpendTrend>> GetTrendAsync(string bankName, string mccGroup, CancellationToken ct = default);
 }

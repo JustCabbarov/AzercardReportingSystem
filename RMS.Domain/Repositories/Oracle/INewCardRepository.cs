@@ -1,18 +1,27 @@
 ﻿using RMS.Domain.Entities.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMS.Domain.Repositories.Oracle
 {
     public interface INewCardRepository
     {
-        Task<IEnumerable<NewCardActivation>> GetAllAsync(CancellationToken ct = default);
-        Task<IEnumerable<NewCardActivation>> GetByBankAsync(string bankName, CancellationToken ct = default);
-        Task<IEnumerable<NewCardActivation>> GetByFirstMonthAsync(DateTime firstMonth, CancellationToken ct = default);
-        Task<IEnumerable<NewCardActivation>> GetBySegmentAsync(string bankName, string segment, CancellationToken ct = default);
-        Task<IEnumerable<NewCardActivation>> GetInactiveCardsAsync(string bankName, CancellationToken ct = default);
+        Task<PagedResult<NewCardActivation>> GetAllAsync(
+            PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<NewCardActivation>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<NewCardActivation>> GetByFirstMonthAsync(
+            DateTime firstMonth, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<NewCardActivation>> GetBySegmentAsync(
+            string bankName, string segment, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<NewCardActivation>> GetInactiveCardsAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default);
+
+        Task<PagedResult<NewCardActivation>> FilterAsync(
+            NewCardActivation f, PageRequest pageReq, CancellationToken ct = default);
+        Task<IEnumerable<NewCardActivation>> GetTrendAsync(
+    string bankName, CancellationToken ct = default);
     }
 }

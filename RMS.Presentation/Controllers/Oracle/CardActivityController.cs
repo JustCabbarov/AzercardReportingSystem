@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
+
 using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Presentation.Controllers.Oracle
@@ -16,25 +16,17 @@ namespace RMS.Presentation.Controllers.Oracle
             _service = service;
         }
 
-        /// <summary>
-        /// Bütün kart aktivlik məlumatlarını qaytarır.
-        /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CardActivity>>> GetAll(
-            CancellationToken ct = default)
-        {
-            var result = await _service.GetAllAsync(ct);
-            return Ok(result);
-        }
-
+        
         /// <summary>
         /// Bank adına görə kart aktivlik məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("bank/{bankName}")]
-        public async Task<ActionResult<IEnumerable<CardActivity>>> GetByBank(
-            string bankName, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<CardActivity>>> GetByBank(
+            string bankName,
+            [FromQuery] PageRequest pageReq,
+            CancellationToken ct = default)
         {
-            var result = await _service.GetByBankAsync(bankName, ct);
+            var result = await _service.GetByBankAsync(bankName, pageReq, ct);
             return Ok(result);
         }
 
@@ -42,11 +34,12 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Aya görə kart aktivlik məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("month")]
-        public async Task<ActionResult<IEnumerable<CardActivity>>> GetByMonth(
+        public async Task<ActionResult<PagedResult<CardActivity>>> GetByMonth(
             [FromQuery] DateTime month,
+            [FromQuery] PageRequest pageReq,
             CancellationToken ct = default)
         {
-            var result = await _service.GetByMonthAsync(month, ct);
+            var result = await _service.GetByMonthAsync(month, pageReq, ct);
             return Ok(result);
         }
 
@@ -54,10 +47,12 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Məhsul tipinə görə kart aktivlik məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("product/{productType}")]
-        public async Task<ActionResult<IEnumerable<CardActivity>>> GetByProductType(
-            string productType, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<CardActivity>>> GetByProductType(
+            string productType,
+            [FromQuery] PageRequest pageReq,
+            CancellationToken ct = default)
         {
-            var result = await _service.GetByProductTypeAsync(productType, ct);
+            var result = await _service.GetByProductTypeAsync(productType, pageReq, ct);
             return Ok(result);
         }
 
@@ -65,10 +60,26 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Bank + aktivlik seqmentinə görə kart məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("bank/{bankName}/segment/{segment}")]
-        public async Task<ActionResult<IEnumerable<CardActivity>>> GetByActivitySegment(
-            string bankName, string segment, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<CardActivity>>> GetByActivitySegment(
+            string bankName,
+            string segment,
+            [FromQuery] PageRequest pageReq,
+            CancellationToken ct = default)
         {
-            var result = await _service.GetByActivitySegmentAsync(bankName, segment, ct);
+            var result = await _service.GetByActivitySegmentAsync(bankName, segment, pageReq, ct);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Universal filter.
+        /// </summary>
+        [HttpGet("filter")]
+        public async Task<ActionResult<PagedResult<CardActivity>>> Filter(
+            [FromQuery] CardActivity f,
+            [FromQuery] PageRequest pageReq,
+            CancellationToken ct = default)
+        {
+            var result = await _service.FilterAsync(f, pageReq, ct);
             return Ok(result);
         }
 

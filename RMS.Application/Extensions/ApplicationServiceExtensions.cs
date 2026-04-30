@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RMS.Application.Services;
 using RMS.Application.Services.Oracle;
-using RMS.Application.Services.Oracle.MLForcasting;
 using RMS.Application.Services.System;
 using RMS.Contract.Services;
 using RMS.Contract.Services.Oracle;
 using RMS.Contract.Services.System;
 using RMS.Persitence.Repositories;
+using RMS.Presentation.BackgroundServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -27,7 +27,6 @@ namespace RMS.Application.Extensions
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddScoped<IEmailSender, EmailSender>();
 
-            services.AddScoped<IForecastService, ForecastService>();
             services.AddScoped<IAlertService, AlertService>();
             services.AddScoped<IWorldMapService, WorldMapService>();
             services.AddScoped<IAzMapService, AzMapService>();
@@ -35,7 +34,8 @@ namespace RMS.Application.Extensions
             services.AddScoped<IMarketBenchmarkService, MarketBenchmarkService>();
             services.AddScoped<ISectorSpendService, SectorSpendService>();
             services.AddScoped<INewCardService, NewCardService>();
-
+            services.AddScoped<IForecastingService, SsaForecastingService>();
+         services.AddHostedService<ForecastTrainingBackgroundService>();
 
 
             return services;

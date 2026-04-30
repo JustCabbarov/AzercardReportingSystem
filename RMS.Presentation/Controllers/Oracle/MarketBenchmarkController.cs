@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
+
 using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Presentation.Controllers.Oracle
@@ -20,10 +20,11 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Bütün bazar benchmark məlumatlarını qaytarır.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MarketBenchmark>>> GetAll(
+        public async Task<ActionResult<PagedResult<MarketBenchmark>>> GetAll(
+            [FromQuery] PageRequest pageReq,
             CancellationToken ct = default)
         {
-            var result = await _service.GetAllAsync(ct);
+            var result = await _service.GetAllAsync(pageReq, ct);
             return Ok(result);
         }
 
@@ -31,10 +32,12 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Bank adına görə bazar benchmark məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("bank/{bankName}")]
-        public async Task<ActionResult<IEnumerable<MarketBenchmark>>> GetByBank(
-            string bankName, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<MarketBenchmark>>> GetByBank(
+            string bankName,
+            [FromQuery] PageRequest pageReq,
+            CancellationToken ct = default)
         {
-            var result = await _service.GetByBankAsync(bankName, ct);
+            var result = await _service.GetByBankAsync(bankName, pageReq, ct);
             return Ok(result);
         }
 
@@ -42,11 +45,12 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Aya görə bazar benchmark məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("month")]
-        public async Task<ActionResult<IEnumerable<MarketBenchmark>>> GetByMonth(
+        public async Task<ActionResult<PagedResult<MarketBenchmark>>> GetByMonth(
             [FromQuery] DateTime month,
+            [FromQuery] PageRequest pageReq,
             CancellationToken ct = default)
         {
-            var result = await _service.GetByMonthAsync(month, ct);
+            var result = await _service.GetByMonthAsync(month, pageReq, ct);
             return Ok(result);
         }
 
@@ -54,51 +58,38 @@ namespace RMS.Presentation.Controllers.Oracle
         /// Ay + isteğe bağlı regiona görə sıralanmış bazar benchmark məlumatlarını qaytarır.
         /// </summary>
         [HttpGet("ranked")]
-        public async Task<ActionResult<IEnumerable<MarketBenchmark>>> GetRanked(
+        public async Task<ActionResult<PagedResult<MarketBenchmark>>> GetRanked(
             [FromQuery] DateTime month,
+            [FromQuery] PageRequest pageReq,
             [FromQuery] string? regionNameClean = null,
             CancellationToken ct = default)
         {
-            var result = await _service.GetRankedAsync(month, regionNameClean, ct);
+            var result = await _service.GetRankedAsync(month, pageReq, regionNameClean, ct);
             return Ok(result);
         }
 
         /// <summary>
-        /// Müəyyən bankın bazar payını (%) qaytarır.
+        /// Universal filter — bütün parametrlər opsionaldır.
         /// </summary>
-        [HttpGet("bank/{bankName}/market-share")]
-        public async Task<ActionResult<decimal>> GetMarketShare(
-            string bankName,
-            [FromQuery] DateTime month,
+        [HttpGet("filter")]
+        public async Task<ActionResult<PagedResult<MarketBenchmark>>> Filter(
+            [FromQuery] MarketBenchmark f,
+            [FromQuery] PageRequest pageReq,
             CancellationToken ct = default)
         {
-            var result = await _service.GetMarketShareAsync(bankName, month, ct);
+            var result = await _service.FilterAsync(f, pageReq, ct);
             return Ok(result);
         }
 
+        
         /// <summary>
-        /// Müəyyən bankın kart payını (%) qaytarır.
+        /// Bankın aylıq market share və card share trendi.
         /// </summary>
-        [HttpGet("bank/{bankName}/card-share")]
-        public async Task<ActionResult<decimal>> GetCardShare(
-            string bankName,
-            [FromQuery] DateTime month,
-            CancellationToken ct = default)
+        [HttpGet("bank/{bankName}/trend")]
+        public async Task<ActionResult<IEnumerable<MarketBenchmarkTrend>>> GetTrend(
+            string bankName, CancellationToken ct = default)
         {
-            var result = await _service.GetCardShareAsync(bankName, month, ct);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Bankın həmin aydakı sırasını (rank) qaytarır. 1 = ən böyük.
-        /// </summary>
-        [HttpGet("bank/{bankName}/rank")]
-        public async Task<ActionResult<int>> GetBankRank(
-            string bankName,
-            [FromQuery] DateTime month,
-            CancellationToken ct = default)
-        {
-            var result = await _service.GetBankRankAsync(bankName, month, ct);
+            var result = await _service.GetTrendAsync(bankName, ct);
             return Ok(result);
         }
     }

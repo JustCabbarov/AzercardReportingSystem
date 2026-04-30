@@ -2,11 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMS.Persitence.Repositories.Oracle
 {
@@ -16,80 +11,112 @@ namespace RMS.Persitence.Repositories.Oracle
 
         private const string SelectColumns = """
         SELECT
-            REPORT_MONTH       AS ReportMonth,
-            BANK_NAME          AS BankName,
-            REGION_NAME_CLEAN  AS RegionNameClean,
-            MCC_GROUP          AS MccGroup,
-            MCC                AS Mcc,
-            MCC_NAME           AS MccName,
-            RETAIL_CATEGORY    AS RetailCategory,
-            TRANSACTION_CLASS  AS TransactionClass,
-            SOURCE_CHANNEL     AS SourceChannel,
-            OPERATION_TYPE     AS OperationType,
-            TOTAL_AMOUNT       AS TotalAmount,
-            TOTAL_COUNT        AS TotalCount,
-            TOTAL_LOCAL_AMOUNT AS TotalLocalAmount
-        FROM MV_REQ8_SECTOR_SPEND
+            REPORT_MONTH                                    AS ReportMonth,
+            BANK_NAME                                       AS BankName,
+            MCC_GROUP                                       AS MccGroup,
+            MCC                                             AS Mcc,
+            SOURCE_CITY                                     AS SourceCity,
+            SOURCE_CITY_CATEGORY                            AS SourceCityCategory,
+            SOURCE_CHANNEL                                  AS SourceChannel,
+            OPERATION_TYPE                                  AS OperationType,
+            SOURCE_COUNTRY_CATEGORY                         AS SourceCountryCategory,
+            IS_ACQUIRING                                    AS IsAcquiring,
+            IS_ISSUING                                      AS IsIssuing,
+            CAST(TOTAL_AMOUNT AS BINARY_DOUBLE)             AS TotalAmount,
+            CAST(TOTAL_COUNT AS NUMBER(18,0))               AS TotalCount,
+            CAST(TOTAL_LOCAL_AMOUNT AS BINARY_DOUBLE)       AS TotalLocalAmount,
+            CAST(AVG_TICKET AS BINARY_DOUBLE)               AS AvgTicket,
+            CAST(LOCAL_RATIO_PCT AS BINARY_DOUBLE)          AS LocalRatioPct,
+            CAST(SECTOR_MARKET_SHARE_PCT AS BINARY_DOUBLE)  AS SectorMarketSharePct
+        FROM ALI_JABBAROV.PG_MV_REQ8_SECTOR_SPEND
         """;
 
-        public async Task<IEnumerable<SectorSpend>> GetAllAsync(CancellationToken ct = default)
+        private Task<PagedResult<SectorSpend>> QueryAsync(
+            string? bankName,
+            DateTime? month,
+            string? mccGroup,
+            string? sourceChannel,
+            string? operationType,
+            string? sourceCityCategory,
+            string? sourceCountryCategory,
+            int? isAcquiring,
+            int? isIssuing,
+            PageRequest pageReq,
+            CancellationToken ct)
         {
-            var sql = SelectColumns + " ORDER BY REPORT_MONTH DESC";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<SectorSpend>(
-                new CommandDefinition(sql, cancellationToken: ct));
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("MCC_GROUP = :MccGroup", "MccGroup", mccGroup)
+                .Add("SOURCE_CHANNEL = :SourceChannel", "SourceChannel", sourceChannel)
+                .Add("OPERATION_TYPE = :OperationType", "OperationType", operationType)
+                .Add("SOURCE_CITY_CATEGORY = :CityCategory", "CityCategory", sourceCityCategory)
+                .Add("SOURCE_COUNTRY_CATEGORY = :CountryCategory", "CountryCategory", sourceCountryCategory)
+                .Add("IS_ACQUIRING = :IsAcquiring", "IsAcquiring", isAcquiring)
+                .Add("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing)
+                .AddMonth("REPORT_MONTH", "Month", month);
+
+            return QueryPagedAsync<SectorSpend>(
+                SelectColumns + $" {filter.WhereClause}",
+                "ReportMonth DESC, MccGroup",
+                pageReq,
+                filter.Parameters,
+                ct);
         }
 
-        public async Task<IEnumerable<SectorSpend>> GetByBankAsync(
-            string bankName, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE BANK_NAME = :BankName ORDER BY REPORT_MONTH DESC, MCC_GROUP";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<SectorSpend>(
-                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
-        }
+        public Task<PagedResult<SectorSpend>> GetAllAsync(
+            PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, null, null, null, null, null, null, null, null, pageReq, ct);
 
-        public async Task<IEnumerable<SectorSpend>> GetByBankAndMonthAsync(
-            string bankName, DateTime month, CancellationToken ct = default)
+        public Task<PagedResult<SectorSpend>> GetByBankAsync(
+            string bankName, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(bankName, null, null, null, null, null, null, null, null, pageReq, ct);
+
+        public Task<PagedResult<SectorSpend>> GetByBankAndMonthAsync(
+            string bankName, DateTime month, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(bankName, month, null, null, null, null, null, null, null, pageReq, ct);
+
+        public Task<PagedResult<SectorSpend>> GetByMccGroupAsync(
+            string mccGroup, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(null, null, mccGroup, null, null, null, null, null, null, pageReq, ct);
+
+        public Task<PagedResult<SectorSpend>> FilterAsync(
+            SectorSpend f, PageRequest pageReq, CancellationToken ct = default)
+            => QueryAsync(
+                f.BankName,
+                f.ReportMonth == default ? null : f.ReportMonth,
+                f.MccGroup,
+                f.SourceChannel,
+                f.OperationType,
+                f.SourceCityCategory,
+                f.SourceCountryCategory,
+                f.IsAcquiring,
+                f.IsIssuing,
+                pageReq,
+                ct);
+
+        public async Task<IEnumerable<SectorSpendTrend>> GetTrendAsync(
+            string bankName, string mccGroup, CancellationToken ct = default)
         {
-            var sql = SelectColumns + """
-             WHERE BANK_NAME = :BankName
-               AND TRUNC(REPORT_MONTH,'MM') = TRUNC(:Month,'MM')
-             ORDER BY TOTAL_AMOUNT DESC
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("MCC_GROUP = :MccGroup", "MccGroup", mccGroup);
+
+            var sql = $"""
+            SELECT
+                REPORT_MONTH                                                        AS ReportMonth,
+                CAST(SUM(TOTAL_AMOUNT) AS BINARY_DOUBLE)                            AS TotalAmount,
+                CAST(SUM(TOTAL_COUNT) AS NUMBER(18,0))                              AS TotalCount,
+                CAST(SUM(TOTAL_AMOUNT) / NULLIF(SUM(TOTAL_COUNT), 0) AS BINARY_DOUBLE) AS AvgTicket,
+                CAST(AVG(SECTOR_MARKET_SHARE_PCT) AS BINARY_DOUBLE)                AS SectorMarketSharePct
+            FROM ALI_JABBAROV.PG_MV_REQ8_SECTOR_SPEND
+            {filter.WhereClause}
+            GROUP BY REPORT_MONTH
+            ORDER BY REPORT_MONTH
             """;
+
             using var conn = CreateConnection();
-            return await conn.QueryAsync<SectorSpend>(
-                new CommandDefinition(sql,
-                    new { BankName = bankName, Month = month.Date },
-                    cancellationToken: ct));
-        }
-
-        public async Task<IEnumerable<SectorSpend>> GetByMccGroupAsync(
-            string mccGroup, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE MCC_GROUP = :MccGroup ORDER BY REPORT_MONTH DESC, BANK_NAME";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<SectorSpend>(
-                new CommandDefinition(sql, new { MccGroup = mccGroup }, cancellationToken: ct));
-        }
-
-        /// <summary>
-        /// Bank daxilində hər MCC-nin ümumi xərcdəki payını hesablayır.
-        /// ShareOfWalletPct = MCC amount / bank total amount * 100
-        /// </summary>
-        public async Task<IEnumerable<SectorSpend>> GetWithShareOfWalletAsync(
-            string bankName, DateTime month, CancellationToken ct = default)
-        {
-            var rows = (await GetByBankAndMonthAsync(bankName, month, ct)).ToList();
-            var totalAmount = rows.Sum(r => r.TotalAmount);
-
-            foreach (var row in rows)
-                row.ShareOfWalletPct = totalAmount > 0
-                    ? Math.Round(row.TotalAmount / totalAmount * 100, 2)
-                    : 0;
-
-            return rows;
+            return await conn.QueryAsync<SectorSpendTrend>(
+                new CommandDefinition(sql, filter.Parameters, cancellationToken: ct));
         }
     }
-
 }

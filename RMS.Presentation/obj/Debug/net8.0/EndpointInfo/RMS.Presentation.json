@@ -787,44 +787,6 @@
         }
       }
     },
-    "/api/CardActivity": {
-      "get": {
-        "tags": [
-          "CardActivity"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/CardActivity/bank/{bankName}": {
       "get": {
         "tags": [
@@ -838,6 +800,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -846,26 +824,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               }
             }
@@ -886,6 +855,22 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -894,26 +879,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               }
             }
@@ -934,6 +910,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -942,26 +934,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               }
             }
@@ -990,6 +973,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -998,26 +997,221 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CardActivity"
-                  }
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CardActivity/filter": {
+      "get": {
+        "tags": [
+          "CardActivity"
+        ],
+        "parameters": [
+          {
+            "name": "ReportMonth",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "BankName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RegionName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RegionNameClean",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardBrandName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardProductName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProductType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PaymentScheme",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ContactlessStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExpStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Status3D",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TotalCards",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "TotalTransCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "TotalTransAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "TotalLocalAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "ContactlessCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "ChipCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "TokenCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "ActiveCardRatePct",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "ContactlessRatePct",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "ActivitySegment",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardActivityPagedResult"
                 }
               }
             }
@@ -1250,10 +1444,75 @@
         }
       }
     },
-    "/api/MarketBenchmark": {
+    "/api/Forecasting": {
       "get": {
         "tags": [
-          "MarketBenchmark"
+          "Forecasting"
+        ],
+        "parameters": [
+          {
+            "name": "bank",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mcc",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "horizon",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 6
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Forecasting/all": {
+      "get": {
+        "tags": [
+          "Forecasting"
+        ],
+        "parameters": [
+          {
+            "name": "horizon",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 6
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1263,7 +1522,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
+                    "$ref": "#/components/schemas/ForecastResult"
                   }
                 }
               },
@@ -1271,7 +1530,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
+                    "$ref": "#/components/schemas/ForecastResult"
                   }
                 }
               },
@@ -1279,8 +1538,107 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
+                    "$ref": "#/components/schemas/ForecastResult"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Forecasting/train/global": {
+      "post": {
+        "tags": [
+          "Forecasting"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Forecasting/train/all": {
+      "post": {
+        "tags": [
+          "Forecasting"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Forecasting/train": {
+      "post": {
+        "tags": [
+          "Forecasting"
+        ],
+        "parameters": [
+          {
+            "name": "bank",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mcc",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               }
             }
@@ -1301,6 +1659,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1309,26 +1683,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               }
             }
@@ -1349,6 +1714,22 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1357,26 +1738,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               }
             }
@@ -1399,6 +1771,22 @@
             }
           },
           {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "regionNameClean",
             "in": "query",
             "schema": {
@@ -1412,26 +1800,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MarketBenchmark"
-                  }
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
                 }
               }
             }
@@ -1439,7 +1818,154 @@
         }
       }
     },
-    "/api/MarketBenchmark/bank/{bankName}/market-share": {
+    "/api/MarketBenchmark/filter": {
+      "get": {
+        "tags": [
+          "MarketBenchmark"
+        ],
+        "parameters": [
+          {
+            "name": "ReportMonth",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "BankName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RegionNameClean",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CardBrandName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ProductType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BankTransAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "BankTransCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "BankCardCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "MarketTotalAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "MarketTotalCards",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "MarketSharePct",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "CardSharePct",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "BankRank",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketBenchmarkPagedResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MarketBenchmark/bank/{bankName}/trend": {
       "get": {
         "tags": [
           "MarketBenchmark"
@@ -1452,14 +1978,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "month",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "responses": {
@@ -1468,120 +1986,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "number",
-                  "format": "double"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmarkTrend"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "number",
-                  "format": "double"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmarkTrend"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/MarketBenchmark/bank/{bankName}/card-share": {
-      "get": {
-        "tags": [
-          "MarketBenchmark"
-        ],
-        "parameters": [
-          {
-            "name": "bankName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "month",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/MarketBenchmark/bank/{bankName}/rank": {
-      "get": {
-        "tags": [
-          "MarketBenchmark"
-        ],
-        "parameters": [
-          {
-            "name": "bankName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "month",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MarketBenchmarkTrend"
+                  }
                 }
               }
             }
@@ -1594,32 +2018,43 @@
         "tags": [
           "NewCard"
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               }
             }
@@ -1640,6 +2075,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
           }
         ],
         "responses": {
@@ -1648,26 +2101,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               }
             }
@@ -1688,6 +2132,24 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
           }
         ],
         "responses": {
@@ -1696,26 +2158,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               }
             }
@@ -1744,6 +2197,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
           }
         ],
         "responses": {
@@ -1752,26 +2223,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               }
             }
@@ -1792,6 +2254,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
           }
         ],
         "responses": {
@@ -1800,26 +2280,109 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewCardActivation"
-                  }
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NewCard/filter": {
+      "get": {
+        "tags": [
+          "NewCard"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cardProductName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cardBrandName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regionNameClean",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "firstMonth",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewCardActivationPagedResult"
                 }
               }
             }
@@ -1913,48 +2476,6 @@
                     "type": "number",
                     "format": "double"
                   }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/NewCard/bank/{bankName}/avg-months-to-first-use": {
-      "get": {
-        "tags": [
-          "NewCard"
-        ],
-        "parameters": [
-          {
-            "name": "bankName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "number",
-                  "format": "double"
                 }
               }
             }
@@ -2083,32 +2604,43 @@
         "tags": [
           "SectorSpend"
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               }
             }
@@ -2129,6 +2661,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
           }
         ],
         "responses": {
@@ -2137,26 +2687,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               }
             }
@@ -2185,6 +2726,24 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
           }
         ],
         "responses": {
@@ -2193,26 +2752,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               }
             }
@@ -2233,6 +2783,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
           }
         ],
         "responses": {
@@ -2241,26 +2809,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               }
             }
@@ -2268,7 +2827,7 @@
         }
       }
     },
-    "/api/SectorSpend/bank/{bankName}/share-of-wallet": {
+    "/api/SectorSpend/filter": {
       "get": {
         "tags": [
           "SectorSpend"
@@ -2276,8 +2835,7 @@
         "parameters": [
           {
             "name": "bankName",
-            "in": "path",
-            "required": true,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -2289,6 +2847,75 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "mccGroup",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceChannel",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operationType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceCityCategory",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceCountryCategory",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAcquiring",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "isIssuing",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
           }
         ],
         "responses": {
@@ -2297,26 +2924,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SectorSpend"
-                  }
+                  "$ref": "#/components/schemas/SectorSpendPagedResult"
                 }
               }
             }
@@ -2448,10 +3066,27 @@
         }
       }
     },
-    "/api/WorldMap": {
+    "/api/SectorSpend/bank/{bankName}/trend": {
       "get": {
         "tags": [
-          "WorldMap"
+          "SectorSpend"
+        ],
+        "parameters": [
+          {
+            "name": "bankName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mccGroup",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -2461,7 +3096,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WorldMapTransaction"
+                    "$ref": "#/components/schemas/SectorSpendTrend"
                   }
                 }
               },
@@ -2469,7 +3104,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WorldMapTransaction"
+                    "$ref": "#/components/schemas/SectorSpendTrend"
                   }
                 }
               },
@@ -2477,7 +3112,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WorldMapTransaction"
+                    "$ref": "#/components/schemas/SectorSpendTrend"
                   }
                 }
               }
@@ -2733,6 +3368,13 @@
         ],
         "parameters": [
           {
+            "name": "bankName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "month",
             "in": "query",
             "schema": {
@@ -2908,10 +3550,6 @@
             "type": "string",
             "nullable": true
           },
-          "cardType": {
-            "type": "string",
-            "nullable": true
-          },
           "totalCards": {
             "type": "integer",
             "format": "int64"
@@ -2959,6 +3597,44 @@
         },
         "additionalProperties": false
       },
+      "CardActivityPagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardActivity"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateRoleDTO": {
         "type": "object",
         "properties": {
@@ -2993,6 +3669,39 @@
             "items": {
               "type": "string",
               "format": "uuid"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ForecastResult": {
+        "type": "object",
+        "properties": {
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mccGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "modelUsed": {
+            "type": "string",
+            "nullable": true
+          },
+          "accuracy": {
+            "type": "number",
+            "format": "float"
+          },
+          "confidenceLevel": {
+            "type": "number",
+            "format": "float"
+          },
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonthlyForecast"
             },
             "nullable": true
           }
@@ -3069,6 +3778,96 @@
           "bankRank": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketBenchmarkPagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketBenchmark"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MarketBenchmarkTrend": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "marketSharePct": {
+            "type": "number",
+            "format": "double"
+          },
+          "cardSharePct": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonthlyForecast": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "predictedAmount": {
+            "type": "number",
+            "format": "float"
+          },
+          "amountLowerBound": {
+            "type": "number",
+            "format": "float"
+          },
+          "amountUpperBound": {
+            "type": "number",
+            "format": "float"
+          },
+          "predictedCount": {
+            "type": "number",
+            "format": "float"
+          },
+          "countLowerBound": {
+            "type": "number",
+            "format": "float"
+          },
+          "countUpperBound": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false
@@ -3151,6 +3950,44 @@
           "activationSegment": {
             "type": "string",
             "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewCardActivationPagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewCardActivation"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPrev": {
+            "type": "boolean",
             "readOnly": true
           }
         },
@@ -3268,10 +4105,6 @@
             "type": "string",
             "nullable": true
           },
-          "regionNameClean": {
-            "type": "string",
-            "nullable": true
-          },
           "mccGroup": {
             "type": "string",
             "nullable": true
@@ -3280,15 +4113,11 @@
             "type": "string",
             "nullable": true
           },
-          "mccName": {
+          "sourceCity": {
             "type": "string",
             "nullable": true
           },
-          "retailCategory": {
-            "type": "string",
-            "nullable": true
-          },
-          "transactionClass": {
+          "sourceCityCategory": {
             "type": "string",
             "nullable": true
           },
@@ -3298,6 +4127,20 @@
           },
           "operationType": {
             "type": "string",
+            "nullable": true
+          },
+          "sourceCountryCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAcquiring": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isIssuing": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "totalAmount": {
@@ -3312,10 +4155,81 @@
             "type": "number",
             "format": "double"
           },
-          "shareOfWalletPct": {
+          "avgTicket": {
             "type": "number",
-            "format": "double",
+            "format": "double"
+          },
+          "localRatioPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "sectorMarketSharePct": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SectorSpendPagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SectorSpend"
+            },
             "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SectorSpendTrend": {
+        "type": "object",
+        "properties": {
+          "reportMonth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalCount": {
+            "type": "number",
+            "format": "double"
+          },
+          "avgTicket": {
+            "type": "number",
+            "format": "double"
+          },
+          "sectorMarketSharePct": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

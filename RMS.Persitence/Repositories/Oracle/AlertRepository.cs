@@ -27,7 +27,7 @@ namespace RMS.Persitence.Repositories.Oracle
             PREV_COUNT        AS PrevCount,
             PREV_CARDS        AS PrevCards,
             GENERATED_AT      AS GeneratedAt
-        FROM MV_REQ2_ALERT
+        FROM ALI_JABBAROV.PG_MV_REQ2_ALERT
         """;
 
         public async Task<IEnumerable<AlertSignal>> GetAllAsync(CancellationToken ct = default)

@@ -1,0 +1,34 @@
+[2026-04-29 01:13:52] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 01:13:52] [INF] Növbəti train: 1s 16d sonra (29.04.2026 02:30).
+[2026-04-29 02:30:00] [INF] === Gecəlik train başladı: "2026-04-29T02:30:00.0131615-07:00" ===
+[2026-04-29 02:30:00] [INF] [Global model] başladı.
+[2026-04-29 02:30:00] [INF] Global model train başladı.
+[2026-04-29 02:30:01] [INF] SSA train: Key=GLOBAL, SeriesLength=10197, WindowSize=12
+[2026-04-29 02:30:01] [INF] Model saxlandı: C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Presentation\bin\Debug\net8.0\Models\GLOBAL.zip
+[2026-04-29 02:30:01] [INF] Global model train tamamlandı. DataCount=10197
+[2026-04-29 02:30:01] [INF] [Global model] tamamlandı.
+[2026-04-29 02:30:01] [INF] [Bank-specific modellər] başladı.
+[2026-04-29 02:30:02] [ERR] [Bank-specific modellər] zamanı xəta baş verdi.
+[2026-04-29 02:30:02] [INF] === Gecəlik train tamamlandı: "2026-04-29T02:30:02.1713013-07:00" ===
+[2026-04-29 02:30:02] [INF] Növbəti train: 23s 59d sonra (30.04.2026 02:30).
+[2026-04-29 03:22:13] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-29 03:22:13] [ERR] An unhandled exception occurred: ORA-00942: table or view does not exist
+https://docs.oracle.com/error-help/db/ora-00942/
+[2026-04-29 04:55:16] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 04:55:16] [INF] Növbəti train: 21s 34d sonra (30.04.2026 02:30).
+[2026-04-29 04:55:57] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-29 04:55:57] [ERR] An unhandled exception occurred: ORA-50201: Oracle Communication: Failed to connect to server or failed to parse connect string
+[2026-04-29 05:05:23] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 05:05:23] [INF] Növbəti train: 21s 24d sonra (30.04.2026 02:30).
+[2026-04-29 05:05:38] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-29 05:05:38] [ERR] An unhandled exception occurred: Error parsing column 9 (ISACQUIRING=0 - String)
+[2026-04-29 05:10:08] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 05:10:08] [INF] Növbəti train: 21s 19d sonra (30.04.2026 02:30).
+[2026-04-29 05:22:59] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-29 05:22:59] [ERR] An unhandled exception occurred: Error parsing column 3 (AVGTICKET=215 - Decimal)
+[2026-04-29 05:25:14] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 05:25:14] [INF] Növbəti train: 21s 4d sonra (30.04.2026 02:30).
+[2026-04-29 05:27:07] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 05:27:07] [INF] Növbəti train: 21s 2d sonra (30.04.2026 02:30).
+[2026-04-29 05:27:22] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-29 05:27:22] [INF] Növbəti train: 21s 2d sonra (30.04.2026 02:30).

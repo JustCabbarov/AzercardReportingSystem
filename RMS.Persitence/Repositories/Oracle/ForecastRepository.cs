@@ -2,19 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RMS.Persitence.Repositories.Oracle;
 
-namespace RMS.Persitence.Repositories.Oracle
+namespace RMS.Persistence.Repositories.Oracle;
+
+public sealed class ForecastRepository : OracleRepositoryBase, IForecastRepository
 {
-    public class ForecastRepository : OracleRepositoryBase, IForecastRepository
-    {
-        public ForecastRepository(IConfiguration configuration) : base(configuration) { }
-
-        private const string SelectColumns = """
+    // Schema + cədvəl adı birbaşa SQL-də yazılır — const interpolation problemi yoxdur
+    private const string SelectSql = """
         SELECT
             REPORT_MONTH   AS ReportMonth,
             BANK_NAME      AS BankName,
@@ -29,54 +24,109 @@ namespace RMS.Persitence.Repositories.Oracle
             ROLLING_AVG_6M AS RollingAvg6M,
             SEASON_MONTH   AS SeasonMonth,
             TIME_INDEX     AS TimeIndex
-        FROM MV_REQ1_FORECAST_INPUT
+        FROM ALI_JABBAROV.PG_MV_REQ1_FORECAST_INPUT
         """;
 
-        public async Task<IEnumerable<ForecastInput>> GetAllAsync(CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " ORDER BY BANK_NAME, MCC_GROUP, REPORT_MONTH";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<ForecastInput>(
-                new CommandDefinition(sql, cancellationToken: ct));
-        }
+    public ForecastRepository(IConfiguration configuration) : base(configuration) { }
 
-        public async Task<IEnumerable<ForecastInput>> GetByBankAsync(
-            string bankName, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + " WHERE BANK_NAME = :BankName ORDER BY MCC_GROUP, REPORT_MONTH";
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<ForecastInput>(
-                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
-        }
+    public async Task<IEnumerable<ForecastInput>> GetAllAsync(
+        CancellationToken ct = default)
+    {
+        var sql = SelectSql + " ORDER BY BANK_NAME, MCC_GROUP, REPORT_MONTH";
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<ForecastInput>(
+            new CommandDefinition(sql, cancellationToken: ct));
+    }
 
-        public async Task<IEnumerable<ForecastInput>> GetByBankAndMccAsync(
-            string bankName, string mccGroup, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + """
+    public async Task<IEnumerable<ForecastInput>> GetByBankAsync(
+        string bankName, CancellationToken ct = default)
+    {
+        var sql = SelectSql + """
+             WHERE BANK_NAME = :BankName
+             ORDER BY MCC_GROUP, REPORT_MONTH
+            """;
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<ForecastInput>(
+            new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
+    }
+
+    public async Task<IEnumerable<ForecastInput>> GetByBankAndMccAsync(
+        string bankName, string mccGroup, CancellationToken ct = default)
+    {
+        var sql = SelectSql + """
              WHERE BANK_NAME = :BankName
                AND MCC_GROUP = :MccGroup
              ORDER BY REPORT_MONTH
             """;
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<ForecastInput>(
-                new CommandDefinition(sql,
-                    new { BankName = bankName, MccGroup = mccGroup },
-                    cancellationToken: ct));
-        }
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<ForecastInput>(
+            new CommandDefinition(sql,
+                new { BankName = bankName, MccGroup = mccGroup },
+                cancellationToken: ct));
+    }
 
-        public async Task<IEnumerable<ForecastInput>> GetByDateRangeAsync(
-            DateTime from, DateTime to, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + """
-             WHERE REPORT_MONTH >= :From
-               AND REPORT_MONTH <= :To
+    public async Task<IEnumerable<ForecastInput>> GetByDateRangeAsync(
+        DateTime from, DateTime to, CancellationToken ct = default)
+    {
+        var sql = SelectSql + """
+             WHERE TRUNC(REPORT_MONTH) >= :From
+               AND TRUNC(REPORT_MONTH) <= :To
              ORDER BY BANK_NAME, MCC_GROUP, REPORT_MONTH
             """;
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<ForecastInput>(
-                new CommandDefinition(sql,
-                    new { From = from.Date, To = to.Date },
-                    cancellationToken: ct));
-        }
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<ForecastInput>(
+            new CommandDefinition(sql,
+                new { From = from.Date, To = to.Date },
+                cancellationToken: ct));
     }
+
+    public async Task<IEnumerable<(string BankName, string MccGroup)>> GetAllBankMccGroupsAsync(
+        CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT DISTINCT
+                BANK_NAME AS BankName,
+                MCC_GROUP AS MccGroup
+            FROM ALI_JABBAROV.PG_MV_REQ1_FORECAST_INPUT
+            ORDER BY BANK_NAME, MCC_GROUP
+            """;
+
+        using var conn = CreateConnection();
+        var rows = await conn.QueryAsync<BankMccRow>(
+            new CommandDefinition(sql, cancellationToken: ct));
+
+        return rows.Select(r => (r.BankName, r.MccGroup));
+    }
+
+    public async Task<IEnumerable<string>> GetMccGroupsAsync(
+        string bankName, CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT DISTINCT MCC_GROUP
+            FROM ALI_JABBAROV.PG_MV_REQ1_FORECAST_INPUT
+            WHERE BANK_NAME = :BankName
+            ORDER BY MCC_GROUP
+            """;
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<string>(
+            new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
+    }
+
+    public async Task<DateTime?> GetLastReportMonthAsync(
+        string bankName, string mccGroup, CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT MAX(REPORT_MONTH)
+            FROM ALI_JABBAROV.PG_MV_REQ1_FORECAST_INPUT
+            WHERE BANK_NAME = :BankName
+              AND MCC_GROUP = :MccGroup
+            """;
+        using var conn = CreateConnection();
+        return await conn.ExecuteScalarAsync<DateTime?>(
+            new CommandDefinition(sql,
+                new { BankName = bankName, MccGroup = mccGroup },
+                cancellationToken: ct));
+    }
+
+    private sealed record BankMccRow(string BankName, string MccGroup);
 }

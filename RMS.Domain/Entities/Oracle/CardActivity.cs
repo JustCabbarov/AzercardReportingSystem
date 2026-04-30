@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMS.Domain.Entities.Oracle
 {
@@ -19,7 +15,6 @@ namespace RMS.Domain.Entities.Oracle
         public string? ContactlessStatus { get; set; }
         public string? ExpStatus { get; set; }
         public string? Status3D { get; set; }
-        public string? CardType { get; set; }
         public long TotalCards { get; set; }
         public long TotalTransCount { get; set; }
         public decimal TotalTransAmount { get; set; }
@@ -36,9 +31,9 @@ namespace RMS.Domain.Entities.Oracle
                 : null;
 
         public string ActivitySegment =>
+            ActiveCardRatePct == null ? "Unknown" :
             ActiveCardRatePct >= 80 ? "HighlyActive" :
             ActiveCardRatePct >= 50 ? "ModeratelyActive" :
             ActiveCardRatePct >= 20 ? "LowActive" : "Passive";
     }
-
 }
