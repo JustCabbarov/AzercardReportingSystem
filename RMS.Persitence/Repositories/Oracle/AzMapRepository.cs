@@ -10,91 +10,100 @@ namespace RMS.Persitence.Repositories.Oracle
         public AzMapRepository(IConfiguration configuration) : base(configuration) { }
 
         private const string SelectColumns = """
-        SELECT
-            REPORT_DATE           AS ReportDate,
-            REPORT_MONTH          AS ReportMonth,
-            BANK_NAME             AS BankName,
-            REGION_NAME_CLEAN     AS RegionNameClean,
-            SOURCE_CITY           AS SourceCity,
-            SOURCE_CITY_CLEAN     AS SourceCityClean,
-            SOURCE_CITY_CATEGORY  AS SourceCityCategory,
-            ACQUIRING_DEVICE_TYPE AS AcquiringDeviceType,
-            MCC_GROUP             AS MccGroup,
-            RETAIL_CATEGORY       AS RetailCategory,
-            TRANSACTION_CLASS     AS TransactionClass,
-            CTLS_STATUS           AS CtlsStatus,
-            TOTAL_AMOUNT          AS TotalAmount,
-            TOTAL_COUNT           AS TotalCount,
-            DEVICE_COUNT          AS DeviceCount
-        FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
-        """;
+            SELECT
+                REPORT_MONTH          AS ReportMonth,
+                BANK_NAME             AS BankName,
+                SOURCE_CITY           AS SourceCity,
+                SOURCE_CITY_CLEAN     AS SourceCityClean,
+                SOURCE_CITY_CATEGORY  AS SourceCityCategory,
+                TOTAL_AMOUNT          AS TotalAmount,
+                TOTAL_COUNT           AS TotalCount
+            FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
+            """;
 
-        public async Task<IEnumerable<AzMapTransaction>> GetAllAsync(CancellationToken ct = default)
+        private FilterBuilder BuildFilter(AzMapTransaction f) =>
+            new FilterBuilder()
+                .Add("BANK_NAME            = :BankName", "BankName", f.BankName)
+                .Add("SOURCE_CITY          = :SourceCity", "SourceCity", f.SourceCity)
+                .Add("SOURCE_CITY_CLEAN    = :SourceCityClean", "SourceCityClean", f.SourceCityClean)
+                .Add("SOURCE_CITY_CATEGORY = :CityCategory", "CityCategory", f.SourceCityCategory)
+                .AddMonth("REPORT_MONTH", "Month",
+                    f.ReportMonth == default ? null : f.ReportMonth);
+
+        public Task<PagedResult<AzMapTransaction>> FilterAsync(
+            AzMapTransaction f,
+            PageRequest pageReq,
+            CancellationToken ct = default)
         {
-            var sql = SelectColumns + " ORDER BY REPORT_MONTH DESC";
+            var filter = BuildFilter(f);
+            return QueryPagedAsync<AzMapTransaction>(
+                SelectColumns + $" {filter.WhereClause}",
+                "ReportMonth DESC",
+                pageReq,
+                filter.Parameters,
+                ct);
+        }
+
+        public async Task<IEnumerable<AzMapTransaction>> GetHeatmapDataAsync(
+            string? bankName,
+            string? sourceCity,
+            DateTime? month,
+            CancellationToken ct = default)
+        {
+            var filter = new FilterBuilder()
+                .Add("BANK_NAME    = :BankName", "BankName", bankName)
+                .Add("SOURCE_CITY  = :SourceCity", "SourceCity", sourceCity)
+                .AddMonth("REPORT_MONTH", "Month", month);
+
             using var conn = CreateConnection();
             return await conn.QueryAsync<AzMapTransaction>(
+                new CommandDefinition(
+                    SelectColumns + $" {filter.WhereClause}",
+                    filter.Parameters,
+                    cancellationToken: ct));
+        }
+
+        public async Task<IEnumerable<string>> GetDistinctCitiesAsync(
+            CancellationToken ct = default)
+        {
+            const string sql = """
+                SELECT DISTINCT SOURCE_CITY
+                FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
+                WHERE SOURCE_CITY IS NOT NULL
+                  AND LENGTH(TRIM(SOURCE_CITY)) > 0
+                  AND SOURCE_CITY != 'NAMƏLUM'
+                """;
+            using var conn = CreateConnection();
+            return await conn.QueryAsync<string>(
                 new CommandDefinition(sql, cancellationToken: ct));
         }
 
-        public async Task<IEnumerable<AzMapTransaction>> GetByBankAsync(
-            string bankName, CancellationToken ct = default)
+        public async Task<IEnumerable<string>> GetDistinctRegionsAsync(
+            CancellationToken ct = default)
         {
-            var sql = SelectColumns + """
-             WHERE BANK_NAME = :BankName
-             ORDER BY REPORT_MONTH DESC, REGION_NAME_CLEAN
-            """;
+            const string sql = """
+                SELECT DISTINCT SOURCE_CITY_CLEAN
+                FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
+                WHERE SOURCE_CITY_CLEAN IS NOT NULL
+                  AND LENGTH(TRIM(SOURCE_CITY_CLEAN)) > 0
+                  AND SOURCE_CITY_CLEAN != 'NAMƏLUM'
+                """;
             using var conn = CreateConnection();
-            return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
+            return await conn.QueryAsync<string>(
+                new CommandDefinition(sql, cancellationToken: ct));
         }
 
-        public async Task<IEnumerable<AzMapTransaction>> GetByMonthAsync(
-            DateTime month, CancellationToken ct = default)
+        public async Task<IEnumerable<string>> GetDistinctBanksAsync(
+            CancellationToken ct = default)
         {
-            var sql = SelectColumns + """
-             WHERE TRUNC(REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')
-             ORDER BY BANK_NAME, REGION_NAME_CLEAN
-            """;
+            const string sql = """
+                SELECT DISTINCT BANK_NAME
+                FROM ALI_JABBAROV.PG_MV_REQ4_AZ_MAP
+                WHERE BANK_NAME IS NOT NULL
+                """;
             using var conn = CreateConnection();
-            return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { Month = month.Date }, cancellationToken: ct));
-        }
-
-        public async Task<IEnumerable<AzMapTransaction>> GetByRegionAsync(
-            string regionNameClean, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + """
-             WHERE REGION_NAME_CLEAN = :Region
-             ORDER BY REPORT_MONTH DESC, BANK_NAME
-            """;
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { Region = regionNameClean }, cancellationToken: ct));
-        }
-
-        public async Task<IEnumerable<AzMapTransaction>> GetByDeviceTypeAsync(
-            string deviceType, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + """
-             WHERE ACQUIRING_DEVICE_TYPE = :DeviceType
-             ORDER BY REPORT_MONTH DESC
-            """;
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { DeviceType = deviceType }, cancellationToken: ct));
-        }
-
-        public async Task<IEnumerable<AzMapTransaction>> GetByCityAsync(
-            string cityClean, CancellationToken ct = default)
-        {
-            var sql = SelectColumns + """
-             WHERE SOURCE_CITY_CLEAN = :City
-             ORDER BY REPORT_MONTH DESC
-            """;
-            using var conn = CreateConnection();
-            return await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(sql, new { City = cityClean }, cancellationToken: ct));
+            return await conn.QueryAsync<string>(
+                new CommandDefinition(sql, cancellationToken: ct));
         }
     }
 }

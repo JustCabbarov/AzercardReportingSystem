@@ -222,15 +222,15 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetAll",
-    "RelativePath": "api/AzMap",
+    "Method": "GetDistinctBanks",
+    "RelativePath": "api/AzMap/banks",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -242,21 +242,71 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetByBank",
-    "RelativePath": "api/AzMap/bank/{bankName}",
+    "Method": "GetDistinctCities",
+    "RelativePath": "api/AzMap/cities",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
+    "Method": "Filter",
+    "RelativePath": "api/AzMap/filter",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "bankName",
+        "Name": "BankName",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "SourceCity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SourceCityClean",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SourceCityCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportMonth",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "RMS.Domain.Entities.Oracle.PagedResult\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -268,8 +318,8 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetAmountByRegion",
-    "RelativePath": "api/AzMap/bank/{bankName}/amount-by-region",
+    "Method": "GetHeatmap",
+    "RelativePath": "api/AzMap/heatmap",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -277,120 +327,16 @@
       {
         "Name": "bankName",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "sourceCity",
+        "Type": "System.String",
+        "IsRequired": false
       },
       {
         "Name": "month",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetDeviceCountByType",
-    "RelativePath": "api/AzMap/bank/{bankName}/device-count",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "bankName",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "month",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.Dictionary\u00602[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetByCity",
-    "RelativePath": "api/AzMap/city/{cityClean}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "cityClean",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetByDeviceType",
-    "RelativePath": "api/AzMap/device/{deviceType}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "deviceType",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetByMonth",
-    "RelativePath": "api/AzMap/month",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "month",
-        "Type": "System.DateTime",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],
@@ -408,21 +354,15 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.AzMapController",
-    "Method": "GetByRegion",
-    "RelativePath": "api/AzMap/region/{regionNameClean}",
+    "Method": "GetDistinctRegions",
+    "RelativePath": "api/AzMap/regions",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "regionNameClean",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[RMS.Domain.Entities.Oracle.AzMapTransaction, RMS.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

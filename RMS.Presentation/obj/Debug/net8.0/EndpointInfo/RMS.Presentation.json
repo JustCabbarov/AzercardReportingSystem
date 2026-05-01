@@ -391,200 +391,62 @@
         }
       }
     },
-    "/api/AzMap": {
-      "get": {
-        "tags": [
-          "AzMap"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AzMap/bank/{bankName}": {
+    "/api/AzMap/filter": {
       "get": {
         "tags": [
           "AzMap"
         ],
         "parameters": [
           {
-            "name": "bankName",
-            "in": "path",
-            "required": true,
+            "name": "BankName",
+            "in": "query",
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AzMap/month": {
-      "get": {
-        "tags": [
-          "AzMap"
-        ],
-        "parameters": [
+          },
           {
-            "name": "month",
+            "name": "SourceCity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SourceCityClean",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SourceCityCategory",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ReportMonth",
             "in": "query",
             "schema": {
               "type": "string",
               "format": "date-time"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AzMap/region/{regionNameClean}": {
-      "get": {
-        "tags": [
-          "AzMap"
-        ],
-        "parameters": [
+          },
           {
-            "name": "regionNameClean",
-            "in": "path",
-            "required": true,
+            "name": "Page",
+            "in": "query",
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AzMap/device/{deviceType}": {
-      "get": {
-        "tags": [
-          "AzMap"
-        ],
-        "parameters": [
+          },
           {
-            "name": "deviceType",
-            "in": "path",
-            "required": true,
+            "name": "PageSize",
+            "in": "query",
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -594,26 +456,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
+                  "$ref": "#/components/schemas/AzMapTransactionPagedResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
+                  "$ref": "#/components/schemas/AzMapTransactionPagedResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
+                  "$ref": "#/components/schemas/AzMapTransactionPagedResult"
                 }
               }
             }
@@ -621,55 +474,7 @@
         }
       }
     },
-    "/api/AzMap/city/{cityClean}": {
-      "get": {
-        "tags": [
-          "AzMap"
-        ],
-        "parameters": [
-          {
-            "name": "cityClean",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AzMapTransaction"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AzMap/bank/{bankName}/amount-by-region": {
+    "/api/AzMap/heatmap": {
       "get": {
         "tags": [
           "AzMap"
@@ -677,8 +482,14 @@
         "parameters": [
           {
             "name": "bankName",
-            "in": "path",
-            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceCity",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -698,28 +509,25 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "number",
-                    "format": "double"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
                   }
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "number",
-                    "format": "double"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
                   }
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "number",
-                    "format": "double"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AzMapTransaction"
                   }
                 }
               }
@@ -728,28 +536,10 @@
         }
       }
     },
-    "/api/AzMap/bank/{bankName}/device-count": {
+    "/api/AzMap/cities": {
       "get": {
         "tags": [
           "AzMap"
-        ],
-        "parameters": [
-          {
-            "name": "bankName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "month",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
         ],
         "responses": {
           "200": {
@@ -757,28 +547,101 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "integer",
-                    "format": "int64"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "integer",
-                    "format": "int64"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "integer",
-                    "format": "int64"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/regions": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AzMap/banks": {
+      "get": {
+        "tags": [
+          "AzMap"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               }
@@ -3439,19 +3302,11 @@
       "AzMapTransaction": {
         "type": "object",
         "properties": {
-          "reportDate": {
-            "type": "string",
-            "format": "date-time"
-          },
           "reportMonth": {
             "type": "string",
             "format": "date-time"
           },
           "bankName": {
-            "type": "string",
-            "nullable": true
-          },
-          "regionNameClean": {
             "type": "string",
             "nullable": true
           },
@@ -3467,26 +3322,6 @@
             "type": "string",
             "nullable": true
           },
-          "acquiringDeviceType": {
-            "type": "string",
-            "nullable": true
-          },
-          "mccGroup": {
-            "type": "string",
-            "nullable": true
-          },
-          "retailCategory": {
-            "type": "string",
-            "nullable": true
-          },
-          "transactionClass": {
-            "type": "string",
-            "nullable": true
-          },
-          "ctlsStatus": {
-            "type": "string",
-            "nullable": true
-          },
           "totalAmount": {
             "type": "number",
             "format": "double"
@@ -3494,11 +3329,44 @@
           "totalCount": {
             "type": "integer",
             "format": "int64"
-          },
-          "deviceCount": {
-            "type": "integer",
-            "format": "int64",
+          }
+        },
+        "additionalProperties": false
+      },
+      "AzMapTransactionPagedResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AzMapTransaction"
+            },
             "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNext": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
         "additionalProperties": false
