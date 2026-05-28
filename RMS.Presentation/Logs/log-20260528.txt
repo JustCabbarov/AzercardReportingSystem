@@ -1290,3 +1290,11 @@
 [2026-05-28 02:30:24] [INF] [Bank-specific modellər] tamamlandı.
 [2026-05-28 02:30:24] [INF] === Gecəlik train tamamlandı: "2026-05-28T02:30:24.6981111-07:00" ===
 [2026-05-28 02:30:24] [INF] Növbəti train: 23s 59d sonra (29.05.2026 02:30).
+[2026-05-28 05:54:03] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-28 05:54:03] [INF] Növbəti train: 20s 35d sonra (29.05.2026 02:30).
+[2026-05-28 06:29:54] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-28 06:29:54] [INF] Növbəti train: 20s 0d sonra (29.05.2026 02:30).
+[2026-05-28 06:32:38] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-28 06:32:38] [INF] Növbəti train: 19s 57d sonra (29.05.2026 02:30).
+[2026-05-28 06:32:46] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-28 06:32:46] [ERR] An unhandled exception occurred: The ConnectionString property has not been initialized.

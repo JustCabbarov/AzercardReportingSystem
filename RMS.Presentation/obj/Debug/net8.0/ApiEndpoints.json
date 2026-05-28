@@ -836,6 +836,211 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetAllFilters",
+    "RelativePath": "api/devices/filters",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetMomComparison",
+    "RelativePath": "api/devices/mom-comparison",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetShare",
+    "RelativePath": "api/devices/share",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetSummary",
+    "RelativePath": "api/devices/summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetTrend",
+    "RelativePath": "api/devices/trend",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dateFrom",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "dateTo",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetXyAnalysis",
+    "RelativePath": "api/devices/xy-analysis",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "xDimension",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "yDimension",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "RMS.Presentation.Controllers.ForecastingController",
     "Method": "Get",
     "RelativePath": "api/Forecasting",

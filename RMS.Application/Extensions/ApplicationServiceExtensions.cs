@@ -5,7 +5,9 @@ using RMS.Application.Services.System;
 using RMS.Contract.Services;
 using RMS.Contract.Services.Oracle;
 using RMS.Contract.Services.System;
+using RMS.Domain.Repositories.Oracle;
 using RMS.Persitence.Repositories;
+using RMS.Persitence.Repositories.Oracle;
 using RMS.Presentation.BackgroundServices;
 using System;
 using System.Collections.Generic;
@@ -36,6 +38,7 @@ namespace RMS.Application.Extensions
             services.AddScoped<INewCardService, NewCardService>();
             services.AddScoped<IForecastingService, SsaForecastingService>();
          services.AddHostedService<ForecastTrainingBackgroundService>();
+            services.AddScoped<IDevicesService, DevicesService>();
 
 
             return services;

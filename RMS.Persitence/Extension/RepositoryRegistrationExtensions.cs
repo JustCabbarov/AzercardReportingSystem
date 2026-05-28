@@ -34,6 +34,8 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddSingleton<IModelStore, DiskModelStore>();
 
+            services.AddScoped<IDevicesRepository, DevicesRepository>();
+
             return services;
         }
 
