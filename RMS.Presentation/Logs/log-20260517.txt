@@ -1,0 +1,6 @@
+[2026-05-17 12:46:09] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-17 12:46:09] [INF] Növbəti train: 13s 43d sonra (18.05.2026 02:30).
+[2026-05-17 12:46:58] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-17 12:46:58] [ERR] An unhandled exception occurred: ORA-50201: Oracle Communication: Failed to connect to server or failed to parse connect string
+[2026-05-17 12:51:49] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-17 12:51:49] [INF] Növbəti train: 13s 38d sonra (18.05.2026 02:30).

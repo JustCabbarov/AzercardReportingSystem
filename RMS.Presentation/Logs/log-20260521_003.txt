@@ -1,0 +1,80 @@
+[2026-05-21 14:14:50] [ERR] Failed executing DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetUsers" (
+    "Id" uuid NOT NULL,
+    "IsActive" boolean NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "UserName" character varying(256),
+    "NormalizedUserName" character varying(256),
+    "Email" character varying(256),
+    "NormalizedEmail" character varying(256),
+    "EmailConfirmed" boolean NOT NULL,
+    "PasswordHash" text,
+    "SecurityStamp" text,
+    "ConcurrencyStamp" text,
+    "PhoneNumber" text,
+    "PhoneNumberConfirmed" boolean NOT NULL,
+    "TwoFactorEnabled" boolean NOT NULL,
+    "LockoutEnd" timestamp with time zone,
+    "LockoutEnabled" boolean NOT NULL,
+    "AccessFailedCount" integer NOT NULL,
+    CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id")
+);
+[2026-05-21 14:16:15] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:16:15] [INF] Növbəti train: 12s 13d sonra (22.05.2026 02:30).
+[2026-05-21 14:17:04] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:17:04] [INF] Növbəti train: 12s 12d sonra (22.05.2026 02:30).
+[2026-05-21 14:17:39] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:17:39] [INF] Növbəti train: 12s 12d sonra (22.05.2026 02:30).
+[2026-05-21 14:18:32] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:18:33] [INF] Növbəti train: 12s 11d sonra (22.05.2026 02:30).
+[2026-05-21 14:19:18] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:19:18] [INF] Növbəti train: 12s 10d sonra (22.05.2026 02:30).
+[2026-05-21 14:19:55] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 14:19:57] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:19:58] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:19:58] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:19:58] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:20:41] [INF] İstifadəçi silinir: UserId: "a0804bfa-c58e-4316-b52c-d8fbc5ceae1a"
+[2026-05-21 14:20:41] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 14:20:41] [ERR] An unhandled exception occurred: Entity not found
+[2026-05-21 14:27:02] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 14:27:03] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:27:03] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:27:03] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:27:03] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:27:36] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 14:27:36] [ERR] An unhandled exception occurred: Object reference not set to an instance of an object.
+[2026-05-21 14:28:20] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 14:28:20] [ERR] An unhandled exception occurred: Object reference not set to an instance of an object.
+[2026-05-21 14:30:26] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:30:26] [INF] Növbəti train: 11s 59d sonra (22.05.2026 02:30).
+[2026-05-21 14:30:51] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 14:30:54] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:30:54] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:30:54] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:30:54] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:35:40] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 15:35:41] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:35:41] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:35:41] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:35:41] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:36:19] [INF] İstifadəçi silinir: UserId: "01c1e7e8-4d4a-4915-85bb-a9f126a7b189"
+[2026-05-21 15:36:19] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 15:36:19] [ERR] An unhandled exception occurred: Entity not found
+[2026-05-21 15:38:14] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 15:38:15] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:38:15] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:38:15] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:38:15] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 15:39:14] [INF] İstifadəçi silinir: UserId: "b2ab17a7-f949-465f-be63-679b7ffcfefc"
+[2026-05-21 15:39:14] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 15:39:14] [ERR] An unhandled exception occurred: Entity not found
+[2026-05-21 15:40:50] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 15:40:50] [INF] Növbəti train: 10s 49d sonra (22.05.2026 02:30).
+[2026-05-21 15:42:09] [INF] İstifadəçi silinir: UserId: "4a93fa4c-2c67-43df-8739-77d0a38a2f94"
+[2026-05-21 15:42:10] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 15:42:10] [ERR] An unhandled exception occurred: Entity not found
+[2026-05-21 15:44:27] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 15:44:27] [INF] Növbəti train: 10s 45d sonra (22.05.2026 02:30).
+[2026-05-21 15:45:38] [INF] İstifadəçi silinir: UserId: "2bd2357b-49b7-4d8a-bf2b-563b3a9ae4ba"
+[2026-05-21 15:45:39] [INF] İstifadəçi uğurla silindi: UserId: "2bd2357b-49b7-4d8a-bf2b-563b3a9ae4ba"

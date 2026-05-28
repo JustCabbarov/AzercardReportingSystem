@@ -1,0 +1,109 @@
+[2026-04-27 03:28:51] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:28:51] [INF] Növbəti train: 23s 1d sonra (28.04.2026 02:30).
+[2026-04-27 03:29:07] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 03:29:07] [ERR] An unhandled exception occurred: ORA-00942: table or view does not exist
+https://docs.oracle.com/error-help/db/ora-00942/
+[2026-04-27 03:33:23] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:33:23] [INF] Növbəti train: 22s 56d sonra (28.04.2026 02:30).
+[2026-04-27 03:44:05] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:44:05] [INF] Növbəti train: 22s 45d sonra (28.04.2026 02:30).
+[2026-04-27 03:48:15] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:48:15] [INF] Növbəti train: 22s 41d sonra (28.04.2026 02:30).
+[2026-04-27 03:49:41] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:49:41] [INF] Növbəti train: 22s 40d sonra (28.04.2026 02:30).
+[2026-04-27 03:52:23] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:52:23] [INF] Növbəti train: 22s 37d sonra (28.04.2026 02:30).
+[2026-04-27 03:54:52] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 03:54:52] [INF] Növbəti train: 22s 35d sonra (28.04.2026 02:30).
+[2026-04-27 04:01:07] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:01:07] [INF] Növbəti train: 22s 28d sonra (28.04.2026 02:30).
+[2026-04-27 04:03:32] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:03:32] [INF] Növbəti train: 22s 26d sonra (28.04.2026 02:30).
+[2026-04-27 04:06:08] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:06:08] [INF] Növbəti train: 22s 23d sonra (28.04.2026 02:30).
+[2026-04-27 04:06:18] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 04:06:18] [ERR] An unhandled exception occurred: ORA-00933: SQL command not properly ended
+https://docs.oracle.com/error-help/db/ora-00933/
+[2026-04-27 04:07:28] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:07:28] [INF] Növbəti train: 22s 22d sonra (28.04.2026 02:30).
+[2026-04-27 04:08:16] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:08:16] [INF] Növbəti train: 22s 21d sonra (28.04.2026 02:30).
+[2026-04-27 04:12:13] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:12:13] [INF] Növbəti train: 22s 17d sonra (28.04.2026 02:30).
+[2026-04-27 04:12:19] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:12:19] [INF] Növbəti train: 22s 17d sonra (28.04.2026 02:30).
+[2026-04-27 04:16:50] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:16:50] [INF] Növbəti train: 22s 13d sonra (28.04.2026 02:30).
+[2026-04-27 04:18:42] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:18:42] [INF] Növbəti train: 22s 11d sonra (28.04.2026 02:30).
+[2026-04-27 04:20:01] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:20:01] [INF] Növbəti train: 22s 9d sonra (28.04.2026 02:30).
+[2026-04-27 04:22:58] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:22:58] [INF] Növbəti train: 22s 7d sonra (28.04.2026 02:30).
+[2026-04-27 04:26:04] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:26:04] [INF] Növbəti train: 22s 3d sonra (28.04.2026 02:30).
+[2026-04-27 04:27:49] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:27:49] [INF] Növbəti train: 22s 2d sonra (28.04.2026 02:30).
+[2026-04-27 04:36:14] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:36:14] [INF] Növbəti train: 21s 53d sonra (28.04.2026 02:30).
+[2026-04-27 04:38:28] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:38:28] [INF] Növbəti train: 21s 51d sonra (28.04.2026 02:30).
+[2026-04-27 04:47:38] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:47:39] [INF] Növbəti train: 21s 42d sonra (28.04.2026 02:30).
+[2026-04-27 04:49:45] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:49:45] [INF] Növbəti train: 21s 40d sonra (28.04.2026 02:30).
+[2026-04-27 04:53:20] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 04:53:20] [ERR] An unhandled exception occurred: ORA-00942: table or view does not exist
+https://docs.oracle.com/error-help/db/ora-00942/
+[2026-04-27 04:55:43] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 04:55:43] [INF] Növbəti train: 21s 34d sonra (28.04.2026 02:30).
+[2026-04-27 05:01:42] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 05:01:42] [INF] Növbəti train: 21s 28d sonra (28.04.2026 02:30).
+[2026-04-27 05:04:03] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 05:04:03] [INF] Növbəti train: 21s 25d sonra (28.04.2026 02:30).
+[2026-04-27 05:17:50] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 05:17:50] [INF] Növbəti train: 21s 12d sonra (28.04.2026 02:30).
+[2026-04-27 05:20:17] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 05:20:17] [INF] Növbəti train: 21s 9d sonra (28.04.2026 02:30).
+[2026-04-27 15:10:16] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:10:16] [INF] Növbəti train: 11s 19d sonra (28.04.2026 02:30).
+[2026-04-27 15:10:49] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 15:10:49] [ERR] An unhandled exception occurred: ORA-50201: Oracle Communication: Failed to connect to server or failed to parse connect string
+[2026-04-27 15:20:21] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:20:21] [INF] Növbəti train: 11s 9d sonra (28.04.2026 02:30).
+[2026-04-27 15:24:40] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:24:40] [INF] Növbəti train: 11s 5d sonra (28.04.2026 02:30).
+[2026-04-27 15:28:13] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 15:28:13] [ERR] An unhandled exception occurred: ORA-00904: "REPORT_MONTH": invalid identifier
+https://docs.oracle.com/error-help/db/ora-00904/
+[2026-04-27 15:28:27] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 15:28:27] [ERR] An unhandled exception occurred: ORA-00904: "REPORT_MONTH": invalid identifier
+https://docs.oracle.com/error-help/db/ora-00904/
+[2026-04-27 15:30:16] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:30:16] [INF] Növbəti train: 10s 59d sonra (28.04.2026 02:30).
+[2026-04-27 15:44:52] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:44:52] [INF] Növbəti train: 10s 45d sonra (28.04.2026 02:30).
+[2026-04-27 15:46:47] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 15:46:47] [INF] Növbəti train: 10s 43d sonra (28.04.2026 02:30).
+[2026-04-27 23:15:05] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:15:05] [INF] Növbəti train: 3s 14d sonra (28.04.2026 02:30).
+[2026-04-27 23:21:31] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:21:31] [INF] Növbəti train: 3s 8d sonra (28.04.2026 02:30).
+[2026-04-27 23:22:18] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 23:22:18] [ERR] An unhandled exception occurred: ORA-50201: Oracle Communication: Failed to connect to server or failed to parse connect string
+[2026-04-27 23:22:18] [ERR] An exception was thrown attempting to execute the error handler.
+[2026-04-27 23:22:18] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 23:31:05] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:31:05] [INF] Növbəti train: 2s 58d sonra (28.04.2026 02:30).
+[2026-04-27 23:32:13] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:32:13] [INF] Növbəti train: 2s 57d sonra (28.04.2026 02:30).
+[2026-04-27 23:35:47] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 23:35:47] [ERR] An unhandled exception occurred: ORA-00904: "CARD_TYPE": invalid identifier
+https://docs.oracle.com/error-help/db/ora-00904/
+[2026-04-27 23:36:01] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-27 23:36:01] [ERR] An unhandled exception occurred: ORA-00904: "CARD_TYPE": invalid identifier
+https://docs.oracle.com/error-help/db/ora-00904/
+[2026-04-27 23:38:56] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:38:56] [INF] Növbəti train: 2s 51d sonra (28.04.2026 02:30).
+[2026-04-27 23:45:20] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-27 23:45:20] [INF] Növbəti train: 2s 44d sonra (28.04.2026 02:30).

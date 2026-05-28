@@ -1,0 +1,38 @@
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.deps.json
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.AssemblyReference.cache
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfoInputs.cache
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfo.cs
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\refint\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Huawei\Desktop\AzerCard Report\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\ref\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.deps.json
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\bin\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.AssemblyReference.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfoInputs.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfo.cs
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.sourcelink.json
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\refint\RMS.Domain.dll
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Huawei\Desktop\AzeriCard Reporting System\RMS.Domain\obj\Debug\net8.0\ref\RMS.Domain.dll
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\bin\Debug\net8.0\RMS.Domain.deps.json
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\bin\Debug\net8.0\RMS.Domain.dll
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\bin\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.sourcelink.json
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.dll
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\refint\RMS.Domain.dll
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\RMS.Domain.pdb
+C:\Users\Administrator\Desktop\az\AzercardReportingSystem\RMS.Domain\obj\Debug\net8.0\ref\RMS.Domain.dll

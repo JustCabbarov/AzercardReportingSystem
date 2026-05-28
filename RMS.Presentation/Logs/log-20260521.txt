@@ -1,0 +1,250 @@
+[2026-05-21 13:06:48] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:06:48] [INF] Növbəti train: 13s 23d sonra (22.05.2026 02:30).
+[2026-05-21 13:07:15] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:07:18] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:07:18] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:07:18] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:07:19] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:12:55] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:12:55] [INF] Növbəti train: 13s 17d sonra (22.05.2026 02:30).
+[2026-05-21 13:13:34] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:13:37] [WRN] Şifrə yanlışdır: Test1@gmail.com
+[2026-05-21 13:13:37] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:13:41] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:13:42] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:13:42] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:13:42] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:13:42] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:17:04] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:17:04] [INF] Növbəti train: 13s 12d sonra (22.05.2026 02:30).
+[2026-05-21 13:20:08] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:20:08] [INF] Növbəti train: 13s 9d sonra (22.05.2026 02:30).
+[2026-05-21 13:20:55] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:20:57] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:20:57] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:20:57] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:20:58] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:22:57] [INF] İstifadəçi yenilənir: UserId: "d1a5b3e2-82f6-46cc-a9fa-b442d3d840c5"
+[2026-05-21 13:22:58] [ERR] Failed executing DbCommand (28ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Employees" SET "DepartmentId" = @p0, "FirstName" = @p1, "LastName" = @p2, "Phone" = @p3, "PositionId" = @p4
+WHERE "Id" = @p5;
+[2026-05-21 13:22:58] [ERR] An exception occurred in the database while saving changes for context type 'RMS.Persitence.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: HATA
+    SqlState: 23503
+    MessageText: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: public
+    TableName: Employees
+    ConstraintName: FK_Employees_Positions_PositionId
+    File: ri_triggers.c
+    Line: 2783
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[2026-05-21 13:22:58] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:22:58] [ERR] An unhandled exception occurred: An error occurred while saving the entity changes. See the inner exception for details.
+[2026-05-21 13:26:37] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:26:37] [INF] Növbəti train: 13s 3d sonra (22.05.2026 02:30).
+[2026-05-21 13:27:17] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:27:19] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:27:20] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:27:20] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:27:20] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:28:10] [INF] İstifadəçi yenilənir: UserId: "d1a5b3e2-82f6-46cc-a9fa-b442d3d840c5"
+[2026-05-21 13:28:10] [ERR] Failed executing DbCommand (17ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Employees" SET "DepartmentId" = @p0, "FirstName" = @p1, "LastName" = @p2, "Phone" = @p3, "PositionId" = @p4
+WHERE "Id" = @p5;
+[2026-05-21 13:28:10] [ERR] An exception occurred in the database while saving changes for context type 'RMS.Persitence.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: HATA
+    SqlState: 23503
+    MessageText: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: public
+    TableName: Employees
+    ConstraintName: FK_Employees_Positions_PositionId
+    File: ri_triggers.c
+    Line: 2783
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[2026-05-21 13:28:10] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:28:10] [ERR] An unhandled exception occurred: An error occurred while saving the entity changes. See the inner exception for details.
+[2026-05-21 13:28:42] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:28:42] [INF] Növbəti train: 13s 1d sonra (22.05.2026 02:30).
+[2026-05-21 13:29:15] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:29:18] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:29:18] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:29:18] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:29:19] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:30:16] [INF] İstifadəçi yenilənir: UserId: "315f422c-574f-4cc9-a782-b1167731d77b"
+[2026-05-21 13:32:50] [INF] İstifadəçi yenilənir: UserId: "d1a5b3e2-82f6-46cc-a9fa-b442d3d840c5"
+[2026-05-21 13:32:51] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:32:51] [ERR] Failed executing DbCommand (47ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Employees" SET "DepartmentId" = @p0, "FirstName" = @p1, "LastName" = @p2, "Phone" = @p3, "PositionId" = @p4
+WHERE "Id" = @p5;
+[2026-05-21 13:32:51] [ERR] An exception occurred in the database while saving changes for context type 'RMS.Persitence.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: HATA
+    SqlState: 23503
+    MessageText: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: public
+    TableName: Employees
+    ConstraintName: FK_Employees_Positions_PositionId
+    File: ri_triggers.c
+    Line: 2783
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[2026-05-21 13:32:52] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:32:52] [ERR] An unhandled exception occurred: An error occurred while saving the entity changes. See the inner exception for details.
+[2026-05-21 13:35:50] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:35:50] [INF] Növbəti train: 12s 54d sonra (22.05.2026 02:30).
+[2026-05-21 13:36:14] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:36:17] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:36:17] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:36:17] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:36:18] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:37:27] [INF] İstifadəçi yenilənir: UserId: "8ff0adef-0d27-497c-82c1-87418a45d87e"
+[2026-05-21 13:37:50] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:38:15] [INF] İstifadəçi yenilənir: UserId: "8ff0adef-0d27-497c-82c1-87418a45d87e"
+[2026-05-21 13:38:27] [ERR] Failed executing DbCommand (132ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Employees" SET "DepartmentId" = @p0, "FirstName" = @p1, "LastName" = @p2, "Phone" = @p3, "PositionId" = @p4
+WHERE "Id" = @p5;
+[2026-05-21 13:38:27] [ERR] An exception occurred in the database while saving changes for context type 'RMS.Persitence.Data.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Npgsql.PostgresException (0x80004005): 23503: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+  Exception data:
+    Severity: HATA
+    SqlState: 23503
+    MessageText: "Employees" tablosu üzerindeki ekleme veya güncelleme işlemi "FK_Employees_Positions_PositionId" foreign key kısıtlamasını ihlal ediyor
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    SchemaName: public
+    TableName: Employees
+    ConstraintName: FK_Employees_Positions_PositionId
+    File: ri_triggers.c
+    Line: 2783
+    Routine: ri_ReportViolation
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[2026-05-21 13:38:29] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:38:29] [ERR] An unhandled exception occurred: An error occurred while saving the entity changes. See the inner exception for details.
+[2026-05-21 13:40:09] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:40:09] [INF] Növbəti train: 12s 49d sonra (22.05.2026 02:30).
+[2026-05-21 13:40:50] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:40:53] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:40:53] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:40:53] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:40:54] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:42:22] [INF] İstifadəçi yenilənir: UserId: "315f422c-574f-4cc9-a782-b1167731d77b"
+[2026-05-21 13:42:22] [INF] İstifadəçi uğurla yeniləndi: UserId: "315f422c-574f-4cc9-a782-b1167731d77b"
+[2026-05-21 13:56:54] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 13:56:54] [INF] Növbəti train: 12s 33d sonra (22.05.2026 02:30).
+[2026-05-21 13:57:29] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 13:57:31] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:57:32] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:57:32] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:57:32] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 13:58:49] [INF] İstifadəçi silinir: UserId: "09096f92-459c-4317-9743-8d3712c3d0fb"
+[2026-05-21 13:58:49] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 13:58:49] [ERR] An unhandled exception occurred: The association between entity types 'AppUser' and 'Employee' has been severed, but the relationship is either marked as required or is implicitly required because the foreign key is not nullable. If the dependent/child entity should be deleted when a required relationship is severed, configure the relationship to use cascade deletes. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the key values.
+[2026-05-21 14:06:37] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:06:38] [INF] Növbəti train: 12s 23d sonra (22.05.2026 02:30).
+[2026-05-21 14:07:04] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-21 14:07:06] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:07:06] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:07:06] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:07:07] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-21 14:07:48] [INF] İstifadəçi silinir: UserId: "09096f92-459c-4317-9743-8d3712c3d0fb"
+[2026-05-21 14:07:48] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-21 14:07:48] [ERR] An unhandled exception occurred: The association between entity types 'AppUser' and 'Employee' has been severed, but the relationship is either marked as required or is implicitly required because the foreign key is not nullable. If the dependent/child entity should be deleted when a required relationship is severed, configure the relationship to use cascade deletes. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the key values.
+[2026-05-21 14:09:24] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:09:24] [INF] Növbəti train: 12s 20d sonra (22.05.2026 02:30).
+[2026-05-21 14:09:40] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:09:40] [INF] Növbəti train: 12s 20d sonra (22.05.2026 02:30).
+[2026-05-21 14:10:13] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:10:13] [INF] Növbəti train: 12s 19d sonra (22.05.2026 02:30).

@@ -1,0 +1,15 @@
+[2026-05-04 07:38:20] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-04 07:38:20] [INF] Növbəti train: 18s 51d sonra (05.05.2026 02:30).
+[2026-05-04 07:39:06] [INF] Login cəhdi: Test1@gmail.com
+[2026-05-04 07:39:09] [INF] Access token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-04 07:39:09] [INF] Refresh token yaradılır. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-04 07:39:09] [INF] Yeni refresh token əlavə edilir. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-04 07:39:10] [INF] Refresh token uğurla əlavə edildi. UserId: "2253c3d4-be10-4af4-aeac-3248d3071ca7"
+[2026-05-04 07:39:57] [INF] GetUserByJWTToken başladı. Token: eyJhbGciOiJIUzI1NiIs
+[2026-05-04 07:39:57] [INF] Token oxundu. Claims: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier=2253c3d4-be10-4af4-aeac-3248d3071ca7, jti=4d204313-e471-406c-83f8-e952a33c927d, exp=1777906449, aud=RMS.Client
+[2026-05-04 07:39:57] [INF] UserId: 2253c3d4-be10-4af4-aeac-3248d3071ca7
+[2026-05-04 07:39:57] [INF] User: Test1@gmail.com
+[2026-05-04 07:39:57] [INF] Roles: User
+[2026-05-04 07:39:57] [INF] GetUserByJWTToken uğurla tamamlandı
+[2026-05-04 07:45:05] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-04 07:45:05] [INF] Növbəti train: 18s 44d sonra (05.05.2026 02:30).

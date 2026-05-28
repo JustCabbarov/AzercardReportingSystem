@@ -1,0 +1,14 @@
+[2026-05-21 14:11:31] [ERR] Failed executing DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetRoles" (
+    "Id" uuid NOT NULL,
+    "Description" text,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "Name" character varying(256),
+    "NormalizedName" character varying(256),
+    "ConcurrencyStamp" text,
+    CONSTRAINT "PK_AspNetRoles" PRIMARY KEY ("Id")
+);
+[2026-05-21 14:13:38] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:13:39] [INF] Növbəti train: 12s 16d sonra (22.05.2026 02:30).
+[2026-05-21 14:14:47] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-21 14:14:47] [INF] Növbəti train: 12s 15d sonra (22.05.2026 02:30).

@@ -1,0 +1,20 @@
+[2026-05-19 10:32:22] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 10:32:22] [INF] Növbəti train: 15s 57d sonra (20.05.2026 02:30).
+[2026-05-19 10:33:17] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 10:33:17] [INF] Növbəti train: 15s 56d sonra (20.05.2026 02:30).
+[2026-05-19 11:32:28] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 11:32:28] [INF] Növbəti train: 14s 57d sonra (20.05.2026 02:30).
+[2026-05-19 11:32:55] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-19 11:32:55] [ERR] An unhandled exception occurred: 42P01: "w" tablo öğesinde FROM öğesi eksik
+
+POSITION: 1068
+[2026-05-19 11:34:54] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 11:34:54] [INF] Növbəti train: 14s 55d sonra (20.05.2026 02:30).
+[2026-05-19 11:35:19] [ERR] An unhandled exception has occurred while executing the request.
+[2026-05-19 11:35:19] [ERR] An unhandled exception occurred: 42P01: "w" tablo öğesinde FROM öğesi eksik
+
+POSITION: 1069
+[2026-05-19 11:39:18] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 11:39:19] [INF] Növbəti train: 14s 50d sonra (20.05.2026 02:30).
+[2026-05-19 11:48:35] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-19 11:48:35] [INF] Növbəti train: 14s 41d sonra (20.05.2026 02:30).

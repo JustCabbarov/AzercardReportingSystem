@@ -1,0 +1,35 @@
+[2026-04-28 01:06:17] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:06:17] [INF] Növbəti train: 1s 23d sonra (28.04.2026 02:30).
+[2026-04-28 01:10:30] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:10:30] [INF] Növbəti train: 1s 19d sonra (28.04.2026 02:30).
+[2026-04-28 01:19:30] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:19:30] [INF] Növbəti train: 1s 10d sonra (28.04.2026 02:30).
+[2026-04-28 01:20:29] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:20:29] [INF] Növbəti train: 1s 9d sonra (28.04.2026 02:30).
+[2026-04-28 01:21:03] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:21:04] [INF] Növbəti train: 1s 8d sonra (28.04.2026 02:30).
+[2026-04-28 01:37:40] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:37:40] [INF] Növbəti train: 0s 52d sonra (28.04.2026 02:30).
+[2026-04-28 01:39:02] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-28 01:39:02] [ERR] An unhandled exception occurred: Sequence contains no elements
+[2026-04-28 01:44:37] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:44:37] [INF] Növbəti train: 0s 45d sonra (28.04.2026 02:30).
+[2026-04-28 01:44:52] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-28 01:44:52] [ERR] An unhandled exception occurred: Sequence contains no elements
+[2026-04-28 01:45:24] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:45:24] [INF] Növbəti train: 0s 44d sonra (28.04.2026 02:30).
+[2026-04-28 01:46:04] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-28 01:46:04] [ERR] An unhandled exception occurred: Sequence contains no elements
+[2026-04-28 01:48:02] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:48:02] [INF] Növbəti train: 0s 41d sonra (28.04.2026 02:30).
+[2026-04-28 01:56:00] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:56:00] [INF] Növbəti train: 0s 33d sonra (28.04.2026 02:30).
+[2026-04-28 01:57:26] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:57:26] [INF] Növbəti train: 0s 32d sonra (28.04.2026 02:30).
+[2026-04-28 01:57:47] [ERR] An unhandled exception has occurred while executing the request.
+[2026-04-28 01:57:47] [ERR] An unhandled exception occurred: ORA-00942: table or view does not exist
+https://docs.oracle.com/error-help/db/ora-00942/
+[2026-04-28 01:58:28] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 01:58:28] [INF] Növbəti train: 0s 31d sonra (28.04.2026 02:30).
+[2026-04-28 02:03:04] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-28 02:03:04] [INF] Növbəti train: 0s 26d sonra (28.04.2026 02:30).

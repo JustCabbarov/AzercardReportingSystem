@@ -1,0 +1,165 @@
+[2026-04-26 07:49:33] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:49:34] [INF] Növbəti train: 18s 40d sonra (27.04.2026 02:30).
+[2026-04-26 07:49:34] [ERR] Hosting failed to start
+[2026-04-26 07:49:34] [ERR] BackgroundService failed
+[2026-04-26 07:49:34] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:50:43] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:50:43] [INF] Növbəti train: 18s 39d sonra (27.04.2026 02:30).
+[2026-04-26 07:50:43] [ERR] Hosting failed to start
+[2026-04-26 07:50:43] [ERR] BackgroundService failed
+[2026-04-26 07:50:43] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:52:02] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:52:02] [INF] Növbəti train: 18s 37d sonra (27.04.2026 02:30).
+[2026-04-26 07:52:03] [ERR] Hosting failed to start
+[2026-04-26 07:52:03] [ERR] BackgroundService failed
+[2026-04-26 07:53:18] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:53:18] [INF] Növbəti train: 18s 36d sonra (27.04.2026 02:30).
+[2026-04-26 07:53:18] [ERR] Hosting failed to start
+[2026-04-26 07:53:18] [ERR] BackgroundService failed
+[2026-04-26 07:53:18] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:53:33] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:53:34] [INF] Növbəti train: 18s 36d sonra (27.04.2026 02:30).
+[2026-04-26 07:53:34] [ERR] Hosting failed to start
+[2026-04-26 07:53:34] [ERR] BackgroundService failed
+[2026-04-26 07:53:34] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:53:36] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:53:36] [INF] Növbəti train: 18s 36d sonra (27.04.2026 02:30).
+[2026-04-26 07:53:36] [ERR] Hosting failed to start
+[2026-04-26 07:53:36] [ERR] BackgroundService failed
+[2026-04-26 07:53:36] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:54:42] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:54:42] [INF] Növbəti train: 18s 35d sonra (27.04.2026 02:30).
+[2026-04-26 07:54:42] [ERR] Hosting failed to start
+[2026-04-26 07:54:42] [ERR] BackgroundService failed
+[2026-04-26 07:54:42] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 07:56:24] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 07:56:24] [INF] Növbəti train: 18s 33d sonra (27.04.2026 02:30).
+[2026-04-26 07:56:24] [WRN] Overriding address(es) 'http://localhost:5254, https://localhost:7254'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+[2026-04-26 07:56:24] [ERR] Hosting failed to start
+[2026-04-26 07:56:24] [ERR] BackgroundService failed
+[2026-04-26 07:56:24] [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+[2026-04-26 08:03:47] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 08:03:47] [INF] Növbəti train: 18s 26d sonra (27.04.2026 02:30).
+[2026-04-26 08:23:35] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-04-26 08:23:35] [INF] Növbəti train: 18s 6d sonra (27.04.2026 02:30).
+[2026-04-26 08:24:08] [INF] Global model train başladı.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=229c7a9362d6c8c1e377fb68f98ba8c297d. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=9296d1b7dba016c096fdfdc0456bbf9e9d5. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=0003ce2c98c9c2bb58057e93a3580d1f2ea, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=40690ece500a85ab38eab58bca8f130932a. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=9296d1b7dba016c096fdfdc0456bbf9e9d5. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=b48928539080e2cb0b13ba8fd3d1af58a6c. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=c98dd910d128b5b9d4a822989ec60018e49. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=042c0aec2041a6d3528ff9f63d574fbedb9, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=128c67a98df1121c86eef8cfb11b4f8d9cb, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=2a935c9d83b0a17d881faa16b44560ebc6e, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=2a935c9d83b0a17d881faa16b44560ebc6e, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=2a935c9d83b0a17d881faa16b44560ebc6e, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=c98dd910d128b5b9d4a822989ec60018e49. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=3fdcc3fdb50987020d6b9d7578e95f84508, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=49f217aaa4786fb185a2c9d36b7303e0fe0, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=49f217aaa4786fb185a2c9d36b7303e0fe0, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=49f217aaa4786fb185a2c9d36b7303e0fe0, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5477699c9f50b047ae6648bd8b0a4af624c, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=56079f7cb56a8a3e946c48e0245aea73072, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=56079f7cb56a8a3e946c48e0245aea73072, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=56079f7cb56a8a3e946c48e0245aea73072, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5e56f2c7d12fef43154b0934bffc349f015, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5e56f2c7d12fef43154b0934bffc349f015, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=5e56f2c7d12fef43154b0934bffc349f015, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=d881a2ffb4e3503a5add344d8b2e5ff141b. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6a6af61e49faa49f9867308ee2090d1efa7, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6d6678860ef284733dd3ac090b1a6b3e8c2, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6d6678860ef284733dd3ac090b1a6b3e8c2, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6d6678860ef284733dd3ac090b1a6b3e8c2, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6d6678860ef284733dd3ac090b1a6b3e8c2, Mcc=d881a2ffb4e3503a5add344d8b2e5ff141b. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=6d6678860ef284733dd3ac090b1a6b3e8c2, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=a667552c392e8673e71a8504ee4ee40c495, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=a667552c392e8673e71a8504ee4ee40c495, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=a667552c392e8673e71a8504ee4ee40c495, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=aed3abfc5659935424c8e7c7ab7acb8f5cf, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=aed3abfc5659935424c8e7c7ab7acb8f5cf, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=aed3abfc5659935424c8e7c7ab7acb8f5cf, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=aed3abfc5659935424c8e7c7ab7acb8f5cf, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=aed3abfc5659935424c8e7c7ab7acb8f5cf, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=af94e7a8ee264379215fe8893f31aafddb0, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=af94e7a8ee264379215fe8893f31aafddb0, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=b248108c6fae01249c6062a8cd63191e339, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=b248108c6fae01249c6062a8cd63191e339, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=b248108c6fae01249c6062a8cd63191e339, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=b248108c6fae01249c6062a8cd63191e339, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=b248108c6fae01249c6062a8cd63191e339, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=baf83fc13034209ede9eced4f331665d341, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=baf83fc13034209ede9eced4f331665d341, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=baf83fc13034209ede9eced4f331665d341, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=baf83fc13034209ede9eced4f331665d341, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=baf83fc13034209ede9eced4f331665d341, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=229c7a9362d6c8c1e377fb68f98ba8c297d. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=61f3e6fa1e3276c64d236bd3d3a9333ad83. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=9296d1b7dba016c096fdfdc0456bbf9e9d5. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=b48928539080e2cb0b13ba8fd3d1af58a6c. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=c98dd910d128b5b9d4a822989ec60018e49. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=d881a2ffb4e3503a5add344d8b2e5ff141b. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c071b85f99ac04377ce7c272b9fdc18b1ab, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=229c7a9362d6c8c1e377fb68f98ba8c297d. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=40690ece500a85ab38eab58bca8f130932a. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=6f88f2b0019b6facec42780befff3afc092. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=c98dd910d128b5b9d4a822989ec60018e49. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=c2a49816700f9fe08701f56b0e8d4ed12aa, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=40690ece500a85ab38eab58bca8f130932a. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d171593e807e6f70f142eab05087771f7a2, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d24f335331b24959080eb5a958a96979c8e, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d24f335331b24959080eb5a958a96979c8e, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d24f335331b24959080eb5a958a96979c8e, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d24f335331b24959080eb5a958a96979c8e, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d24f335331b24959080eb5a958a96979c8e, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=d70159d4a077a2a1bd1e75d7e348fcab0f3, Mcc=cf4e7eba92f1b5f6995a4d5439b9795c0d0. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e43fedcee3e43662d5a0ceaae56185210dd, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e43fedcee3e43662d5a0ceaae56185210dd, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e43fedcee3e43662d5a0ceaae56185210dd, Mcc=6f88f2b0019b6facec42780befff3afc092. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e43fedcee3e43662d5a0ceaae56185210dd, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e43fedcee3e43662d5a0ceaae56185210dd, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e72a4bbcab97bec6d12979a71192fda9568, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=e72a4bbcab97bec6d12979a71192fda9568, Mcc=null. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=ebe65e685a631df06256b4a892afb678e98, Mcc=17b4145fb105b5abbec105af03e541022b4. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=ebe65e685a631df06256b4a892afb678e98, Mcc=49f8e5bd359abb046d105237ba501b3bf2e. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=ebe65e685a631df06256b4a892afb678e98, Mcc=776abe0b9afeccdbef71a0d68dc2bfdb771. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=ebe65e685a631df06256b4a892afb678e98, Mcc=9df9ac9f1b28ef18a1bbe02e7ea1303c8e1. Əvvəlcə train edin.
+[2026-04-26 08:24:30] [WRN] Heç bir model tapılmadı: Bank=ebe65e685a631df06256b4a892afb678e98, Mcc=null. Əvvəlcə train edin.

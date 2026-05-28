@@ -1,0 +1,2 @@
+[2026-05-18 11:16:36] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-05-18 11:16:36] [INF] Növbəti train: 15s 13d sonra (19.05.2026 02:30).
