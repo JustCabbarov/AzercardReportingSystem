@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="RMS.Application/RMS.Application.csproj" Id="c54c65d1-2d69-430f-9c07-94ecb44eb57d" />
-  <Project Path="RMS.Contract/RMS.Contract.csproj" Id="6dafa2bb-737c-45f1-a7c4-c76e3014cd63" />
-  <Project Path="RMS.Domain/RMS.Domain.csproj" Id="45f100eb-c868-4c85-96f6-42693e34cb99" />
-  <Project Path="RMS.Persitence/RMS.Persitence.csproj" Id="2df39c6f-625c-47b3-b801-ae65722fe7f7" />
-  <Project Path="RMS.Presentation/RMS.Presentation.csproj" Id="1b8a36c0-e69f-4839-b398-e47bcf2dd693" />
-</Solution>
