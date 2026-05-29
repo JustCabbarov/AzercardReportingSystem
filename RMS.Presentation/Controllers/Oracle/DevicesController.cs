@@ -101,5 +101,24 @@ namespace RMS.Presentation.Controllers.Oracle
                 bankName, regionName, mccName, retailCategory);
             return Ok(result);
         }
+
+        [HttpGet("latest-month")]
+        public async Task<IActionResult> GetLatestMonth()
+        {
+            var result = await _service.GetLatestReportMonthAsync();
+            return Ok(new { reportMonth = result });
+        }
+
+        [HttpGet("total")]
+        public async Task<IActionResult> GetTotal(
+            [FromQuery] DateTime reportMonth,
+            [FromQuery] string? bankName,
+            [FromQuery] string? regionName,
+            [FromQuery] string? mccName,
+            [FromQuery] string? retailCategory)
+        {
+            var result = await _service.GetTotalDevicesAsync(reportMonth, bankName, regionName, mccName, retailCategory);
+            return Ok(new { reportMonth, total = result });
+        }
     }
 }

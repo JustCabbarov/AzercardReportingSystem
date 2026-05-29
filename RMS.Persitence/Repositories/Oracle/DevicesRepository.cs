@@ -156,21 +156,55 @@ namespace RMS.Persitence.Repositories.Oracle
             var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory)
                 .AddMonth("report_month", "ReportMonth", reportMonth);
 
-            var sql = $"""
-                SELECT
-                    {x} AS x_value,
-                    {y} AS y_value,
-                    SUM(total_devices) AS device_count,
-                    ROUND(SUM(total_devices) * 100.0 /
-                        NULLIF(SUM(SUM(total_devices)) OVER (PARTITION BY {x}), 0), 2) AS share_pct
-                FROM mv_devices_base
-                {filter.WhereClause}
-                GROUP BY {x}, {y}
-                ORDER BY {x}, device_count DESC
-                """;
+                            var sql = $"""
+                    SELECT
+                        b.{x} AS x_value,
+                        b.{y} AS y_value,
+                        SUM(b.total_devices)                    AS device_count,
+                        ROUND(SUM(b.total_devices) * 100.0 /
+                            NULLIF(SUM(SUM(b.total_devices)) OVER (PARTITION BY b.{x}), 0), 2) AS share_pct,
+                        SUM(t.mom_diff)                         AS mom_diff,
+                        ROUND(AVG(t.mom_pct_change), 2)         AS mom_pct_change
+                    FROM mv_devices_base b
+                    LEFT JOIN mv_devices_trend t
+                        ON  b.report_month    = t.report_month
+                        AND b.bank_name       = t.bank_name
+                        AND b.region_name     = t.region_name
+                        AND b.mcc_name        = t.mcc_name
+                        AND b.retail_category = t.retail_category
+                    {filter.WhereClause}
+                    GROUP BY b.{x}, b.{y}
+                    ORDER BY b.{x}, device_count DESC
+                    """;
 
             using var db = Connect();
             return await db.QueryAsync<XyItem>(sql, filter.Parameters);
+
         }
+
+        public async Task<DateTime> GetLatestReportMonthAsync()
+        {
+            var sql = "SELECT MAX(report_month) FROM bi_market_devices_masked";
+            using var db = Connect();
+            return await db.ExecuteScalarAsync<DateTime>(sql);
+        }
+
+        public async Task<long> GetTotalDevicesAsync(
+            DateTime reportMonth,
+            string? bankName, string? regionName, string? mccName, string? retailCategory)
+        {
+            var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory)
+                .AddMonth("report_month", "ReportMonth", reportMonth);
+
+                    var sql = $"""
+                SELECT COALESCE(SUM(total_devices), 0)
+                FROM mv_devices_base
+                {filter.WhereClause}
+                """;
+
+            using var db = Connect();
+            return await db.ExecuteScalarAsync<long>(sql, filter.Parameters);
+        }
+
     }
 }

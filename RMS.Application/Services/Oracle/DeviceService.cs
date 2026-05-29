@@ -46,5 +46,13 @@ namespace RMS.Application.Services.Oracle
             string xDimension, string yDimension,
             string? bankName, string? regionName, string? mccName, string? retailCategory)
             => _repo.GetXyAnalysisAsync(reportMonth, xDimension, yDimension, bankName, regionName, mccName, retailCategory);
+
+        public Task<DateTime> GetLatestReportMonthAsync()
+           => _repo.GetLatestReportMonthAsync();
+
+        public Task<long> GetTotalDevicesAsync(
+            DateTime reportMonth,
+            string? bankName, string? regionName, string? mccName, string? retailCategory)
+            => _repo.GetTotalDevicesAsync(reportMonth, bankName, regionName, mccName, retailCategory);
     }
 }

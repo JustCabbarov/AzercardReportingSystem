@@ -26,5 +26,7 @@ namespace RMS.Contract.Services.Oracle
             DateTime reportMonth,
             string xDimension, string yDimension,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<DateTime> GetLatestReportMonthAsync();
+        Task<long> GetTotalDevicesAsync(DateTime reportMonth, string? bankName, string? regionName, string? mccName, string? retailCategory);
     }
 }
