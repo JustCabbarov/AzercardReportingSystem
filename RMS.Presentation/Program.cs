@@ -58,6 +58,8 @@ namespace RMS.Presentation
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+            
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
             // JWT
             builder.Services.AddAuthentication(options =>
