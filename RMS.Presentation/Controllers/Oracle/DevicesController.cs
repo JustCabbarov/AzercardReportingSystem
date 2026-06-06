@@ -88,18 +88,23 @@ namespace RMS.Presentation.Controllers.Oracle
         // GET api/devices/xy-analysis?reportMonth=2024-03-01&xDimension=bank_name&yDimension=region_name
         [HttpGet("xy-analysis")]
         public async Task<IActionResult> GetXyAnalysis(
-            [FromQuery] DateTime reportMonth,
-            [FromQuery] string xDimension,
-            [FromQuery] string yDimension,
-            [FromQuery] string? bankName,
-            [FromQuery] string? regionName,
-            [FromQuery] string? mccName,
-            [FromQuery] string? retailCategory)
+              [FromQuery] DateTime dateFrom,
+              [FromQuery] DateTime dateTo,
+              [FromQuery] string xDimension,
+              [FromQuery] string yDimension,
+              [FromQuery] string? bankName,
+              [FromQuery] string? regionName,
+              [FromQuery] string? mccName,
+              [FromQuery] string? retailCategory)
         {
+
+
             var result = await _service.GetXyAnalysisAsync(
-                reportMonth, xDimension, yDimension,
+                dateFrom, dateTo, xDimension, yDimension,
                 bankName, regionName, mccName, retailCategory);
             return Ok(result);
+
+
         }
 
         [HttpGet("latest-month")]
@@ -108,17 +113,15 @@ namespace RMS.Presentation.Controllers.Oracle
             var result = await _service.GetLatestReportMonthAsync();
             return Ok(new { reportMonth = result });
         }
-
         [HttpGet("total")]
         public async Task<IActionResult> GetTotal(
             [FromQuery] DateTime reportMonth,
             [FromQuery] string? bankName,
             [FromQuery] string? regionName,
-            [FromQuery] string? mccName,
-            [FromQuery] string? retailCategory)
+            [FromQuery] string? mccName)
         {
-            var result = await _service.GetTotalDevicesAsync(reportMonth, bankName, regionName, mccName, retailCategory);
-            return Ok(new { reportMonth, total = result });
+            var result = await _service.GetTotalDevicesAsync(reportMonth, bankName, regionName, mccName);
+            return Ok(result);
         }
     }
 }

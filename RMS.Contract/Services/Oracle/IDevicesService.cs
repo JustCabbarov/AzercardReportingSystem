@@ -23,10 +23,10 @@ namespace RMS.Contract.Services.Oracle
             DateTime dateFrom, DateTime dateTo,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
-            DateTime reportMonth,
-            string xDimension, string yDimension,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
+     DateTime dateFrom, DateTime dateTo,
+     string xDimension, string yDimension,
+     string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<DateTime> GetLatestReportMonthAsync();
-        Task<long> GetTotalDevicesAsync(DateTime reportMonth, string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<object> GetTotalDevicesAsync(DateTime reportMonth, string? bankName, string? regionName, string? mccName);
     }
 }

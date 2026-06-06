@@ -9,9 +9,9 @@ namespace RMS.Domain.Repositories.Oracle
         Task<IEnumerable<SummaryItem>> GetSummaryAsync(
             DateTime reportMonth,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
-        Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<IEnumerable<ShareItem>> GetRetailCategoryShareAsync(
+         DateTime reportMonth,
+         string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<IEnumerable<MomItem>> GetMomComparisonAsync(
             DateTime reportMonth,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
@@ -19,13 +19,13 @@ namespace RMS.Domain.Repositories.Oracle
             DateTime dateFrom, DateTime dateTo,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
-            DateTime reportMonth,
-            string xDimension, string yDimension,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
+       DateTime dateFrom, DateTime dateTo,
+       string xDimension, string yDimension,
+       string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<DateTime> GetLatestReportMonthAsync();
 
-        Task<long> GetTotalDevicesAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<object> GetTotalDevicesAsync(
+     DateTime reportMonth,
+     string? bankName, string? regionName, string? mccName);
     }
 }

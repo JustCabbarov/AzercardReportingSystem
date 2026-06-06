@@ -1,0 +1,38 @@
+[2026-06-03 11:57:19] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 11:57:20] [INF] Növbəti train: 14s 32d sonra (04.06.2026 02:30).
+[2026-06-03 12:39:52] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 12:39:53] [INF] Növbəti train: 13s 50d sonra (04.06.2026 02:30).
+[2026-06-03 12:40:18] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 12:40:18] [INF] Növbəti train: 13s 49d sonra (04.06.2026 02:30).
+[2026-06-03 12:40:26] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 12:40:26] [INF] Növbəti train: 13s 49d sonra (04.06.2026 02:30).
+[2026-06-03 12:41:11] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 12:41:11] [INF] Növbəti train: 13s 48d sonra (04.06.2026 02:30).
+[2026-06-03 12:41:47] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 12:41:47] [INF] Növbəti train: 13s 48d sonra (04.06.2026 02:30).
+[2026-06-03 12:48:09] [ERR] Failed executing DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetRoles" (
+    "Id" uuid NOT NULL,
+    "Description" text,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "Name" character varying(256),
+    "NormalizedName" character varying(256),
+    "ConcurrencyStamp" text,
+    CONSTRAINT "PK_AspNetRoles" PRIMARY KEY ("Id")
+);
+[2026-06-03 13:02:31] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 13:02:31] [INF] Növbəti train: 13s 27d sonra (04.06.2026 02:30).
+[2026-06-03 13:02:40] [ERR] An unhandled exception has occurred while executing the request.
+[2026-06-03 13:02:40] [ERR] An unhandled exception occurred: The ConnectionString property has not been initialized.
+[2026-06-03 13:03:47] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 13:03:47] [INF] Növbəti train: 13s 26d sonra (04.06.2026 02:30).
+[2026-06-03 14:17:39] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-03 14:17:39] [INF] Növbəti train: 12s 12d sonra (04.06.2026 02:30).
+[2026-06-03 14:18:16] [ERR] An unhandled exception has occurred while executing the request.
+[2026-06-03 14:18:16] [ERR] An unhandled exception occurred: 42883: upper(numeric) fonksiyonu mevcut değildir
+
+POSITION: 1363
+[2026-06-03 14:21:31] [ERR] An unhandled exception has occurred while executing the request.
+[2026-06-03 14:21:31] [ERR] An unhandled exception occurred: 42883: upper(numeric) fonksiyonu mevcut değildir
+
+POSITION: 1363

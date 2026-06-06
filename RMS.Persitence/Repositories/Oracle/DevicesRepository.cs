@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Npgsql;
 using RMS.Domain.Entities.Oracle.DeviceModel;
 using RMS.Domain.Repositories.Oracle;
+
 namespace RMS.Persitence.Repositories.Oracle
 {
     public class DevicesRepository : IDevicesRepository
@@ -11,19 +12,24 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public DevicesRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("Postgres")!;
+            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
         }
 
         private NpgsqlConnection Connect() => new(_connStr);
 
         // ── shared filter builder ─────────────────────────────────────
         private static FilterBuilder BuildCommonFilter(
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
-            => new FilterBuilder()
-                .AddString("bank_name = @BankName", "BankName", bankName)
-                .AddString("region_name = @RegionName", "RegionName", regionName)
-                .AddString("mcc_name = @MccName", "MccName", mccName)
-                .AddString("retail_category = @RetailCategory", "RetailCategory", retailCategory);
+            string? bankName, string? regionName, string? mccName, string? retailCategory,
+            string tableAlias = "")
+        {
+            var p = string.IsNullOrEmpty(tableAlias) ? "" : tableAlias + ".";
+
+            return new FilterBuilder()
+                .AddString($"{p}bank_name = @BankName", "BankName", bankName)
+                .AddString($"{p}region_name = @RegionName", "RegionName", regionName)
+                .AddString($"{p}mcc_name = @MccName", "MccName", mccName)
+                .AddString($"{p}retail_category = @RetailCategory", "RetailCategory", retailCategory);
+        }
 
         // ── /api/filters ─────────────────────────────────────────────
         public async Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension)
@@ -66,24 +72,23 @@ namespace RMS.Persitence.Repositories.Oracle
         }
 
         // ── /api/share ───────────────────────────────────────────────
-        public async Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
+        public async Task<IEnumerable<ShareItem>> GetRetailCategoryShareAsync(
+        DateTime reportMonth,
+        string? bankName, string? regionName, string? mccName, string? retailCategory)
         {
             var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory)
                 .AddMonth("report_month", "ReportMonth", reportMonth);
 
             var sql = $"""
-                SELECT
-                    report_month, bank_name, region_name, mcc_name,
-                    retail_category, transaction_class, ctls_status,
-                    total_devices, grand_total_month,
-                    share_pct_by_bank, share_pct_by_region,
-                    share_pct_by_mcc, share_pct_by_retail_cat
-                FROM mv_devices_base
-                {filter.WhereClause}
-                ORDER BY total_devices DESC
-                """;
+        SELECT
+            retail_category,
+            SUM(total_devices) AS total_devices,
+            ROUND(SUM(total_devices) * 100.0 / SUM(SUM(total_devices)) OVER (), 2) AS share_pct
+        FROM mv_devices_base
+        {filter.WhereClause}
+        GROUP BY retail_category
+        ORDER BY total_devices DESC
+        """;
 
             using var db = Connect();
             return await db.QueryAsync<ShareItem>(sql, filter.Parameters);
@@ -135,14 +140,14 @@ namespace RMS.Persitence.Repositories.Oracle
 
         // ── /api/xy-analysis ─────────────────────────────────────────
         public async Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
-            DateTime reportMonth,
-            string xDimension, string yDimension,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
+      DateTime dateFrom, DateTime dateTo,
+      string xDimension, string yDimension,
+      string? bankName, string? regionName, string? mccName, string? retailCategory)
         {
             var allowedColumns = new HashSet<string>
-            {
-                "bank_name", "region_name", "mcc_name", "retail_category"
-            };
+    {
+        "bank_name", "region_name", "mcc_name", "retail_category"
+    };
 
             var x = xDimension.ToLower();
             var y = yDimension.ToLower();
@@ -153,58 +158,84 @@ namespace RMS.Persitence.Repositories.Oracle
             if (x == y)
                 throw new ArgumentException("X ve Y eyni ola bilmez");
 
-            var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory)
-                .AddMonth("report_month", "ReportMonth", reportMonth);
+            var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory, tableAlias: "b")
+                .AddRange("b.report_month", "DateFrom", "DateTo", dateFrom, dateTo);
 
-                            var sql = $"""
-                    SELECT
-                        b.{x} AS x_value,
-                        b.{y} AS y_value,
-                        SUM(b.total_devices)                    AS device_count,
-                        ROUND(SUM(b.total_devices) * 100.0 /
-                            NULLIF(SUM(SUM(b.total_devices)) OVER (PARTITION BY b.{x}), 0), 2) AS share_pct,
-                        SUM(t.mom_diff)                         AS mom_diff,
-                        ROUND(AVG(t.mom_pct_change), 2)         AS mom_pct_change
-                    FROM mv_devices_base b
-                    LEFT JOIN mv_devices_trend t
-                        ON  b.report_month    = t.report_month
-                        AND b.bank_name       = t.bank_name
-                        AND b.region_name     = t.region_name
-                        AND b.mcc_name        = t.mcc_name
-                        AND b.retail_category = t.retail_category
-                    {filter.WhereClause}
-                    GROUP BY b.{x}, b.{y}
-                    ORDER BY b.{x}, device_count DESC
-                    """;
+            var sql = $"""
+        WITH grouped AS (
+            SELECT
+                b.{x} AS x_value,
+                b.{y} AS y_value,
+                SUM(b.total_devices) AS device_count,
+                SUM(t.mom_diff)      AS mom_diff,
+                ROUND(AVG(t.mom_pct_change), 2) AS mom_pct_change
+            FROM mv_devices_base b
+            LEFT JOIN mv_devices_trend t
+                ON  b.report_month    = t.report_month
+                AND b.bank_name       = t.bank_name
+                AND b.region_name     = t.region_name
+                AND b.mcc_name        = t.mcc_name
+                AND b.retail_category = t.retail_category
+            {filter.WhereClause}
+            GROUP BY b.{x}, b.{y}
+        ),
+        totals AS (
+            SELECT x_value, SUM(device_count) AS x_total
+            FROM grouped
+            GROUP BY x_value
+        )
+        SELECT
+            g.x_value,
+            g.y_value,
+            g.device_count,
+            ROUND(g.device_count * 100.0 / NULLIF(t.x_total, 0), 2) AS share_pct,
+            g.mom_diff,
+            g.mom_pct_change
+        FROM grouped g
+        JOIN totals t ON g.x_value = t.x_value
+        ORDER BY g.x_value, g.device_count DESC
+        """;
 
             using var db = Connect();
             return await db.QueryAsync<XyItem>(sql, filter.Parameters);
-
         }
-
+        // ── /api/latest-month ─────────────────────────────────────────
         public async Task<DateTime> GetLatestReportMonthAsync()
         {
-            var sql = "SELECT MAX(report_month) FROM bi_market_devices_masked";
+            var sql = "SELECT MAX(report_date) FROM bi_market_devices_masked";
             using var db = Connect();
             return await db.ExecuteScalarAsync<DateTime>(sql);
         }
 
-        public async Task<long> GetTotalDevicesAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
+        // ── /api/total-devices ────────────────────────────────────────
+        public async Task<object> GetTotalDevicesAsync(
+       DateTime reportMonth,
+       string? bankName, string? regionName, string? mccName)
         {
-            var filter = BuildCommonFilter(bankName, regionName, mccName, retailCategory)
+            var filter = BuildCommonFilter(bankName, regionName, mccName, null)
                 .AddMonth("report_month", "ReportMonth", reportMonth);
 
-                    var sql = $"""
-                SELECT COALESCE(SUM(total_devices), 0)
-                FROM mv_devices_base
-                {filter.WhereClause}
-                """;
+            var sql = $"""
+        SELECT
+            retail_category,
+            SUM(total_devices) AS total_devices
+        FROM mv_devices_base
+        {filter.WhereClause}
+        GROUP BY retail_category
+        ORDER BY total_devices DESC
+        """;
 
             using var db = Connect();
-            return await db.ExecuteScalarAsync<long>(sql, filter.Parameters);
+            var items = (await db.QueryAsync<RetailCategoryTotalItem>(sql, filter.Parameters)).ToList();
+
+            return new
+            {
+                ReportMonth = reportMonth,
+                Total = items.Sum(x => x.TotalDevices),
+                Categories = items
+            };
         }
+
 
     }
 }
