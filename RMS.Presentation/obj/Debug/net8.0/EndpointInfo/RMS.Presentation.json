@@ -1669,7 +1669,15 @@
         ],
         "parameters": [
           {
-            "name": "reportMonth",
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dateTo",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1772,6 +1780,7 @@
             "schema": {
               "type": "string"
             }
+<<<<<<< HEAD
           },
           {
             "name": "retailCategory",
@@ -1779,6 +1788,8 @@
             "schema": {
               "type": "string"
             }
+=======
+>>>>>>> 7f8184701a573e1f581bc8d56bc3bf5e38ebb072
           }
         ],
         "responses": {

@@ -17,8 +17,9 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("UPPER(w.TARGET_COUNTRY) = UPPER(@TargetCountry)", "TargetCountry", f.TargetCountry)
                 .AddString("w.TARGET_COUNTRY_CATEGORY = @TargetCountryCategory", "TargetCountryCategory", f.TargetCountryCategory)
                 .AddString("w.PAYMENT_SYSTEM = @PaymentSystem", "PaymentSystem", f.PaymentSystem)
-                .AddBool("w.IS_ISSUING", "IsIssuing", f.IsIssuing)
-                .AddBool("w.IS_ACQUIRING", "IsAcquiring", f.IsAcquiring)
+.Add("w.IS_ISSUING = @IsIssuing", "IsIssuing", f.IsIssuing.HasValue ? (f.IsIssuing.Value ? 1 : 0) : (object?)null)
+.Add("w.IS_ACQUIRING = @IsAcquiring", "IsAcquiring", f.IsAcquiring.HasValue ? (f.IsAcquiring.Value ? 1 : 0) : (object?)null)
+
                 .AddMonth("w.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
@@ -87,8 +88,8 @@ namespace RMS.Persitence.Repositories.Oracle
                     INITCAP(w.TARGET_COUNTRY)         AS TargetCountry,
                     w.TARGET_COUNTRY_CATEGORY         AS TargetCountryCategory,
                     w.PAYMENT_SYSTEM                  AS PaymentSystem,
-                    BOOL_OR(w.IS_ISSUING)             AS IsIssuing,
-                    BOOL_OR(w.IS_ACQUIRING)           AS IsAcquiring,
+                    MAX(w.IS_ISSUING) = 1    AS IsIssuing,
+                    MAX(w.IS_ACQUIRING) = 1  AS IsAcquiring,
                     SUM(w.TOTAL_AMOUNT)               AS TotalAmount,
                     SUM(w.TOTAL_COUNT)                AS TotalCount,
                     sc.latitude                       AS SourceLatitude,
@@ -177,14 +178,14 @@ namespace RMS.Persitence.Repositories.Oracle
         public Task<IEnumerable<WorldMapTransaction>> GetIssuingAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName AND w.IS_ISSUING = TRUE",
+                "w.BANK_NAME = @BankName AND w.IS_ISSUING = 1",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetAcquiringAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName AND w.IS_ACQUIRING = TRUE",
+                "w.BANK_NAME = @BankName AND w.IS_ACQUIRING = 1",
                 new { BankName = bankName },
                 ct);
 

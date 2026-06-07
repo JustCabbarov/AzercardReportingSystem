@@ -12,8 +12,8 @@ using RMS.Persitence.Data;
 namespace RMS.Persitence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260521211619_last")]
-    partial class last
+    [Migration("20260603195320_Inital")]
+    partial class Inital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

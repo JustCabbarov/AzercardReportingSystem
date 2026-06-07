@@ -1031,6 +1031,37 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetTotal",
+    "RelativePath": "api/devices/total",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
     "Method": "GetTrend",
     "RelativePath": "api/devices/trend",
     "HttpMethod": "GET",
@@ -1089,7 +1120,12 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "reportMonth",
+        "Name": "dateFrom",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "dateTo",
         "Type": "System.DateTime",
         "IsRequired": false
       },

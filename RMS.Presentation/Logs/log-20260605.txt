@@ -1,0 +1,10 @@
+[2026-06-05 21:34:48] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-05 21:34:48] [INF] Növbəti train: 4s 55d sonra (06.06.2026 02:30).
+[2026-06-05 21:48:44] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-05 21:48:44] [INF] Növbəti train: 4s 41d sonra (06.06.2026 02:30).
+[2026-06-05 22:14:20] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-05 22:14:20] [INF] Növbəti train: 4s 15d sonra (06.06.2026 02:30).
+[2026-06-05 22:21:36] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-05 22:21:36] [INF] Növbəti train: 4s 8d sonra (06.06.2026 02:30).
+[2026-06-05 22:22:55] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-05 22:22:55] [INF] Növbəti train: 4s 7d sonra (06.06.2026 02:30).

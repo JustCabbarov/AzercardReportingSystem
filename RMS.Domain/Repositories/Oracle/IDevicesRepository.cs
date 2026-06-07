@@ -6,43 +6,26 @@ namespace RMS.Domain.Repositories.Oracle
     public interface IDevicesRepository
     {
         Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension);
-
-
-        Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
+        Task<IEnumerable<SummaryItem>> GetSummaryAsync(
             DateTime reportMonth,
-            string xDimension, string yDimension,
             string? bankName, string? regionName, string? mccName, string? retailCategory);
-
+        Task<IEnumerable<ShareItem>> GetRetailCategoryShareAsync(
+         DateTime reportMonth,
+         string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<IEnumerable<MomItem>> GetMomComparisonAsync(
+            DateTime reportMonth,
+            string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<IEnumerable<TrendItem>> GetTrendAsync(
+            DateTime dateFrom, DateTime dateTo,
+            string? bankName, string? regionName, string? mccName, string? retailCategory);
+        Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
+       DateTime dateFrom, DateTime dateTo,
+       string xDimension, string yDimension,
+       string? bankName, string? regionName, string? mccName, string? retailCategory);
         Task<DateTime> GetLatestReportMonthAsync();
 
-        Task<long> GetTotalDevicesAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
-
-        // ── Paged ────────────────────────────────────────────────────────────
-
-        Task<PagedResult<SummaryItem>> GetSummaryPagedAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory,
-            PageRequest pageReq,
-            CancellationToken ct = default);
-
-        Task<PagedResult<ShareItem>> GetSharePagedAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory,
-            PageRequest pageReq,
-            CancellationToken ct = default);
-
-        Task<PagedResult<MomItem>> GetMomComparisonPagedAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory,
-            PageRequest pageReq,
-            CancellationToken ct = default);
-
-        Task<PagedResult<TrendItem>> GetTrendPagedAsync(
-            DateTime dateFrom, DateTime dateTo,
-            string? bankName, string? regionName, string? mccName, string? retailCategory,
-            PageRequest pageReq,
-            CancellationToken ct = default);
+        Task<object> GetTotalDevicesAsync(
+     DateTime reportMonth,
+     string? bankName, string? regionName, string? mccName);
     }
 }

@@ -8,22 +8,24 @@ namespace RMS.Persitence.Repositories.Oracle
     public class AzMapRepository : OracleRepositoryBase, IAzMapRepository
     {
         public AzMapRepository(IConfiguration configuration) : base(configuration) { }
-
         private const string SelectColumns = """
-            SELECT
-                m.REPORT_MONTH          AS ReportMonth,
-                m.BANK_NAME             AS BankName,
-                m.SOURCE_CITY           AS SourceCity,
-                m.SOURCE_CITY_CLEAN     AS SourceCityClean,
-                m.SOURCE_CITY_CATEGORY  AS SourceCityCategory,
-                m.TOTAL_AMOUNT          AS TotalAmount,
-                m.TOTAL_COUNT           AS TotalCount,
-                c.latitude              AS Latitude,
-                c.longitude             AS Longitude
-            FROM   pg_mv_req4_az_map m
-            LEFT JOIN public.cities c
-                   ON UPPER(TRIM(c.city_name)) = UPPER(TRIM(m.SOURCE_CITY_CLEAN))
-            """;
+    SELECT
+        m.REPORT_MONTH          AS ReportMonth,
+        m.BANK_NAME             AS BankName,
+        m.SOURCE_CITY           AS SourceCity,
+        m.SOURCE_CITY_CLEAN     AS SourceCityClean,
+        m.SOURCE_CITY_CATEGORY  AS SourceCityCategory,
+        m.TOTAL_AMOUNT          AS TotalAmount,
+        m.TOTAL_COUNT           AS TotalCount,
+        c.latitude              AS Latitude,
+        c.longitude             AS Longitude
+    FROM   pg_mv_req4_az_map m
+    LEFT JOIN public.cities c
+           ON TRIM(m.SOURCE_CITY_CLEAN) != ''
+          AND m.SOURCE_CITY_CLEAN IS NOT NULL
+          AND REGEXP_REPLACE(UPPER(TRIM(c.city_name)), '[^A-ZƏĞIÖŞÜÇ]', '', 'g')
+            = REGEXP_REPLACE(UPPER(TRIM(m.SOURCE_CITY_CLEAN)), '[^A-ZƏĞIÖŞÜÇ]', '', 'g')
+    """;
 
         private FilterBuilder BuildFilter(AzMapTransaction f) =>
             new FilterBuilder()

@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace RMS.Domain.Entities.Oracle.DeviceModel
 {
-    public class ShareItem : SummaryItem
+    public class ShareItem
     {
-        public decimal SharePctByBank { get; set; }
-        public decimal SharePctByRegion { get; set; }
-        public decimal SharePctByMcc { get; set; }
-        public decimal SharePctByRetailCat { get; set; }
+
+            public string RetailCategory { get; set; } = "";
+            public int TotalDevices { get; set; }
+            public decimal SharePct { get; set; }
+        
     }
 }
