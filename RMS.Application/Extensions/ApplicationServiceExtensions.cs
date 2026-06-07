@@ -40,6 +40,8 @@ namespace RMS.Application.Extensions
          services.AddHostedService<ForecastTrainingBackgroundService>();
             services.AddScoped<IDevicesService, DevicesService>();
 
+            services.AddScoped<ICardPortfolioService, CardPortfolioService>();
+
 
             return services;
         }

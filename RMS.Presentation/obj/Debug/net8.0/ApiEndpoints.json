@@ -847,6 +847,16 @@
   },
   {
     "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetLatestMonth",
+    "RelativePath": "api/devices/latest-month",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
     "Method": "GetMomComparison",
     "RelativePath": "api/devices/mom-comparison",
     "HttpMethod": "GET",
@@ -856,6 +866,16 @@
       {
         "Name": "reportMonth",
         "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
         "IsRequired": false
       },
       {
@@ -895,6 +915,16 @@
         "IsRequired": false
       },
       {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
         "Name": "bankName",
         "Type": "System.String",
         "IsRequired": false
@@ -921,6 +951,52 @@
     "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
     "Method": "GetSummary",
     "RelativePath": "api/devices/summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportMonth",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "bankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "regionName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "mccName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "retailCategory",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "RMS.Presentation.Controllers.Oracle.DevicesController",
+    "Method": "GetTotal",
+    "RelativePath": "api/devices/total",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -969,6 +1045,16 @@
       {
         "Name": "dateTo",
         "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
         "IsRequired": false
       },
       {

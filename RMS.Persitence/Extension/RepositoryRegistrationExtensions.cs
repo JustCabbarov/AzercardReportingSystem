@@ -33,6 +33,8 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<INewCardRepository, NewCardRepository>();
             services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddSingleton<IModelStore, DiskModelStore>();
+            services.AddScoped<ICardPortfolioRepository, CardPortfolioRepository>();
+
 
             services.AddScoped<IDevicesRepository, DevicesRepository>();
 
