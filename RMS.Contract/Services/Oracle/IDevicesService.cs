@@ -1,32 +1,39 @@
 ﻿using RMS.Domain.Entities.Oracle.DeviceModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMS.Contract.Services.Oracle
 {
     public interface IDevicesService
     {
         Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension);
+
         Task<IEnumerable<SummaryItem>> GetSummaryAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
-        Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
-        Task<IEnumerable<MomItem>> GetMomComparisonAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
-        Task<IEnumerable<TrendItem>> GetTrendAsync(
             DateTime dateFrom, DateTime dateTo,
-            string? bankName, string? regionName, string? mccName, string? retailCategory);
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories);
+
+        Task<IEnumerable<ShareItem>> GetShareAsync(
+            DateTime dateFrom, DateTime dateTo,
+            string? dimension,
+            List<string>? dimensionValues);
+
+        Task<IEnumerable<MomItem>> GetMomComparisonAsync(
+            DateTime dateFrom, DateTime dateTo,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories);
+
+        Task<DeviceTrendResponse> GetTrendAsync(DeviceTrendRequest r);
+
         Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
-     DateTime dateFrom, DateTime dateTo,
-     string xDimension, string yDimension,
-     string? bankName, string? regionName, string? mccName, string? retailCategory);
+            DateTime dateFrom, DateTime dateTo,
+            string xDimension, string yDimension,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories);
+
         Task<DateTime> GetLatestReportMonthAsync();
-        Task<object> GetTotalDevicesAsync(DateTime reportMonth, string? bankName, string? regionName, string? mccName);
+
+        Task<object> GetTotalDevicesAsync(
+            DateTime dateFrom, DateTime dateTo,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories);
     }
 }

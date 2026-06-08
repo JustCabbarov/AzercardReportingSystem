@@ -1,11 +1,6 @@
 ﻿using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle.DeviceModel;
 using RMS.Domain.Repositories.Oracle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMS.Application.Services.Oracle
 {
@@ -22,36 +17,40 @@ namespace RMS.Application.Services.Oracle
             => _repo.GetFiltersAsync(dimension);
 
         public Task<IEnumerable<SummaryItem>> GetSummaryAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
-            => _repo.GetSummaryAsync(reportMonth, bankName, regionName, mccName, retailCategory);
+            DateTime dateFrom, DateTime dateTo,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories)
+            => _repo.GetSummaryAsync(dateFrom, dateTo, bankNames, regionNames, mccNames, retailCategories);
 
         public Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
-            => _repo.GetRetailCategoryShareAsync(reportMonth, bankName, regionName, mccName, retailCategory);
+            DateTime dateFrom, DateTime dateTo,
+            string? dimension,
+            List<string>? dimensionValues)
+            => _repo.GetShareAsync(dateFrom, dateTo, dimension, dimensionValues);
 
         public Task<IEnumerable<MomItem>> GetMomComparisonAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
-            => _repo.GetMomComparisonAsync(reportMonth, bankName, regionName, mccName, retailCategory);
-
-        public Task<IEnumerable<TrendItem>> GetTrendAsync(
             DateTime dateFrom, DateTime dateTo,
-            string? bankName, string? regionName, string? mccName, string? retailCategory)
-            => _repo.GetTrendAsync(dateFrom, dateTo, bankName, regionName, mccName, retailCategory);
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories)
+            => _repo.GetMomComparisonAsync(dateFrom, dateTo, bankNames, regionNames, mccNames, retailCategories);
+
+        public Task<DeviceTrendResponse> GetTrendAsync(DeviceTrendRequest r)
+            => _repo.GetTrendAsync(r);
 
         public Task<IEnumerable<XyItem>> GetXyAnalysisAsync(
-      DateTime dateFrom, DateTime dateTo,
-      string xDimension, string yDimension,
-      string? bankName, string? regionName, string? mccName, string? retailCategory)
-      => _repo.GetXyAnalysisAsync(dateFrom, dateTo, xDimension, yDimension, bankName, regionName, mccName, retailCategory);
+            DateTime dateFrom, DateTime dateTo,
+            string xDimension, string yDimension,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories)
+            => _repo.GetXyAnalysisAsync(dateFrom, dateTo, xDimension, yDimension, bankNames, regionNames, mccNames, retailCategories);
+
         public Task<DateTime> GetLatestReportMonthAsync()
-           => _repo.GetLatestReportMonthAsync();
+            => _repo.GetLatestReportMonthAsync();
 
         public Task<object> GetTotalDevicesAsync(
-            DateTime reportMonth,
-            string? bankName, string? regionName, string? mccName)
-            => _repo.GetTotalDevicesAsync(reportMonth, bankName, regionName, mccName);
+            DateTime dateFrom, DateTime dateTo,
+            List<string>? bankNames, List<string>? regionNames,
+            List<string>? mccNames, List<string>? retailCategories)
+            => _repo.GetTotalDevicesAsync(dateFrom, dateTo, bankNames, regionNames, mccNames, retailCategories);
     }
 }

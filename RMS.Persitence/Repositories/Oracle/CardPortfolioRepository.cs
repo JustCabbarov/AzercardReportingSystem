@@ -19,9 +19,6 @@ namespace RMS.Persistence.Repositories.Cards
 
         private NpgsqlConnection Connect() => new(_connStr);
 
-        // ─────────────────────────────────────────────
-        // ALLOWED DIMENSIONS (SQL injection qoruması)
-        // ─────────────────────────────────────────────
         private static readonly HashSet<string> AllowedDimensions = new(StringComparer.OrdinalIgnoreCase)
         {
             "bank_name", "region_name", "payment_scheme", "base_currency_name",
@@ -34,25 +31,19 @@ namespace RMS.Persistence.Repositories.Cards
                 ? dim.ToLower()
                 : throw new ArgumentException($"Invalid dimension: {dim}");
 
-        // ─────────────────────────────────────────────
-        // FILTER BUILDER
-        // ─────────────────────────────────────────────
         private static FilterBuilder BuildCommonFilter(CardPortfolioFilter f, string alias = "m")
-            => new FilterBuilder()
-                .AddString($"{alias}.bank_name = @BankName", "BankName", f.BankName)
-                .AddString($"{alias}.region_name = @RegionName", "RegionName", f.RegionName)
-                .AddString($"{alias}.payment_scheme = @PaymentScheme", "PaymentScheme", f.PaymentScheme)
-                .AddString($"{alias}.product_type = @ProductType", "ProductType", f.ProductType)
-                .AddString($"{alias}.contactless_status = @Contactless", "Contactless", f.ContactlessStatus)
-                .AddString($"{alias}.exp_status = @ExpStatus", "ExpStatus", f.ExpStatus)
-                .AddString($"{alias}.status_3d = @Status3d", "Status3d", f.Status3D)
-                .AddString($"{alias}.base_currency_name = @Currency", "Currency", f.BaseCurrency)
-                .AddString($"{alias}.card_product_name = @CardProduct", "CardProduct", f.CardProductName)
-                .AddRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth);
+     => new FilterBuilder()
+         .AddList($"{alias}.bank_name", "BankName", f.BankNames)
+         .AddList($"{alias}.region_name", "RegionName", f.RegionNames)
+         .AddList($"{alias}.payment_scheme", "PaymentScheme", f.PaymentSchemes)
+         .AddList($"{alias}.product_type", "ProductType", f.ProductTypes)
+         .AddList($"{alias}.contactless_status", "Contactless", f.ContactlessStatuses)
+         .AddList($"{alias}.exp_status", "ExpStatus", f.ExpStatuses)
+         .AddList($"{alias}.status_3d", "Status3d", f.Status3Ds)
+         .AddList($"{alias}.base_currency_name", "Currency", f.BaseCurrencies)
+         .AddList($"{alias}.card_product_name", "CardProduct", f.CardProductNames)
+         .AddRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth);
 
-        // ─────────────────────────────────────────────
-        // PAGINATION
-        // ─────────────────────────────────────────────
         private async Task<PagedResult<T>> QueryPagedAsync<T>(
             string baseSql,
             string orderBy,
@@ -87,8 +78,7 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // FILTER OPTIONS  →  GET api/cards/filter-options
-        // Bütün dropdown dəyərləri + min/max ay
+        // FILTER OPTIONS
         // ─────────────────────────────────────────────
         public async Task<FilterOptionsResponse> GetFilterOptionsAsync()
         {
@@ -128,7 +118,7 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // LATEST MONTH  →  GET api/cards/latest-month
+        // LATEST MONTH
         // ─────────────────────────────────────────────
         public async Task<DateTime> GetLatestReportMonthAsync()
         {
@@ -138,9 +128,7 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // TOP SCHEMES  →  GET api/cards/top-schemes
-        // Yuxarı rəngli kartlar: VISA/MC/AMEX/JCB
-        // say + pay% + MoM ox işarəsi
+        // TOP SCHEMES
         // ─────────────────────────────────────────────
         public async Task<TopCardsResponse> GetTopCardsAsync(CardPortfolioFilter f)
         {
@@ -148,39 +136,36 @@ namespace RMS.Persistence.Repositories.Cards
 
             var sql = $"""
                 WITH current_data AS (
-                    SELECT payment_scheme, product_type, SUM(total_cards) AS cnt
+                    SELECT payment_scheme, product_type,
+                           SUM(total_cards)      AS cnt,
+                           SUM(prev_total_cards) AS prev_cnt
                     FROM mv_card_portfolio m
                     {filter.WhereClause}
                     GROUP BY payment_scheme, product_type
                 ),
-                prev_data AS (
-                    SELECT payment_scheme, SUM(total_cards) AS cnt
-                    FROM mv_card_portfolio
-                    WHERE report_month = (SELECT MAX(report_month) FROM mv_card_portfolio) - INTERVAL '1 month'
-                    GROUP BY payment_scheme
-                ),
                 scheme_totals AS (
-                    SELECT payment_scheme, SUM(cnt) AS total
+                    SELECT payment_scheme,
+                           SUM(cnt)      AS total,
+                           SUM(prev_cnt) AS prev_total
                     FROM current_data
                     GROUP BY payment_scheme
                 ),
                 grand AS (SELECT SUM(total) AS grand_total FROM scheme_totals)
                 SELECT
                     st.payment_scheme,
-                    st.total                                                              AS total_cards,
-                    ROUND(st.total * 100.0 / NULLIF(g.grand_total, 0), 2)                AS share_percent,
-                    COALESCE(pm.cnt, 0)                                                  AS prev_total,
-                    COALESCE(ROUND((st.total - pm.cnt) * 100.0 / NULLIF(pm.cnt, 0), 2), 0) AS mom_change,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'SALARY' THEN cd.cnt END), 0) AS salary,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'CREDIT' THEN cd.cnt END), 0) AS credit,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'SOCIAL' THEN cd.cnt END), 0) AS social,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'OTHER'  THEN cd.cnt END), 0) AS other,
+                    st.total                                                                  AS total_cards,
+                    ROUND(st.total * 100.0 / NULLIF(g.grand_total, 0), 2)                    AS share_percent,
+                    COALESCE(st.prev_total, 0)                                                AS prev_total,
+                    COALESCE(ROUND((st.total - st.prev_total) * 100.0 / NULLIF(st.prev_total, 0), 2), 0) AS mom_change,
+                    COALESCE(MAX(CASE WHEN cd.product_type = 'SALARY' THEN cd.cnt END), 0)   AS salary,
+                    COALESCE(MAX(CASE WHEN cd.product_type = 'CREDIT' THEN cd.cnt END), 0)   AS credit,
+                    COALESCE(MAX(CASE WHEN cd.product_type = 'SOCIAL' THEN cd.cnt END), 0)   AS social,
+                    COALESCE(MAX(CASE WHEN cd.product_type = 'OTHER'  THEN cd.cnt END), 0)   AS other,
                     g.grand_total
                 FROM scheme_totals st
                 CROSS JOIN grand g
-                LEFT JOIN prev_data pm   USING (payment_scheme)
                 LEFT JOIN current_data cd USING (payment_scheme)
-                GROUP BY st.payment_scheme, st.total, g.grand_total, pm.cnt
+                GROUP BY st.payment_scheme, st.total, st.prev_total, g.grand_total
                 ORDER BY st.total DESC
                 """;
 
@@ -188,26 +173,27 @@ namespace RMS.Persistence.Repositories.Cards
             var rows = (await db.QueryAsync(sql, filter.Parameters)).ToList();
 
             var grandTotal = rows.Count > 0 ? (long)rows[0].grand_total : 0L;
-            var schemes = rows.Select(r => new TopSchemeCardDto
-            {
-                PaymentScheme = r.payment_scheme,
-                TotalCards = (long)r.total_cards,
-                SharePercent = (double)r.share_percent,
-                MomChange = (double)r.mom_change,
-                MomIsUp = (double)r.mom_change >= 0,
-                ShareIsUp = (double)r.share_percent >= 0,
-                Salary = (long)r.salary,
-                Credit = (long)r.credit,
-                Social = (long)r.social,
-                Other = (long)r.other
-            }).ToList();
+            var schemes = rows
+                .Where(r => r.payment_scheme != null)
+                .Select(r => new TopSchemeCardDto
+                {
+                    PaymentScheme = r.payment_scheme,
+                    TotalCards = (long)r.total_cards,
+                    SharePercent = (double)r.share_percent,
+                    MomChange = (double)r.mom_change,
+                    MomIsUp = (double)r.mom_change >= 0,
+                    ShareIsUp = (double)r.share_percent >= 0,
+                    Salary = (long)r.salary,
+                    Credit = (long)r.credit,
+                    Social = (long)r.social,
+                    Other = (long)r.other
+                }).ToList();
 
             return new TopCardsResponse { GrandTotal = grandTotal, Schemes = schemes };
         }
 
         // ─────────────────────────────────────────────
-        // CROSS TABLE  →  GET api/cards/cross-table
-        // Sol cədvəl: row=seçilmiş dim, col=product_type
+        // CROSS TABLE
         // ─────────────────────────────────────────────
         public async Task<CrossTableResponse> GetCrossTableAsync(CrossTableRequest r)
         {
@@ -216,27 +202,21 @@ namespace RMS.Persistence.Repositories.Cards
 
             var sql = $"""
                 WITH cur AS (
-                    SELECT {dim} AS label, product_type, SUM(total_cards) AS cnt
+                    SELECT {dim} AS label,
+                           product_type,
+                           SUM(total_cards)      AS cnt,
+                           SUM(prev_total_cards) AS prev_cnt
                     FROM mv_card_portfolio m
                     {filter.WhereClause}
                     GROUP BY {dim}, product_type
-                ),
-                prev AS (
-                    SELECT {dim} AS label, product_type, SUM(total_cards) AS cnt
-                    FROM mv_card_portfolio
-                    WHERE report_month = (
-                        SELECT MAX(report_month) FROM mv_card_portfolio
-                    ) - INTERVAL '1 month'
-                    GROUP BY {dim}, product_type
                 )
                 SELECT
-                    c.label,
-                    c.product_type,
-                    c.cnt                                                            AS cur_cnt,
-                    COALESCE(p.cnt, 0)                                               AS prev_cnt,
-                    COALESCE(ROUND((c.cnt - p.cnt) * 100.0 / NULLIF(p.cnt, 0), 2), 0) AS mom_pct
-                FROM cur c
-                LEFT JOIN prev p USING (label, product_type)
+                    label,
+                    product_type,
+                    cnt                                                                        AS cur_cnt,
+                    COALESCE(prev_cnt, 0)                                                      AS prev_cnt,
+                    COALESCE(ROUND((cnt - prev_cnt) * 100.0 / NULLIF(prev_cnt, 0), 2), 0)     AS mom_pct
+                FROM cur
                 ORDER BY label, product_type
                 """;
 
@@ -263,8 +243,7 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // PAY CHART  →  GET api/cards/pay-chart
-        // Sağ panel "Pay" toggle — donut faizləri
+        // PAY CHART
         // ─────────────────────────────────────────────
         public async Task<PayChartResponse> GetPayChartAsync(PayChartRequest r)
         {
@@ -299,33 +278,31 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // TREND  →  GET api/cards/trend
-        // Sağ panel "Trend" toggle — zaman seriyası
+        // TREND
         // ─────────────────────────────────────────────
         public async Task<TrendChartResponse> GetTrendAsync(TrendChartRequest r)
         {
             var dim = SafeDim(r.Dimension);
             var filter = BuildCommonFilter(r, "m");
 
-            if (r.DimValue != null)
-            {
-                filter.AddString($"m.{dim} = @DimValue", "DimValue", r.DimValue);
-            }
+            // DimValue yerinə DimValues list
+            if (r.DimValues != null && r.DimValues.Count > 0)
+                filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
             var truncExpr = r.Granularity == "year"
                 ? "DATE_TRUNC('year', report_month)::DATE"
                 : "report_month";
 
             var sql = $"""
-                SELECT
-                    {dim}              AS series_label,
-                    {truncExpr}        AS period,
-                    SUM(total_cards)   AS cnt
-                FROM mv_card_portfolio m
-                {filter.WhereClause}
-                GROUP BY {dim}, {truncExpr}
-                ORDER BY {dim}, period
-                """;
+        SELECT
+            {dim}            AS series_label,
+            {truncExpr}      AS period,
+            SUM(total_cards) AS cnt
+        FROM mv_card_portfolio m
+        {filter.WhereClause}
+        GROUP BY {dim}, {truncExpr}
+        ORDER BY {dim}, period
+        """;
 
             using var db = Connect();
             var rows = await db.QueryAsync(sql, filter.Parameters);
@@ -346,8 +323,7 @@ namespace RMS.Persistence.Repositories.Cards
         }
 
         // ─────────────────────────────────────────────
-        // XY CHART  →  GET api/cards/xy-chart
-        // İkili analiz matrix/heatmap
+        // XY CHART
         // ─────────────────────────────────────────────
         public async Task<XyChartResponse> GetXyChartAsync(XyChartRequest r)
         {
@@ -361,13 +337,18 @@ namespace RMS.Persistence.Repositories.Cards
 
             var sql = $"""
                 SELECT
-                    {xDim}           AS x_label,
-                    {yDim}           AS y_label,
-                    SUM(total_cards) AS cnt,
+                    {xDim}                AS x_label,
+                    {yDim}                AS y_label,
+                    SUM(total_cards)      AS cnt,
+                    SUM(prev_total_cards) AS prev_cnt,
                     ROUND(
                         SUM(total_cards) * 100.0 /
                         NULLIF(SUM(SUM(total_cards)) OVER (PARTITION BY {xDim}), 0),
-                    2) AS share_pct
+                    2) AS share_pct,
+                    COALESCE(ROUND(
+                        (SUM(total_cards) - SUM(prev_total_cards)) * 100.0 /
+                        NULLIF(SUM(prev_total_cards), 0), 2), 0) AS mom_pct,
+                    SUM(total_cards) >= COALESCE(SUM(prev_total_cards), 0) AS mom_is_up
                 FROM mv_card_portfolio m
                 {filter.WhereClause}
                 GROUP BY {xDim}, {yDim}
@@ -386,7 +367,9 @@ namespace RMS.Persistence.Repositories.Cards
                     XLabel = (string)x.x_label,
                     YLabel = (string)x.y_label,
                     Count = (long)x.cnt,
-                    SharePct = (double)x.share_pct
+                    SharePct = (double)x.share_pct,
+                    MomPct = (double)x.mom_pct,
+                    MomIsUp = (bool)x.mom_is_up
                 }).ToList()
             };
         }

@@ -12,15 +12,15 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
         {
             public DateTime? FromMonth { get; set; }
             public DateTime? ToMonth { get; set; }
-            public string? BankName { get; set; }
-            public string? RegionName { get; set; }
-            public string? PaymentScheme { get; set; }
-            public string? ProductType { get; set; }
-            public string? ContactlessStatus { get; set; }
-            public string? ExpStatus { get; set; }
-            public string? Status3D { get; set; }
-            public string? BaseCurrency { get; set; }
-            public string? CardProductName { get; set; }
+            public List<string>? BankNames { get; set; }
+            public List<string>? RegionNames { get; set; }
+            public List<string>? PaymentSchemes { get; set; }
+            public List<string>? ProductTypes { get; set; }
+            public List<string>? ContactlessStatuses { get; set; }
+            public List<string>? ExpStatuses { get; set; }
+            public List<string>? Status3Ds { get; set; }
+            public List<string>? BaseCurrencies { get; set; }
+            public List<string>? CardProductNames { get; set; }
         }
 
         public class FilterOptionsResponse
@@ -104,10 +104,9 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
         public class TrendChartRequest : CardPortfolioFilter
         {
             public string Dimension { get; set; } = "payment_scheme";
-            public string? DimValue { get; set; }
+            public List<string>? DimValues { get; set; }
             public string Granularity { get; set; } = "month";
         }
-
         public class TrendPoint
         {
             public DateTime Period { get; set; }
@@ -133,6 +132,8 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
 
         public class XyCell
         {
+            public double MomPct { get; set; }
+            public bool MomIsUp { get; set; }
             public string XLabel { get; set; } = "";
             public string YLabel { get; set; } = "";
             public long Count { get; set; }

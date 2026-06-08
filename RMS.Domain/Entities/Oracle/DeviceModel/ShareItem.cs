@@ -9,10 +9,13 @@ namespace RMS.Domain.Entities.Oracle.DeviceModel
 {
     public class ShareItem
     {
-
-            public string RetailCategory { get; set; } = "";
-            public int TotalDevices { get; set; }
-            public decimal SharePct { get; set; }
+    
         
-    }
+            public string DimensionValue { get; set; } = null!;
+            public string RetailCategory { get; set; } = null!;
+            public long TotalDevices { get; set; }
+            public decimal SharePct { get; set; }
+        }
+
+    
 }

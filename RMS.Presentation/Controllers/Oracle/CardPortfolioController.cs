@@ -20,7 +20,6 @@ namespace RMS.API.Controllers
         public async Task<IActionResult> GetFilterOptions()
             => Ok(await _service.GetFilterOptionsAsync());
 
-
         [HttpGet("top-schemes")]
         public async Task<IActionResult> GetTopSchemes([FromQuery] CardPortfolioFilter filter)
             => Ok(await _service.GetTopCardsAsync(filter));
@@ -42,6 +41,7 @@ namespace RMS.API.Controllers
             => Ok(await _service.GetXyChartAsync(request));
     }
 }
+
 
 //=== ENDPOINT → DASHBOARD HİSSƏSİ ===
 

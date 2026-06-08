@@ -42,6 +42,14 @@ namespace RMS.Persitence.Repositories.Oracle
             return this;
         }
 
+        public FilterBuilder AddList(string column, string paramName, List<string>? values)
+        {
+            if (values is null || values.Count == 0) return this;
+            _conditions.Add($"{column} = ANY(@{paramName})");
+            _param.Add(paramName, values.ToArray());
+            return this;
+        }
+
         /// <summary>
         /// Ay əsaslı tarix filteri üçün — DATE_TRUNC istifadə edir.
         /// </summary>
