@@ -8,14 +8,11 @@ using System.Threading.Tasks;
 namespace RMS.Domain.Entities.Oracle.DeviceModel
 {
     public class ShareItem
-    {
-    
-        
-            public string DimensionValue { get; set; } = null!;
-            public string RetailCategory { get; set; } = null!;
+    {            public string DimensionValue { get; set; } = string.Empty;
             public long TotalDevices { get; set; }
-            public decimal SharePct { get; set; }
-        }
+            public double SharePct { get; set; }
+        
+    }
 
     
 }

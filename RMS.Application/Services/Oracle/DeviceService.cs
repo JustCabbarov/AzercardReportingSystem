@@ -23,10 +23,14 @@ namespace RMS.Application.Services.Oracle
             => _repo.GetSummaryAsync(dateFrom, dateTo, bankNames, regionNames, mccNames, retailCategories);
 
         public Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime dateFrom, DateTime dateTo,
-            string? dimension,
-            List<string>? dimensionValues)
-            => _repo.GetShareAsync(dateFrom, dateTo, dimension, dimensionValues);
+      DateTime dateFrom, DateTime dateTo,
+      string? dimension,
+      List<string>? bankNames,
+      List<string>? regionNames,
+      List<string>? mccNames,
+      List<string>? retailCategories)
+      => _repo.GetShareAsync(dateFrom, dateTo, dimension,
+          bankNames, regionNames, mccNames, retailCategories);
 
         public Task<IEnumerable<MomItem>> GetMomComparisonAsync(
             DateTime dateFrom, DateTime dateTo,

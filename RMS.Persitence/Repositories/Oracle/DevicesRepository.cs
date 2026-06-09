@@ -75,34 +75,68 @@ namespace RMS.Persitence.Repositories.Oracle
 
         // ── /api/share ───────────────────────────────────────────────
         public async Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime dateFrom, DateTime dateTo,
-            string dimension,
-            List<string>? dimensionValues)
+     DateTime dateFrom, DateTime dateTo,
+     string dimension,
+     List<string>? bankNames = null,
+     List<string>? regionNames = null,
+     List<string>? mccNames = null,
+     List<string>? retailCategories = null)
         {
             var allowedColumns = new HashSet<string>
-            {
-                "bank_name", "region_name", "mcc_name", "retail_category"
-            };
+    {
+        "bank_name", "region_name", "mcc_name", "retail_category"
+    };
 
-            var dim = string.IsNullOrWhiteSpace(dimension) ? "retail_category" : dimension.ToLower();
+            var dim = string.IsNullOrWhiteSpace(dimension)
+                ? "retail_category"
+                : dimension.ToLower();
+
             if (!allowedColumns.Contains(dim))
                 throw new ArgumentException($"Namelum dimension: {dimension}");
 
+            // Filter-Dimension conflict yoxlanışı
+            var filterConflicts = new Dictionary<string, bool>
+    {
+        { "bank_name",       bankNames?.Any()        == true },
+        { "region_name",     regionNames?.Any()      == true },
+        { "mcc_name",        mccNames?.Any()         == true },
+        { "retail_category", retailCategories?.Any() == true }
+    };
+
+            if (filterConflicts.TryGetValue(dim, out var hasConflict) && hasConflict)
+                throw new ArgumentException(
+                    $"'{dim}' həm filter həm dimension kimi verilə bilməz");
+
             var filter = new FilterBuilder()
                 .AddRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo)
-                .AddList(dim, "DimensionValues", dimensionValues);
+                .AddList("bank_name", "BankNames", bankNames)
+                .AddList("region_name", "RegionNames", regionNames)
+                .AddList("mcc_name", "MccNames", mccNames)
+                .AddList("retail_category", "RetailCategories", retailCategories);
 
             var sql = $"""
-                SELECT
-                    {dim}              AS dimension_value,
-                    retail_category    AS retail_category,
-                    SUM(total_devices) AS total_devices,
-                    ROUND(SUM(total_devices) * 100.0 / SUM(SUM(total_devices)) OVER (PARTITION BY {dim}), 2) AS share_pct
-                FROM mv_devices_base
-                {filter.WhereClause}
-                GROUP BY {dim}, retail_category
-                ORDER BY {dim}, total_devices DESC
-                """;
+        WITH filtered_data AS (
+            SELECT *
+            FROM mv_devices_base
+            {filter.WhereClause}
+        ),
+        grouped_data AS (
+            SELECT
+                {dim}              AS dimension_value,
+                SUM(total_devices) AS total_devices
+            FROM filtered_data
+            GROUP BY {dim}
+        )
+        SELECT
+            dimension_value,
+            total_devices,
+            ROUND(
+                total_devices * 100.0 / SUM(total_devices) OVER (),
+                2
+            ) AS share_pct
+        FROM grouped_data
+        ORDER BY total_devices DESC
+        """;
 
             using var db = Connect();
             return await db.QueryAsync<ShareItem>(sql, filter.Parameters);

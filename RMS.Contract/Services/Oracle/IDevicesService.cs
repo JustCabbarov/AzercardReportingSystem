@@ -11,11 +11,13 @@ namespace RMS.Contract.Services.Oracle
             List<string>? bankNames, List<string>? regionNames,
             List<string>? mccNames, List<string>? retailCategories);
 
-        Task<IEnumerable<ShareItem>> GetShareAsync(
-            DateTime dateFrom, DateTime dateTo,
-            string? dimension,
-            List<string>? dimensionValues);
-
+         Task<IEnumerable<ShareItem>> GetShareAsync(
+     DateTime dateFrom, DateTime dateTo,
+     string? dimension,
+     List<string>? bankNames,
+     List<string>? regionNames,
+     List<string>? mccNames,
+     List<string>? retailCategories);
         Task<IEnumerable<MomItem>> GetMomComparisonAsync(
             DateTime dateFrom, DateTime dateTo,
             List<string>? bankNames, List<string>? regionNames,

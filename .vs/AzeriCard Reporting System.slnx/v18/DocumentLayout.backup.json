@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.contract\\services\\oracle\\idevicesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\services\\oracle\\idevicesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.presentation\\controllers\\oracle\\devicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\oracle\\devicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.contract\\services\\oracle\\idevicesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DAFA2BB-737C-45F1-A7C4-C76E3014CD63}|RMS.Contract\\RMS.Contract.csproj|solutionrelative:rms.contract\\services\\oracle\\idevicesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.application\\services\\oracle\\deviceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,20 +23,32 @@
       "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\oracle\\devicesrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.persitence\\repositories\\oracle\\cardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\oracle\\cardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\entities\\oracle\\devicemodel\\trenditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\entities\\oracle\\devicemodel\\trenditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\entities\\oracle\\devicemodel\\shareitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\entities\\oracle\\devicemodel\\shareitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.presentation\\controllers\\oracle\\cardportfoliocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\oracle\\cardportfoliocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.application\\services\\oracle\\cardportfolioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\services\\oracle\\cardportfolioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\repositories\\oracle\\icardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\repositories\\oracle\\icardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.persitence\\repositories\\oracle\\cardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\oracle\\cardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\entities\\oracle\\cardportfolio\\cardportfolio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\entities\\oracle\\cardportfolio\\cardportfolio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\entities\\oracle\\devicemodel\\trenditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\entities\\oracle\\devicemodel\\trenditem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.persitence\\repositories\\oracle\\filterbuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,14 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.persitence\\repositories\\oracle\\cardactivityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2DF39C6F-625C-47B3-B801-AE65722FE7F7}|RMS.Persitence\\RMS.Persitence.csproj|solutionrelative:rms.persitence\\repositories\\oracle\\cardactivityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\entities\\oracle\\cardportfolio\\cardportfolio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\entities\\oracle\\cardportfolio\\cardportfolio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.presentation\\controllers\\oracle\\cardportfoliocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1B8A36C0-E69F-4839-B398-E47BCF2DD693}|RMS.Presentation\\RMS.Presentation.csproj|solutionrelative:rms.presentation\\controllers\\oracle\\cardportfoliocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\10.0.101\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
@@ -68,10 +72,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.application\\extensions\\applicationserviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|solutionrelative:rms.application\\extensions\\applicationserviceextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.domain\\repositories\\oracle\\icardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45F100EB-C868-4C85-96F6-42693E34CB99}|RMS.Domain\\RMS.Domain.csproj|solutionrelative:rms.domain\\repositories\\oracle\\icardportfoliorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C54C65D1-2D69-430F-9C07-94ECB44EB57D}|RMS.Application\\RMS.Application.csproj|c:\\users\\huawei\\desktop\\azercard\\azercardreportingsystem\\rms.application\\services\\system\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -493,7 +493,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
@@ -522,11 +522,24 @@
               "Title": "DevicesRepository.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs",
               "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs",
-              "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs*",
+              "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\DevicesRepository.cs*",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T13:01:26.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ShareItem.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
+              "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs*",
+              "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-28T13:20:54.134Z",
               "EditorCaption": ""
             },
             {
@@ -535,24 +548,11 @@
               "Title": "IDevicesRepository.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs",
               "RelativeDocumentMoniker": "RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs",
-              "RelativeToolTip": "RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAuwA4AAAAiAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs*",
+              "RelativeToolTip": "RMS.Domain\\Repositories\\Oracle\\IDevicesRepository.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T13:00:12.512Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DevicesController.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
-              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
-              "RelativeToolTip": "RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T13:26:58.729Z",
               "EditorCaption": ""
             },
             {
@@ -561,42 +561,103 @@
               "Title": "DeviceService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\DeviceService.cs",
               "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\DeviceService.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\DeviceService.cs",
-              "RelativeToolTip": "RMS.Application\\Services\\Oracle\\DeviceService.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAuwBgAAAApAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\DeviceService.cs*",
+              "RelativeToolTip": "RMS.Application\\Services\\Oracle\\DeviceService.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T13:25:15.073Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "IDevicesService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\Services\\Oracle\\IDevicesService.cs",
               "RelativeDocumentMoniker": "RMS.Contract\\Services\\Oracle\\IDevicesService.cs",
               "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\Services\\Oracle\\IDevicesService.cs*",
               "RelativeToolTip": "RMS.Contract\\Services\\Oracle\\IDevicesService.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABEAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwA0AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T13:25:45.177Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CardPortfolioRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
-              "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
-              "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
-              "ViewState": "AgIAABkBAAAAAAAAAAAmwDcBAAARAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "DevicesController.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
+              "RelativeToolTip": "RMS.Presentation\\Controllers\\Oracle\\DevicesController.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAIwEEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T13:00:38.205Z",
+              "WhenOpened": "2026-05-28T13:26:58.729Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "CardPortfolioController.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
+              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
+              "RelativeToolTip": "RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAkwDkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-07T13:16:41.179Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CardPortfolioService.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
+              "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
+              "RelativeToolTip": "RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-07T13:02:24.72Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ICardPortfolioRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
+              "RelativeDocumentMoniker": "RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
+              "RelativeToolTip": "RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-07T13:00:02.458Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CardPortfolio.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
+              "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
+              "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
+              "ViewState": "AgIAAF8AAAAAAAAAAIA7wGwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-07T13:13:49.298Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CardPortfolioRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
+              "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
+              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
+              "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\CardPortfolioRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-07T13:00:38.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "TrendItem.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\DeviceModel\\TrendItem.cs",
               "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\TrendItem.cs",
@@ -604,38 +665,11 @@
               "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\TrendItem.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAQwBoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T13:17:35.418Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T13:17:35.418Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ShareItem.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
-              "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
-              "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\DeviceModel\\ShareItem.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAwAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T13:20:54.134Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CardPortfolioService.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
-              "RelativeDocumentMoniker": "RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
-              "RelativeToolTip": "RMS.Application\\Services\\Oracle\\CardPortfolioService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T13:02:24.72Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "FilterBuilder.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\FilterBuilder.cs",
               "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\FilterBuilder.cs",
@@ -643,12 +677,11 @@
               "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\FilterBuilder.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-27T21:58:17.503Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-27T21:58:17.503Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "CardActivityRepository.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Repositories\\Oracle\\CardActivityRepository.cs",
               "RelativeDocumentMoniker": "RMS.Persitence\\Repositories\\Oracle\\CardActivityRepository.cs",
@@ -656,37 +689,11 @@
               "RelativeToolTip": "RMS.Persitence\\Repositories\\Oracle\\CardActivityRepository.cs",
               "ViewState": "AgIAAEcAAAAAAAAAAAAiwGgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-27T10:25:12.122Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-27T10:25:12.122Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "CardPortfolio.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
-              "RelativeDocumentMoniker": "RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
-              "RelativeToolTip": "RMS.Domain\\Entities\\Oracle\\CardPortfolio\\CardPortfolio.cs",
-              "ViewState": "AgIAAHsAAAAAAAAAAAAewIgAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T13:13:49.298Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "CardPortfolioController.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
-              "RelativeDocumentMoniker": "RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
-              "RelativeToolTip": "RMS.Presentation\\Controllers\\Oracle\\CardPortfolioController.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAuwIIAAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T13:16:41.179Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\10.0.101\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\10.0.101\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
@@ -698,7 +705,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "RepositoryRegistrationExtensions.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
               "RelativeDocumentMoniker": "RMS.Persitence\\Extension\\RepositoryRegistrationExtensions.cs",
@@ -710,7 +717,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "ICardPortfolioService.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\Services\\Oracle\\ICardPortfolioService.cs",
               "RelativeDocumentMoniker": "RMS.Contract\\Services\\Oracle\\ICardPortfolioService.cs",
@@ -723,18 +730,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 17,
-              "Title": "ICardPortfolioRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
-              "RelativeDocumentMoniker": "RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
-              "ToolTip": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
-              "RelativeToolTip": "RMS.Domain\\Repositories\\Oracle\\ICardPortfolioRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-07T13:00:02.458Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
               "Title": "ApplicationServiceExtensions.cs",
               "DocumentMoniker": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
               "RelativeDocumentMoniker": "RMS.Application\\Extensions\\ApplicationServiceExtensions.cs",
