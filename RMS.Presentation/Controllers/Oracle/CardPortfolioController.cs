@@ -19,10 +19,10 @@ namespace RMS.API.Controllers
         [HttpGet("filter-options")]
         public async Task<IActionResult> GetFilterOptions()
             => Ok(await _service.GetFilterOptionsAsync());
-
-        [HttpGet("top-schemes")]
-        public async Task<IActionResult> GetTopSchemes([FromQuery] CardPortfolioFilter filter)
-            => Ok(await _service.GetTopCardsAsync(filter));
+        
+        [HttpGet("top-cards")]
+        public async Task<IActionResult> GetTopCards([FromQuery] CardPortfolioFilter f, [FromQuery] string? dimension)
+            => Ok(await _service.GetTopCardsAsync(f, dimension));
 
         [HttpGet("cross-table")]
         public async Task<IActionResult> GetCrossTable([FromQuery] CrossTableRequest request)
