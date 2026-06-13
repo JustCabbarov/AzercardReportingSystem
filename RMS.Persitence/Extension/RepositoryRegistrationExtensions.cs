@@ -5,7 +5,7 @@ using RMS.Domain.Entities;
 using RMS.Domain.Repositories;
 using RMS.Domain.Repositories.Oracle;
 using RMS.Domain.Repositories.System;
-
+using RMS.Persistence.Repositories.Cards;
 using RMS.Persistence.Repositories.Oracle;
 using RMS.Persitence.Data;
 using RMS.Persitence.Repositories;
@@ -33,7 +33,7 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<INewCardRepository, NewCardRepository>();
             services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddSingleton<IModelStore, DiskModelStore>();
-            services.AddScoped<ICardPortfolioRepository, ICardPortfolioRepository>();
+            services.AddScoped<ICardPortfolioRepository, CardPortfolioRepository>();
 
 
             services.AddScoped<IDevicesRepository, DevicesRepository>();

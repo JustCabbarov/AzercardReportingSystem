@@ -47,21 +47,21 @@ namespace RMS.Presentation.Controllers.Oracle
         // GET api/devices/share?dateFrom=2003-01-01&dateTo=2004-01-01&dimension=bank_name&bankNames=ABB&bankNames=Kapital
         [HttpGet("share")]
         public async Task<IActionResult> GetShare(
-            [FromQuery] DateTime dateFrom,
-            [FromQuery] DateTime dateTo,
-            [FromQuery] string? dimension,
-            [FromQuery] List<string>? bankNames,
-            [FromQuery] List<string>? regionNames,
-            [FromQuery] List<string>? mccNames,
-            [FromQuery] List<string>? retailCategories)
+      [FromQuery] DateTime dateFrom,
+      [FromQuery] DateTime dateTo,
+      [FromQuery] string? dimension,
+      [FromQuery] List<string>? bankNames,
+      [FromQuery] List<string>? regionNames,
+      [FromQuery] List<string>? mccNames,
+      [FromQuery] List<string>? retailCategories)
         {
-           
+            
                 var result = await _service.GetShareAsync(
                     dateFrom, dateTo, dimension,
                     bankNames, regionNames, mccNames, retailCategories);
                 return Ok(result);
             
-          
+           
         }
 
         // GET api/devices/mom-comparison?dateFrom=2003-01-01&dateTo=2004-01-01&bankNames=ABC&bankNames=XYZ

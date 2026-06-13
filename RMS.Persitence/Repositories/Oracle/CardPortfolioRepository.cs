@@ -22,7 +22,7 @@ namespace RMS.Persistence.Repositories.Cards
         private static readonly HashSet<string> AllowedDimensions = new(StringComparer.OrdinalIgnoreCase)
         {
             "bank_name", "region_name", "payment_scheme", "base_currency_name",
-            "product_type", "card_product_name", "status_3d", "contactless_status",
+            "product_type", "card_product_name", "contactless_status",
             "exp_status", "card_category_name", "card_commercial_name", "card_brand_name"
         };
 
@@ -32,17 +32,31 @@ namespace RMS.Persistence.Repositories.Cards
                 : throw new ArgumentException($"Invalid dimension: {dim}");
 
         private static FilterBuilder BuildCommonFilter(CardPortfolioFilter f, string alias = "m")
-     => new FilterBuilder()
-         .AddList($"{alias}.bank_name", "BankName", f.BankNames)
-         .AddList($"{alias}.region_name", "RegionName", f.RegionNames)
-         .AddList($"{alias}.payment_scheme", "PaymentScheme", f.PaymentSchemes)
-         .AddList($"{alias}.product_type", "ProductType", f.ProductTypes)
-         .AddList($"{alias}.contactless_status", "Contactless", f.ContactlessStatuses)
-         .AddList($"{alias}.exp_status", "ExpStatus", f.ExpStatuses)
-         .AddList($"{alias}.status_3d", "Status3d", f.Status3Ds)
-         .AddList($"{alias}.base_currency_name", "Currency", f.BaseCurrencies)
-         .AddList($"{alias}.card_product_name", "CardProduct", f.CardProductNames)
-         .AddRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth);
+        {
+            var fb = new FilterBuilder()
+                .AddList($"{alias}.bank_name", "BankName", f.BankNames)
+                .AddList($"{alias}.region_name", "RegionName", f.RegionNames)
+                .AddList($"{alias}.payment_scheme", "PaymentScheme", f.PaymentSchemes)
+                .AddList($"{alias}.product_type", "ProductType", f.ProductTypes)
+                .AddList($"{alias}.status_3d", "Status3d", f.Status3Ds)
+                .AddList($"{alias}.base_currency_name", "Currency", f.BaseCurrencies)
+                .AddList($"{alias}.card_product_name", "CardProduct", f.CardProductNames)
+                .AddRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth);
+
+            if (!string.IsNullOrEmpty(f.ContactlessStatus))
+            {
+                fb.AddRaw($"{alias}.contactless_status = @ContactlessStatus");
+                fb.Parameters.Add("ContactlessStatus", f.ContactlessStatus);
+            }
+
+            if (!string.IsNullOrEmpty(f.ExpStatus))
+            {
+                fb.AddRaw($"{alias}.exp_status = @ExpStatus");
+                fb.Parameters.Add("ExpStatus", f.ExpStatus);
+            }
+
+            return fb;
+        }
 
         private async Task<PagedResult<T>> QueryPagedAsync<T>(
             string baseSql,
@@ -130,66 +144,92 @@ namespace RMS.Persistence.Repositories.Cards
         // ─────────────────────────────────────────────
         // TOP SCHEMES
         // ─────────────────────────────────────────────
-        public async Task<TopCardsResponse> GetTopCardsAsync(CardPortfolioFilter f)
+        public async Task<IEnumerable<TopSchemeCardDto>> GetTopCardsAsync(
+            CardPortfolioFilter f,
+            string? dimension)
         {
+            var allowedColumns = new HashSet<string>
+            {
+                "payment_scheme", "product_type", "bank_name",
+                "region_name", "contactless_status", "exp_status", "card_product_name"
+            };
+
             var filter = BuildCommonFilter(f, "m");
 
-            var sql = $"""
-                WITH current_data AS (
-                    SELECT payment_scheme, product_type,
-                           SUM(total_cards)      AS cnt,
-                           SUM(prev_total_cards) AS prev_cnt
+            string sql;
+
+            if (string.IsNullOrWhiteSpace(dimension))
+            {
+                sql = $"""
+                    SELECT
+                        'All'            AS payment_scheme,
+                        SUM(total_cards) AS total_cards,
+                        100.00           AS share_percent
                     FROM mv_card_portfolio m
                     {filter.WhereClause}
-                    GROUP BY payment_scheme, product_type
-                ),
-                scheme_totals AS (
-                    SELECT payment_scheme,
-                           SUM(cnt)      AS total,
-                           SUM(prev_cnt) AS prev_total
-                    FROM current_data
-                    GROUP BY payment_scheme
-                ),
-                grand AS (SELECT SUM(total) AS grand_total FROM scheme_totals)
-                SELECT
-                    st.payment_scheme,
-                    st.total                                                                  AS total_cards,
-                    ROUND(st.total * 100.0 / NULLIF(g.grand_total, 0), 2)                    AS share_percent,
-                    COALESCE(st.prev_total, 0)                                                AS prev_total,
-                    COALESCE(ROUND((st.total - st.prev_total) * 100.0 / NULLIF(st.prev_total, 0), 2), 0) AS mom_change,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'SALARY' THEN cd.cnt END), 0)   AS salary,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'CREDIT' THEN cd.cnt END), 0)   AS credit,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'SOCIAL' THEN cd.cnt END), 0)   AS social,
-                    COALESCE(MAX(CASE WHEN cd.product_type = 'OTHER'  THEN cd.cnt END), 0)   AS other,
-                    g.grand_total
-                FROM scheme_totals st
-                CROSS JOIN grand g
-                LEFT JOIN current_data cd USING (payment_scheme)
-                GROUP BY st.payment_scheme, st.total, st.prev_total, g.grand_total
-                ORDER BY st.total DESC
-                """;
+                    """;
+            }
+            else
+            {
+                var dim = dimension.ToLower();
+
+                if (!allowedColumns.Contains(dim))
+                    throw new ArgumentException($"Namelum dimension: {dimension}");
+
+                var filterConflicts = new Dictionary<string, bool>
+                {
+                    { "payment_scheme",     f.PaymentSchemes?.Any()      == true },
+                    { "product_type",       f.ProductTypes?.Any()        == true },
+                    { "bank_name",          f.BankNames?.Any()           == true },
+                    { "region_name",        f.RegionNames?.Any()         == true },
+                    { "contactless_status", !string.IsNullOrEmpty(f.ContactlessStatus) },
+                    { "exp_status",         !string.IsNullOrEmpty(f.ExpStatus) },
+                    { "card_product_name",  f.CardProductNames?.Any()    == true }
+                };
+
+                if (filterConflicts.TryGetValue(dim, out var hasConflict) && hasConflict)
+                {
+                    sql = $"""
+                        SELECT
+                            m.{dim}          AS payment_scheme,
+                            SUM(total_cards) AS total_cards,
+                            100.00           AS share_percent
+                        FROM mv_card_portfolio m
+                        {filter.WhereClause}
+                        GROUP BY m.{dim}
+                        ORDER BY total_cards DESC
+                        """;
+                }
+                else
+                {
+                    sql = $"""
+                        WITH filtered_data AS (
+                            SELECT *
+                            FROM mv_card_portfolio m
+                            {filter.WhereClause}
+                        ),
+                        grouped_data AS (
+                            SELECT
+                                {dim}            AS payment_scheme,
+                                SUM(total_cards) AS total_cards
+                            FROM filtered_data
+                            GROUP BY {dim}
+                        )
+                        SELECT
+                            payment_scheme,
+                            total_cards,
+                            ROUND(
+                                total_cards * 100.0 / SUM(total_cards) OVER (),
+                                2
+                            ) AS share_percent
+                        FROM grouped_data
+                        ORDER BY total_cards DESC
+                        """;
+                }
+            }
 
             using var db = Connect();
-            var rows = (await db.QueryAsync(sql, filter.Parameters)).ToList();
-
-            var grandTotal = rows.Count > 0 ? (long)rows[0].grand_total : 0L;
-            var schemes = rows
-                .Where(r => r.payment_scheme != null)
-                .Select(r => new TopSchemeCardDto
-                {
-                    PaymentScheme = r.payment_scheme,
-                    TotalCards = (long)r.total_cards,
-                    SharePercent = (double)r.share_percent,
-                    MomChange = (double)r.mom_change,
-                    MomIsUp = (double)r.mom_change >= 0,
-                    ShareIsUp = (double)r.share_percent >= 0,
-                    Salary = (long)r.salary,
-                    Credit = (long)r.credit,
-                    Social = (long)r.social,
-                    Other = (long)r.other
-                }).ToList();
-
-            return new TopCardsResponse { GrandTotal = grandTotal, Schemes = schemes };
+            return await db.QueryAsync<TopSchemeCardDto>(sql, filter.Parameters);
         }
 
         // ─────────────────────────────────────────────
@@ -285,7 +325,6 @@ namespace RMS.Persistence.Repositories.Cards
             var dim = SafeDim(r.Dimension);
             var filter = BuildCommonFilter(r, "m");
 
-            // DimValue yerinə DimValues list
             if (r.DimValues != null && r.DimValues.Count > 0)
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
@@ -294,15 +333,15 @@ namespace RMS.Persistence.Repositories.Cards
                 : "report_month";
 
             var sql = $"""
-        SELECT
-            {dim}            AS series_label,
-            {truncExpr}      AS period,
-            SUM(total_cards) AS cnt
-        FROM mv_card_portfolio m
-        {filter.WhereClause}
-        GROUP BY {dim}, {truncExpr}
-        ORDER BY {dim}, period
-        """;
+                SELECT
+                    {dim}            AS series_label,
+                    {truncExpr}      AS period,
+                    SUM(total_cards) AS cnt
+                FROM mv_card_portfolio m
+                {filter.WhereClause}
+                GROUP BY {dim}, {truncExpr}
+                ORDER BY {dim}, period
+                """;
 
             using var db = Connect();
             var rows = await db.QueryAsync(sql, filter.Parameters);

@@ -16,8 +16,8 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
             public List<string>? RegionNames { get; set; }
             public List<string>? PaymentSchemes { get; set; }
             public List<string>? ProductTypes { get; set; }
-            public List<string>? ContactlessStatuses { get; set; }
-            public List<string>? ExpStatuses { get; set; }
+            public string? ContactlessStatus { get; set; }
+            public string? ExpStatus { get; set; }
             public List<string>? Status3Ds { get; set; }
             public List<string>? BaseCurrencies { get; set; }
             public List<string>? CardProductNames { get; set; }
@@ -43,13 +43,6 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
             public string PaymentScheme { get; set; } = "";
             public long TotalCards { get; set; }
             public double SharePercent { get; set; }
-            public double MomChange { get; set; }
-            public bool MomIsUp { get; set; }
-            public bool ShareIsUp { get; set; }
-            public long Salary { get; set; }
-            public long Credit { get; set; }
-            public long Social { get; set; }
-            public long Other { get; set; }
         }
 
         public class TopCardsResponse
@@ -107,6 +100,7 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
             public List<string>? DimValues { get; set; }
             public string Granularity { get; set; } = "month";
         }
+
         public class TrendPoint
         {
             public DateTime Period { get; set; }

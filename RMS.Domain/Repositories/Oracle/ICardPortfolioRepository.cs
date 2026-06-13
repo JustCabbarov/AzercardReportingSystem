@@ -11,7 +11,9 @@ namespace RMS.Domain.Repositories.Oracle
     {
         Task<FilterOptionsResponse> GetFilterOptionsAsync();
         Task<DateTime> GetLatestReportMonthAsync();
-        Task<TopCardsResponse> GetTopCardsAsync(CardPortfolioFilter filter);
+        Task<IEnumerable<TopSchemeCardDto>> GetTopCardsAsync(
+      CardPortfolioFilter f,
+      string? dimension);
         Task<CrossTableResponse> GetCrossTableAsync(CrossTableRequest request);
         Task<PayChartResponse> GetPayChartAsync(PayChartRequest request);
         Task<TrendChartResponse> GetTrendAsync(TrendChartRequest request);
