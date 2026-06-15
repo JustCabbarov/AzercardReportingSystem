@@ -42,6 +42,7 @@ namespace RMS.Application.Extensions
 
             services.AddScoped<ICardPortfolioService, CardPortfolioService>();
             services.AddScoped<IAcquiringDeviceService, AcquiringDeviceService>();
+            services.AddScoped<ICardDashboardService, CardDashboardService>();
 
 
             return services;

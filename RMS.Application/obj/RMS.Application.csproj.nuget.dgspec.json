@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj": {}
+    "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj",
         "projectName": "RMS.Application",
-        "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Application\\obj\\",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\RMS.Application.csproj",
+        "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Huawei\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -33,11 +33,11 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj": {
-                "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj"
+              "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj": {
+                "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj"
               },
-              "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj": {
-                "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj"
+              "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj": {
+                "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj"
               }
             }
           }
@@ -52,7 +52,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -90,15 +90,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             }
           ],
           "frameworkReferences": {
@@ -106,24 +106,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj",
         "projectName": "RMS.Contract",
-        "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Contract\\obj\\",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\RMS.Contract.csproj",
+        "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Huawei\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -139,8 +139,8 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
-                "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj"
+              "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
+                "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj"
               }
             }
           }
@@ -155,7 +155,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -175,15 +175,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             }
           ],
           "frameworkReferences": {
@@ -191,24 +191,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj",
         "projectName": "RMS.Domain",
-        "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\obj\\",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj",
+        "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Huawei\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -236,7 +236,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -262,15 +262,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             }
           ],
           "frameworkReferences": {
@@ -278,24 +278,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj": {
+    "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj",
+        "projectUniqueName": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj",
         "projectName": "RMS.Persitence",
-        "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Persitence\\obj\\",
+        "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\RMS.Persitence.csproj",
+        "packagesPath": "C:\\Users\\Huawei\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Persitence\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Huawei\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -311,8 +311,8 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
-                "projectPath": "C:\\Users\\Administrator\\desktop\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj"
+              "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj": {
+                "projectPath": "C:\\Users\\Huawei\\Desktop\\Azercard\\AzercardReportingSystem\\RMS.Domain\\RMS.Domain.csproj"
               }
             }
           }
@@ -327,7 +327,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -377,15 +377,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.27, 8.0.27]"
             }
           ],
           "frameworkReferences": {
@@ -393,7 +393,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

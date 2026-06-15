@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RMS.Domain.Entities.Oracle.CardTransaction
 {
- 
+
 
     // ── ENUMS ────────────────────────────────────────────────────────────────────
 

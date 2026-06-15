@@ -38,7 +38,7 @@ namespace RMS.Persitence.Extensions
 
             services.AddScoped<IDevicesRepository, DevicesRepository>();
             services.AddScoped<IAcquiringDeviceRepository, AcquiringDeviceRepository>();
-
+            services.AddScoped<ICardDashboardRepository, CardDashboardRepository>();    
             return services;
         }
 
