@@ -25,15 +25,15 @@ namespace RMS.Presentation.Controllers.Oracle
             return Ok(result);
         }
 
-        [HttpPost("dashboard")]
-        public async Task<IActionResult> GetDashboard([FromBody] AcquiringDeviceFilter f)
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboard([FromQuery] AcquiringDeviceFilter f)
         {
             var result = await _service.GetDashboardAsync(f);
             return Ok(result);
         }
 
-        [HttpPost("trend")]
-        public async Task<IActionResult> GetTrend([FromBody] AcquiringTrendRequest r)
+        [HttpGet("trend")]
+        public async Task<IActionResult> GetTrend([FromQuery] AcquiringTrendRequest r)
         {
             var result = await _service.GetTrendAsync(r);
             return Ok(result);
