@@ -309,7 +309,7 @@ namespace RMS.Persitence.Repositories.Oracle
                         Actual = (decimal)x.actual
                     }).ToList();
 
-                    AppendForecast(points, r.ToDate ?? DateTime.Today);
+                 
 
                     return new AcqTrendSeries { Label = g.Key, Points = points };
                 }).ToList();
@@ -317,27 +317,7 @@ namespace RMS.Persitence.Repositories.Oracle
             return new AcqTrendResponse { Series = series };
         }
 
-        private static void AppendForecast(List<AcqTrendPoint> points, DateTime endDate)
-        {
-            if (points.Count < 3) return;
-
-            var avg = points.TakeLast(3).Average(p => p.Actual);
-            var lastPeriod = points.Last().Period;
-            var endOfYear = new DateTime(endDate.Year, 12, 1);
-            var current = lastPeriod.AddMonths(1);
-
-            while (current <= endOfYear)
-            {
-                points.Add(new AcqTrendPoint
-                {
-                    Period = current,
-                    Actual = 0,
-                    Forecast = Math.Round(avg, 2),
-                    IsForecast = true
-                });
-                current = current.AddMonths(1);
-            }
-        }
+     
 
         // ─────────────────────────────────────────────
         // BANK CHARTS
