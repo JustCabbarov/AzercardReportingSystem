@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RMS.Persitence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2759321f6585ca60e3f9aff373503ccd139e69a3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff699eafb124e26d194d884ae901988fb5bca910")]
 [assembly: System.Reflection.AssemblyProductAttribute("RMS.Persitence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RMS.Persitence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
