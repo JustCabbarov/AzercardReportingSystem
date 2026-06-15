@@ -36,8 +36,8 @@ namespace RMS.Domain.Entities.Oracle.AcquiringTransaction
     public class AcquiringTrendRequest : AcquiringDeviceFilter
     {
         public string Dimension { get; set; } = "acquiring_device_type_calc";
-        public string Granularity { get; set; } = "month"; // "month" | "year"
         public List<string>? DimValues { get; set; }
+        public string Granularity { get; set; } = "month";
     }
 
     // ── Filter Options ────────────────────────────────────────────────────────────
@@ -105,8 +105,12 @@ namespace RMS.Domain.Entities.Oracle.AcquiringTransaction
     {
         public DateTime Period { get; set; }
         public decimal Actual { get; set; }
-        public decimal? Forecast { get; set; }
+        public decimal Forecast { get; set; }
         public bool IsForecast { get; set; }
+        public decimal ForecastLower { get; set; }
+        public decimal ForecastUpper { get; set; }
+        public float ForecastAccuracy { get; set; }
+        public string? ForecastModel { get; set; }
     }
 
     public class AcqTrendResponse
@@ -133,4 +137,7 @@ namespace RMS.Domain.Entities.Oracle.AcquiringTransaction
         public List<BankItem> SourceBankChart { get; set; } = new();
         public List<BankItem> TargetBankChart { get; set; } = new();
     }
+
+
+
 }

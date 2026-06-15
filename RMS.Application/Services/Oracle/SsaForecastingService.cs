@@ -360,4 +360,88 @@ public sealed class SsaForecastingService : IForecastingService
         public float[] LowerBound { get; set; } = [];
         public float[] UpperBound { get; set; } = [];
     }
+
+
+    public bool ModelExists(string seriesKey) => _store.Exists(seriesKey);
+
+    public async Task TrainFromSeriesAsync(
+        string seriesKey,
+        IList<ForecastInput> historicalData,
+        CancellationToken ct = default)
+    {
+        if (historicalData.Count < MinSeriesLength)
+        {
+            _logger.LogWarning(
+                "TrainFromSeries atlandı: Key={Key}, Count={Count}",
+                seriesKey, historicalData.Count);
+            return;
+        }
+
+        int testSize = Math.Max(1, Math.Min(6, historicalData.Count / 5));
+        var trainData = historicalData.Take(historicalData.Count - testSize).ToList();
+        var testData = historicalData.Skip(historicalData.Count - testSize).ToList();
+
+        await FitAndSaveAsync(seriesKey, trainData, ct);
+
+        float accuracy = await ComputeRealAccuracyAsync(seriesKey, testData, ct);
+        await _store.SaveAccuracyAsync(seriesKey, accuracy, ct);
+
+        _logger.LogInformation(
+            "TrainFromSeries tamamlandı: Key={Key}, Count={Count}, Accuracy={Accuracy}%",
+            seriesKey, historicalData.Count, accuracy);
+    }
+
+    public async Task<ForecastResult> ForecastFromSeriesAsync(
+        string seriesKey,
+        int horizonMonths,
+        CancellationToken ct = default)
+    {
+        if (!_store.Exists(seriesKey))
+        {
+            _logger.LogWarning("Model tapılmadı: Key={Key}", seriesKey);
+            return EmptyResult(seriesKey, "");
+        }
+
+        using var amountStream = await _store.LoadAsync(seriesKey + "_AMOUNT", ct);
+        using var countStream = await _store.LoadAsync(seriesKey + "_COUNT", ct);
+
+        if (amountStream is null || countStream is null)
+        {
+            _logger.LogWarning("Model stream null: Key={Key}", seriesKey);
+            return EmptyResult(seriesKey, "");
+        }
+
+        var amountForecast = Predict(amountStream);
+        var countForecast = Predict(countStream);
+
+        var baseMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1);
+        int safeHorizon = Math.Min(horizonMonths,
+                              Math.Min(amountForecast.Forecast.Length,
+                                       countForecast.Forecast.Length));
+
+        var forecasts = Enumerable.Range(0, safeHorizon)
+            .Select(i => new MonthlyForecast
+            {
+                Month = baseMonth.AddMonths(i),
+                PredictedAmount = MathF.Max(0, amountForecast.Forecast[i]),
+                AmountLowerBound = MathF.Max(0, amountForecast.LowerBound[i]),
+                AmountUpperBound = MathF.Max(0, amountForecast.UpperBound[i]),
+                PredictedCount = MathF.Max(0, countForecast.Forecast[i]),
+                CountLowerBound = MathF.Max(0, countForecast.LowerBound[i]),
+                CountUpperBound = MathF.Max(0, countForecast.UpperBound[i]),
+            })
+            .ToList();
+
+        float accuracy = await _store.LoadAccuracyAsync(seriesKey, ct);
+
+        return new ForecastResult
+        {
+            BankName = seriesKey,
+            MccGroup = "",
+            ModelUsed = "SSA-Series",
+            ConfidenceLevel = ConfidenceLevel * 100f,
+            Accuracy = accuracy,
+            Forecasts = forecasts
+        };
+    }
 }

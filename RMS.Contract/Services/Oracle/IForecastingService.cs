@@ -17,4 +17,17 @@ public interface IForecastingService
     Task<ForecastResult> ForecastAllAsync(
         int horizonMonths,
         CancellationToken ct = default);
+
+    // ── Acquiring Device Trend üçün ──────────────────────────────────
+    bool ModelExists(string seriesKey);
+
+    Task TrainFromSeriesAsync(
+        string seriesKey,
+        IList<ForecastInput> historicalData,
+        CancellationToken ct = default);
+
+    Task<ForecastResult> ForecastFromSeriesAsync(
+        string seriesKey,
+        int horizonMonths,
+        CancellationToken ct = default);
 }
