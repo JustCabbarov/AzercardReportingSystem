@@ -1,0 +1,14 @@
+﻿using RMS.Domain.Entities.Oracle.SummaryTransaction;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RMS.Domain.Repositories.Oracle
+{
+    public interface ISummaryTransactionRepository
+    {
+        Task<SummaryTransactionResponse> GetSummaryAsync(SummaryFilterRequest filter);
+    }
+}
