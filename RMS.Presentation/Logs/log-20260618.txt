@@ -1,0 +1,10 @@
+[2026-06-18 13:26:05] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-18 13:26:05] [INF] Növbəti train: 13s 3d sonra (19.06.2026 02:30).
+[2026-06-18 13:26:25] [ERR] An unhandled exception has occurred while executing the request.
+[2026-06-18 13:26:25] [ERR] An unhandled exception occurred: Unable to resolve service for type 'RMS.Contract.Services.Oracle.ISummaryTransactionService' while attempting to activate 'RMS.Presentation.Controllers.Oracle.SummaryTransactionController'.
+[2026-06-18 13:28:34] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-18 13:28:34] [INF] Növbəti train: 13s 1d sonra (19.06.2026 02:30).
+[2026-06-18 13:28:38] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-18 13:28:39] [INF] Növbəti train: 13s 1d sonra (19.06.2026 02:30).
+[2026-06-18 13:36:23] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-18 13:36:23] [INF] Növbəti train: 12s 53d sonra (19.06.2026 02:30).

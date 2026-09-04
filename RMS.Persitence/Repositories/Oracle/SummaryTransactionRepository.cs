@@ -12,9 +12,13 @@ using System.Threading.Tasks;
 namespace RMS.Persitence.Repositories.Oracle
 {
 
+
     public class SummaryTransactionRepository : ISummaryTransactionRepository
     {
         private readonly string _connStr;
+
+        // Brifdəki sabit device sırası
+        private static readonly string[] DeviceOrder = ["POS", "ATM", "ECO", "C2C", "UFX"];
 
         public SummaryTransactionRepository(IConfiguration config)
         {
@@ -42,72 +46,62 @@ namespace RMS.Persitence.Repositories.Oracle
             using var con = Connect();
             var rows = (await con.QueryAsync<SummaryRaw>(sql, builder.Parameters)).ToList();
 
-            var response = new SummaryTransactionResponse();
-
-            // 1. Total AZC — bütün sətirlər
-            response.Total = new KpiBlockDto
+            return new SummaryTransactionResponse
             {
-                Amount = rows.Sum(r => r.TotalLocalAmount),
-                Count = rows.Sum(r => r.TotalCount)
-            };
-
-            // 2. Issuing only (IS_ISSUING=1, IS_ACQUIRING=0)
-            var issuingRows = rows.Where(r => r.IsIssuing == "1" && r.IsAcquiring == "0").ToList();
-            response.Issuing = new KpiBlockDto
-            {
-                Amount = issuingRows.Sum(r => r.TotalLocalAmount),
-                Count = issuingRows.Sum(r => r.TotalCount)
-            };
-            response.IssuingByDevice = issuingRows
-                .Where(r => r.AcquiringDeviceType is not null)
-                .Select(r => new DeviceBreakdownDto
+                // 1. Total — bütün sətirlər
+                Total = new KpiBlockDto
                 {
-                    DeviceType = r.AcquiringDeviceType!,
-                    Amount = r.TotalLocalAmount,
-                    Count = r.TotalCount
-                })
-                .OrderByDescending(r => r.Amount)
-                .ToList();
+                    Amount = rows.Sum(r => r.TotalLocalAmount),
+                    Count = rows.Sum(r => r.TotalCount),
+                    Devices = []
+                },
 
-            // 3. Inner (IS_ISSUING=1, IS_ACQUIRING=1)
-            var innerRows = rows.Where(r => r.IsIssuing == "1" && r.IsAcquiring == "1").ToList();
-            response.Inner = new KpiBlockDto
-            {
-                Amount = innerRows.Sum(r => r.TotalLocalAmount),
-                Count = innerRows.Sum(r => r.TotalCount)
+                // 2. Issuing (IS_ISSUING=1, IS_ACQUIRING=0)
+                Issuing = BuildBlock(rows, isIssuing: "1", isAcquiring: "0"),
+
+                // 3. Inner (IS_ISSUING=1, IS_ACQUIRING=1)
+                Inner = BuildBlock(rows, isIssuing: "1", isAcquiring: "1"),
+
+                // 4. Acquiring (IS_ISSUING=0, IS_ACQUIRING=1)
+                Acquiring = BuildBlock(rows, isIssuing: "0", isAcquiring: "1"),
             };
-            response.InnerByDevice = innerRows
-                .Where(r => r.AcquiringDeviceType is not null)
-                .Select(r => new DeviceBreakdownDto
-                {
-                    DeviceType = r.AcquiringDeviceType!,
-                    Amount = r.TotalLocalAmount,
-                    Count = r.TotalCount
-                })
-                .OrderByDescending(r => r.Amount)
-                .ToList();
-
-            // 4. Acquiring only (IS_ISSUING=0, IS_ACQUIRING=1)
-            var acquiringRows = rows.Where(r => r.IsIssuing == "0" && r.IsAcquiring == "1").ToList();
-            response.Acquiring = new KpiBlockDto
-            {
-                Amount = acquiringRows.Sum(r => r.TotalLocalAmount),
-                Count = acquiringRows.Sum(r => r.TotalCount)
-            };
-            response.AcquiringByDevice = acquiringRows
-                .Where(r => r.AcquiringDeviceType is not null)
-                .Select(r => new DeviceBreakdownDto
-                {
-                    DeviceType = r.AcquiringDeviceType!,
-                    Amount = r.TotalLocalAmount,
-                    Count = r.TotalCount
-                })
-                .OrderByDescending(r => r.Amount)
-                .ToList();
-
-            return response;
         }
 
+        // ─── Blok qur: KPI + sabit 5 device ──────────────────────────────────────
+        private static KpiBlockDto BuildBlock(
+            List<SummaryRaw> rows, string isIssuing, string isAcquiring)
+        {
+            var filtered = rows
+                .Where(r => r.IsIssuing == isIssuing && r.IsAcquiring == isAcquiring)
+                .ToList();
+
+            // Device-ları lookup-a çevir
+            var lookup = filtered
+                .Where(r => !string.IsNullOrWhiteSpace(r.AcquiringDeviceType))
+                .GroupBy(r => r.AcquiringDeviceType!)
+                .ToDictionary(g => g.Key, g => new
+                {
+                    Amount = g.Sum(x => x.TotalLocalAmount),
+                    Count = g.Sum(x => x.TotalCount)
+                });
+
+            // Brifdəki sabit sıra ilə 5 device — datada yoxdursa 0 gəlir
+            var devices = DeviceOrder.Select(d => new DeviceBreakdownDto
+            {
+                DeviceType = d,
+                Amount = lookup.TryGetValue(d, out var v) ? v.Amount : 0,
+                Count = lookup.TryGetValue(d, out var v2) ? v2.Count : 0
+            }).ToList();
+
+            return new KpiBlockDto
+            {
+                Amount = filtered.Sum(r => r.TotalLocalAmount),
+                Count = filtered.Sum(r => r.TotalCount),
+                Devices = devices
+            };
+        }
+
+        // ─── Filter builder ───────────────────────────────────────────────────────
         private static FilterBuilder BuildFilters(SummaryFilterRequest f)
         {
             return new FilterBuilder()

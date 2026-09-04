@@ -277,8 +277,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
             var truncExpr = r.Granularity == "year"
-                ? "DATE_TRUNC('year', report_date)::DATE"
-                : "DATE_TRUNC('month', report_date)::DATE";
+     ? "DATE_TRUNC('year', period_month)::DATE"
+     : "period_month";
 
             var divisor = GetDivisor(r.AmountUnit);
             var valExpr = GetValueExpr(r.Category);

@@ -1,0 +1,6 @@
+[2026-06-16 12:05:43] [INF] ForecastTrainingBackgroundService başladı. Hər gecə 02:30-də işləyəcək.
+[2026-06-16 12:05:44] [INF] Növbəti train: 14s 24d sonra (17.06.2026 02:30).
+[2026-06-16 12:11:05] [ERR] An unhandled exception has occurred while executing the request.
+[2026-06-16 12:11:05] [ERR] An unhandled exception occurred: 42P01: "mv_transaction_summary" nesnesi mevcut değil
+
+POSITION: 494
