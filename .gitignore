@@ -6,4 +6,5 @@
 *.user
 *.suo
 *.log
-publish/
+publish/
+*.zip
