@@ -1,0 +1,15 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+**/.vscode
+**/Logs
+**/models/*.zip
+*.user
+*.suo
+Dockerfile
+docker-compose*.yml
+.dockerignore
+README.md
+Documentation.md
+ServiceDocumentation.md

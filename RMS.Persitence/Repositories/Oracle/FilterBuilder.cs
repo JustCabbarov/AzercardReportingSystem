@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Dapper;
 
 namespace RMS.Persitence.Repositories.Oracle
@@ -33,31 +33,32 @@ namespace RMS.Persitence.Repositories.Oracle
 
         /// <summary>
         /// Boolean sahələr üçün — null olduqda şərt əlavə edilmir.
+        /// Oracle-da boolean adətən NUMBER(1) 1/0 saxlanılır.
         /// </summary>
         public FilterBuilder AddBool(string column, string paramName, bool? value)
         {
             if (value is null) return this;
-            _conditions.Add($"{column} = @{paramName}");
-            _param.Add(paramName, value.Value);
+            _conditions.Add($"{column} = :{paramName}");
+            _param.Add(paramName, value.Value ? 1 : 0);
             return this;
         }
 
         public FilterBuilder AddList(string column, string paramName, List<string>? values)
         {
             if (values is null || values.Count == 0) return this;
-            _conditions.Add($"{column} = ANY(@{paramName})");
-            _param.Add(paramName, values.ToArray());
+            _conditions.Add($"{column} IN :{paramName}");
+            _param.Add(paramName, values);
             return this;
         }
 
         /// <summary>
-        /// Ay əsaslı tarix filteri üçün — DATE_TRUNC istifadə edir.
+        /// Ay əsaslı tarix filteri üçün — Oracle TRUNC(..., 'MM') istifadə edir.
         /// </summary>
         public FilterBuilder AddMonth(string column, string paramName, DateTime? value)
         {
             if (value is null) return this;
             _conditions.Add(
-                $"DATE_TRUNC('month', {column}) = DATE_TRUNC('month', @{paramName}::timestamp)");
+                $"TRUNC({column}, 'MM') = TRUNC(:{paramName}, 'MM')");
             _param.Add(paramName, value.Value.Date);
             return this;
         }
@@ -81,12 +82,12 @@ namespace RMS.Persitence.Repositories.Oracle
         {
             if (from is not null)
             {
-                _conditions.Add($"{column} >= @{fromParam}");
+                _conditions.Add($"{column} >= :{fromParam}");
                 _param.Add(fromParam, from.Value.Date);
             }
             if (to is not null)
             {
-                _conditions.Add($"{column} <= @{toParam}");
+                _conditions.Add($"{column} <= :{toParam}");
                 _param.Add(toParam, to.Value.Date);
             }
             return this;

@@ -1,0 +1,20 @@
+services:
+  # -------------------------------------------------------------
+  # RMS Web API Service (.NET 8)
+  # -------------------------------------------------------------
+  rms-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rms-api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      # - ConnectionStrings__OracleConnection=Data Source=host:1521/ORCL;User Id=USER;Password=PASSWORD;
+      # - ConnectionStrings__PostgreSqlConnection=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=PASSWORD;
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Logs:/app/Logs
+      - ./models:/app/models

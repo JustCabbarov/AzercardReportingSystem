@@ -1,10 +1,15 @@
-﻿public class DeviceTrendPoint
+public class DeviceTrendPoint
 {
     public DateTime Period { get; set; }
     public long Count { get; set; }
     public long? PrevMonthDevices { get; set; }
     public long? MomDiff { get; set; }
     public decimal? MomPctChange { get; set; }
+
+    // Growth-Rate Proqnoz sahələri
+    public bool IsForecast { get; set; } = false;
+    public decimal? Forecast { get; set; }
+    public decimal? ForecastGrowthRate { get; set; }
 }
 
 public class DeviceTrendSeries

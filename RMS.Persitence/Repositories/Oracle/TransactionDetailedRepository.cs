@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle.TransactionDeteiled;
 using RMS.Domain.Repositories;
 
@@ -12,10 +12,11 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public TransactionDetailedRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+            _connStr = config.GetConnectionString("OracleConnection")
+                ?? config.GetConnectionString("PostgreSqlConnection")!;
         }
 
-        private NpgsqlConnection Connect() => new(_connStr);
+        private OracleConnection Connect() => new(_connStr);
 
         // =============================================
         // 1. KPI + Issuing Category bölgüsü
@@ -147,18 +148,18 @@ namespace RMS.Persitence.Repositories.Oracle
 
             builder
                 .AddRange("report_day", "dateFrom", "dateTo", filter.DateFrom, filter.DateTo)
-                .AddString("issuing_category = @issuingCategory", "issuingCategory", filter.IssuingCategory)
-                .AddString("source_bank_name = @sourceBankName", "sourceBankName", filter.SourceBankName)
-                .AddString("payment_system = @paymentSystem", "paymentSystem", filter.PaymentSystem)
-                .AddString("acquiring_device_type = @device", "device", filter.AcquiringDevice)
-                .AddString("card_product_type_category = @cardType", "cardType", filter.CardType)
-                .AddString("transaction_currency = @currency", "currency", filter.Currency)
-                .AddString("operation_type = @operationType", "operationType", filter.OperationType)
-                .AddString("trans_group = @transGroup", "transGroup", filter.TransGroup)
-                .AddString("token_status = @tokenStatus", "tokenStatus", filter.TokenStatus);
+                .AddString("issuing_category = :issuingCategory", "issuingCategory", filter.IssuingCategory)
+                .AddString("source_bank_name = :sourceBankName", "sourceBankName", filter.SourceBankName)
+                .AddString("payment_system = :paymentSystem", "paymentSystem", filter.PaymentSystem)
+                .AddString("acquiring_device_type = :device", "device", filter.AcquiringDevice)
+                .AddString("card_product_type_category = :cardType", "cardType", filter.CardType)
+                .AddString("transaction_currency = :currency", "currency", filter.Currency)
+                .AddString("operation_type = :operationType", "operationType", filter.OperationType)
+                .AddString("trans_group = :transGroup", "transGroup", filter.TransGroup)
+                .AddString("token_status = :tokenStatus", "tokenStatus", filter.TokenStatus);
 
             if (includeTargetBank)
-                builder.AddString("target_bank_name = @targetBank", "targetBank", filter.TargetBankName);
+                builder.AddString("target_bank_name = :targetBank", "targetBank", filter.TargetBankName);
 
             return builder;
         }

@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle.CardTransaction;
 using RMS.Domain.Repositories.Oracle;
 
@@ -13,10 +13,11 @@ public class CardDashboardRepository : ICardDashboardRepository
 
     public CardDashboardRepository(IConfiguration config)
     {
-        _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+        _connStr = config.GetConnectionString("OracleConnection")
+            ?? config.GetConnectionString("PostgreSqlConnection")!;
     }
 
-    private NpgsqlConnection Connection => new NpgsqlConnection(_connStr);
+    private OracleConnection Connection => new OracleConnection(_connStr);
 
     // ── HELPERS ──────────────────────────────────────────────────────────────
 

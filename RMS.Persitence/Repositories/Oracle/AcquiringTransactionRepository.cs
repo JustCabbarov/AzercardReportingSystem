@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle.AcquiringTransaction;
 using RMS.Domain.Repositories.Oracle;
 using System;
@@ -18,10 +18,11 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public AcquiringDeviceRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+            _connStr = config.GetConnectionString("OracleConnection")
+                ?? config.GetConnectionString("PostgreSqlConnection")!;
         }
 
-        private NpgsqlConnection Connect() => new(_connStr);
+        private OracleConnection Connect() => new(_connStr);
 
         private static readonly HashSet<string> AllowedDimensions =
             new(StringComparer.OrdinalIgnoreCase)
@@ -71,53 +72,49 @@ namespace RMS.Persitence.Repositories.Oracle
         // ─────────────────────────────────────────────
         public async Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync()
         {
-            const string sql = """
-            SELECT
-                ARRAY_AGG(DISTINCT acquiring_device_type_calc ORDER BY acquiring_device_type_calc)
-                    FILTER (WHERE acquiring_device_type_calc IS NOT NULL) AS device_types,
-                ARRAY_AGG(DISTINCT trans_group       ORDER BY trans_group)
-                    FILTER (WHERE trans_group IS NOT NULL)                AS trans_groups,
-                ARRAY_AGG(DISTINCT operation_type    ORDER BY operation_type)
-                    FILTER (WHERE operation_type IS NOT NULL)             AS op_types,
-                ARRAY_AGG(DISTINCT token_status      ORDER BY token_status)
-                    FILTER (WHERE token_status IS NOT NULL)               AS token_statuses,
-                ARRAY_AGG(DISTINCT mcc               ORDER BY mcc)
-                    FILTER (WHERE mcc IS NOT NULL)                        AS mccs,
-                ARRAY_AGG(DISTINCT is_acquiring_category ORDER BY is_acquiring_category)
-                    FILTER (WHERE is_acquiring_category IS NOT NULL)      AS acq_categories,
-                ARRAY_AGG(DISTINCT target_bank_name  ORDER BY target_bank_name)
-                    FILTER (WHERE target_bank_name IS NOT NULL)           AS target_banks,
-                ARRAY_AGG(DISTINCT source_bank_name  ORDER BY source_bank_name)
-                    FILTER (WHERE source_bank_name IS NOT NULL)           AS source_banks,
-                ARRAY_AGG(DISTINCT target_city       ORDER BY target_city)
-                    FILTER (WHERE target_city IS NOT NULL)                AS target_cities,
-                ARRAY_AGG(DISTINCT payment_system    ORDER BY payment_system)
-                    FILTER (WHERE payment_system IS NOT NULL)             AS payment_systems,
-                ARRAY_AGG(DISTINCT is_contactless::text ORDER BY is_contactless::text)
-                    FILTER (WHERE is_contactless IS NOT NULL)             AS contactless,
-                MIN(report_date) AS min_date,
-                MAX(report_date) AS max_date
-            FROM mv_acquiring_device_transaction
-            """;
-
             using var db = Connect();
-            var row = await db.QuerySingleAsync(sql);
+
+            var minMax = await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(
+                "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction");
+
+            var deviceTypes = (await db.QueryAsync<string>(
+                "SELECT DISTINCT acquiring_device_type_calc FROM mv_acquiring_device_transaction WHERE acquiring_device_type_calc IS NOT NULL ORDER BY acquiring_device_type_calc")).ToList();
+            var transGroups = (await db.QueryAsync<string>(
+                "SELECT DISTINCT trans_group FROM mv_acquiring_device_transaction WHERE trans_group IS NOT NULL ORDER BY trans_group")).ToList();
+            var opTypes = (await db.QueryAsync<string>(
+                "SELECT DISTINCT operation_type FROM mv_acquiring_device_transaction WHERE operation_type IS NOT NULL ORDER BY operation_type")).ToList();
+            var tokenStatuses = (await db.QueryAsync<string>(
+                "SELECT DISTINCT token_status FROM mv_acquiring_device_transaction WHERE token_status IS NOT NULL ORDER BY token_status")).ToList();
+            var mccs = (await db.QueryAsync<string>(
+                "SELECT DISTINCT mcc FROM mv_acquiring_device_transaction WHERE mcc IS NOT NULL ORDER BY mcc")).ToList();
+            var acqCategories = (await db.QueryAsync<string>(
+                "SELECT DISTINCT is_acquiring_category FROM mv_acquiring_device_transaction WHERE is_acquiring_category IS NOT NULL ORDER BY is_acquiring_category")).ToList();
+            var targetBanks = (await db.QueryAsync<string>(
+                "SELECT DISTINCT target_bank_name FROM mv_acquiring_device_transaction WHERE target_bank_name IS NOT NULL ORDER BY target_bank_name")).ToList();
+            var sourceBanks = (await db.QueryAsync<string>(
+                "SELECT DISTINCT source_bank_name FROM mv_acquiring_device_transaction WHERE source_bank_name IS NOT NULL ORDER BY source_bank_name")).ToList();
+            var targetCities = (await db.QueryAsync<string>(
+                "SELECT DISTINCT target_city FROM mv_acquiring_device_transaction WHERE target_city IS NOT NULL ORDER BY target_city")).ToList();
+            var paymentSystems = (await db.QueryAsync<string>(
+                "SELECT DISTINCT payment_system FROM mv_acquiring_device_transaction WHERE payment_system IS NOT NULL ORDER BY payment_system")).ToList();
+            var contactless = (await db.QueryAsync<string>(
+                "SELECT DISTINCT TO_CHAR(is_contactless) FROM mv_acquiring_device_transaction WHERE is_contactless IS NOT NULL ORDER BY TO_CHAR(is_contactless)")).ToList();
 
             return new AcquiringFilterOptionsResponse
             {
-                AcquiringDeviceTypes = ((string[])row.device_types ?? []).ToList(),
-                TransGroups = ((string[])row.trans_groups ?? []).ToList(),
-                OperationTypes = ((string[])row.op_types ?? []).ToList(),
-                TokenStatuses = ((string[])row.token_statuses ?? []).ToList(),
-                Mccs = ((string[])row.mccs ?? []).ToList(),
-                AcquiringCategories = ((string[])row.acq_categories ?? []).ToList(),
-                TargetBanks = ((string[])row.target_banks ?? []).ToList(),
-                SourceBanks = ((string[])row.source_banks ?? []).ToList(),
-                TargetCities = ((string[])row.target_cities ?? []).ToList(),
-                PaymentSystems = ((string[])row.payment_systems ?? []).ToList(),
-                ContactlessStatuses = ((string[])row.contactless ?? []).ToList(),
-                MinDate = (DateTime)row.min_date,
-                MaxDate = (DateTime)row.max_date,
+                AcquiringDeviceTypes = deviceTypes,
+                TransGroups = transGroups,
+                OperationTypes = opTypes,
+                TokenStatuses = tokenStatuses,
+                Mccs = mccs,
+                AcquiringCategories = acqCategories,
+                TargetBanks = targetBanks,
+                SourceBanks = sourceBanks,
+                TargetCities = targetCities,
+                PaymentSystems = paymentSystems,
+                ContactlessStatuses = contactless,
+                MinDate = minMax.min_date,
+                MaxDate = minMax.max_date,
             };
         }
 
@@ -144,7 +141,7 @@ namespace RMS.Persitence.Repositories.Oracle
             var sql = $"""
             SELECT
                 acquiring_device_type_calc                                    AS DeviceType,
-                ROUND(SUM(local_amount) / @Divisor, 2)                        AS Volume,
+                ROUND(SUM(local_amount) / :Divisor, 2)                        AS Volume,
                 SUM(transaction_count)                                        AS Count,
                 ROUND(
                     CASE WHEN SUM(transaction_count) = 0 THEN 0
@@ -184,7 +181,7 @@ namespace RMS.Persitence.Repositories.Oracle
             grand AS (SELECT SUM(val) AS g FROM totals)
             SELECT
                 label                                    AS Label,
-                ROUND(val / @Divisor, 2)                 AS Value,
+                ROUND(val / :Divisor, 2)                 AS Value,
                 cnt                                      AS Count,
                 ROUND(val * 100.0 / NULLIF(g, 0), 2)     AS Percent
             FROM totals CROSS JOIN grand
@@ -219,7 +216,7 @@ namespace RMS.Persitence.Repositories.Oracle
             grand AS (SELECT SUM(val) AS g FROM totals)
             SELECT
                 label                                    AS TransGroup,
-                ROUND(val / @Divisor, 2)                 AS Value,
+                ROUND(val / :Divisor, 2)                 AS Value,
                 cnt                                      AS Count,
                 ROUND(val * 100.0 / NULLIF(g, 0), 2)     AS Percent
             FROM totals CROSS JOIN grand
@@ -254,7 +251,7 @@ namespace RMS.Persitence.Repositories.Oracle
             grand AS (SELECT SUM(val) AS g FROM totals)
             SELECT
                 label                                    AS PaymentSystem,
-                ROUND(val / @Divisor, 2)                 AS Value,
+                ROUND(val / :Divisor, 2)                 AS Value,
                 cnt                                      AS Count,
                 ROUND(val * 100.0 / NULLIF(g, 0), 2)     AS Percent
             FROM totals CROSS JOIN grand
@@ -277,8 +274,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
             var truncExpr = r.Granularity == "year"
-     ? "DATE_TRUNC('year', period_month)::DATE"
-     : "period_month";
+                ? "TRUNC(period_month, 'YYYY')"
+                : "period_month";
 
             var divisor = GetDivisor(r.AmountUnit);
             var valExpr = GetValueExpr(r.Category);
@@ -289,7 +286,7 @@ namespace RMS.Persitence.Repositories.Oracle
             SELECT
                 {dim}                              AS series_label,
                 {truncExpr}                        AS period,
-                ROUND({valExpr} / @Divisor, 2)     AS actual
+                ROUND({valExpr} / :Divisor, 2)     AS actual
             FROM mv_acquiring_device_transaction m
             {filter.WhereClause}
             GROUP BY {dim}, {truncExpr}
@@ -350,12 +347,12 @@ namespace RMS.Persitence.Repositories.Oracle
             grand AS (SELECT SUM(val) AS g FROM totals)
             SELECT
                 label                                    AS BankName,
-                ROUND(val / @Divisor, 2)                 AS Value,
+                ROUND(val / :Divisor, 2)                 AS Value,
                 cnt                                      AS Count,
                 ROUND(val * 100.0 / NULLIF(g, 0), 2)     AS Percent
             FROM totals CROSS JOIN grand
             ORDER BY val DESC
-            LIMIT 20
+            FETCH FIRST 20 ROWS ONLY
             """;
 
             using var db = Connect();

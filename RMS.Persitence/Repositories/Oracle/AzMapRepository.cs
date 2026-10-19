@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -20,19 +20,19 @@ namespace RMS.Persitence.Repositories.Oracle
         c.latitude              AS Latitude,
         c.longitude             AS Longitude
     FROM   pg_mv_req4_az_map m
-    LEFT JOIN public.cities c
-           ON TRIM(m.SOURCE_CITY_CLEAN) != ''
+    LEFT JOIN cities c
+           ON TRIM(m.SOURCE_CITY_CLEAN) IS NOT NULL
           AND m.SOURCE_CITY_CLEAN IS NOT NULL
-          AND REGEXP_REPLACE(UPPER(TRIM(c.city_name)), '[^A-ZƏĞIÖŞÜÇ]', '', 'g')
-            = REGEXP_REPLACE(UPPER(TRIM(m.SOURCE_CITY_CLEAN)), '[^A-ZƏĞIÖŞÜÇ]', '', 'g')
+          AND REGEXP_REPLACE(UPPER(TRIM(c.city_name)), '[^A-ZƏĞIÖŞÜÇ]', '')
+            = REGEXP_REPLACE(UPPER(TRIM(m.SOURCE_CITY_CLEAN)), '[^A-ZƏĞIÖŞÜÇ]', '')
     """;
 
         private FilterBuilder BuildFilter(AzMapTransaction f) =>
             new FilterBuilder()
-                .Add("m.BANK_NAME            = @BankName", "BankName", f.BankName)
-                .Add("m.SOURCE_CITY          = @SourceCity", "SourceCity", f.SourceCity)
-                .Add("m.SOURCE_CITY_CLEAN    = @SourceCityClean", "SourceCityClean", f.SourceCityClean)
-                .Add("m.SOURCE_CITY_CATEGORY = @CityCategory", "CityCategory", f.SourceCityCategory)
+                .Add("m.BANK_NAME            = :BankName", "BankName", f.BankName)
+                .Add("m.SOURCE_CITY          = :SourceCity", "SourceCity", f.SourceCity)
+                .Add("m.SOURCE_CITY_CLEAN    = :SourceCityClean", "SourceCityClean", f.SourceCityClean)
+                .Add("m.SOURCE_CITY_CATEGORY = :CityCategory", "CityCategory", f.SourceCityCategory)
                 .AddMonth("m.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
@@ -57,8 +57,8 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
-                .Add("m.BANK_NAME   = @BankName", "BankName", bankName)
-                .Add("m.SOURCE_CITY = @SourceCity", "SourceCity", sourceCity)
+                .Add("m.BANK_NAME   = :BankName", "BankName", bankName)
+                .Add("m.SOURCE_CITY = :SourceCity", "SourceCity", sourceCity)
                 .AddMonth("m.REPORT_MONTH", "Month", month);
 
             using var conn = CreateConnection();

@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Entities.Oracle.CardPortfolio.RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -14,10 +14,11 @@ namespace RMS.Persistence.Repositories.Cards
 
         public CardPortfolioRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+            _connStr = config.GetConnectionString("OracleConnection")
+                ?? config.GetConnectionString("PostgreSqlConnection")!;
         }
 
-        private NpgsqlConnection Connect() => new(_connStr);
+        private OracleConnection Connect() => new(_connStr);
 
         private static readonly HashSet<string> AllowedDimensions = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -45,13 +46,13 @@ namespace RMS.Persistence.Repositories.Cards
 
             if (!string.IsNullOrEmpty(f.ContactlessStatus))
             {
-                fb.AddRaw($"{alias}.contactless_status = @ContactlessStatus");
+                fb.AddRaw($"{alias}.contactless_status = :ContactlessStatus");
                 fb.Parameters.Add("ContactlessStatus", f.ContactlessStatus);
             }
 
             if (!string.IsNullOrEmpty(f.ExpStatus))
             {
-                fb.AddRaw($"{alias}.exp_status = @ExpStatus");
+                fb.AddRaw($"{alias}.exp_status = :ExpStatus");
                 fb.Parameters.Add("ExpStatus", f.ExpStatus);
             }
 
@@ -69,7 +70,7 @@ namespace RMS.Persistence.Repositories.Cards
             var dataSql = $"""
                 {baseSql}
                 ORDER BY {orderBy}
-                LIMIT @PageSize OFFSET @Offset
+                OFFSET :Offset ROWS FETCH NEXT :PageSize ROWS ONLY
                 """;
 
             var dynParams = new DynamicParameters(parameters);
@@ -96,38 +97,43 @@ namespace RMS.Persistence.Repositories.Cards
         // ─────────────────────────────────────────────
         public async Task<FilterOptionsResponse> GetFilterOptionsAsync()
         {
-            const string sql = """
-                SELECT
-                    ARRAY_AGG(DISTINCT bank_name            ORDER BY bank_name)            AS banks,
-                    ARRAY_AGG(DISTINCT region_name          ORDER BY region_name)          AS regions,
-                    ARRAY_AGG(DISTINCT payment_scheme       ORDER BY payment_scheme)       AS schemes,
-                    ARRAY_AGG(DISTINCT product_type         ORDER BY product_type)         AS product_types,
-                    ARRAY_AGG(DISTINCT contactless_status   ORDER BY contactless_status)   AS contactless,
-                    ARRAY_AGG(DISTINCT exp_status           ORDER BY exp_status)           AS exp_statuses,
-                    ARRAY_AGG(DISTINCT status_3d            ORDER BY status_3d)            AS status_3ds,
-                    ARRAY_AGG(DISTINCT base_currency_name   ORDER BY base_currency_name)   AS currencies,
-                    ARRAY_AGG(DISTINCT card_product_name    ORDER BY card_product_name)    AS card_products,
-                    MIN(report_month) AS min_month,
-                    MAX(report_month) AS max_month
-                FROM mv_card_portfolio
-                """;
-
             using var db = Connect();
-            var row = await db.QuerySingleAsync(sql);
+
+            var minMax = await db.QuerySingleAsync<(DateTime min_month, DateTime max_month)>(
+                "SELECT MIN(report_month) AS min_month, MAX(report_month) AS max_month FROM mv_card_portfolio");
+
+            var banks = (await db.QueryAsync<string>(
+                "SELECT DISTINCT bank_name FROM mv_card_portfolio WHERE bank_name IS NOT NULL ORDER BY bank_name")).ToList();
+            var regions = (await db.QueryAsync<string>(
+                "SELECT DISTINCT region_name FROM mv_card_portfolio WHERE region_name IS NOT NULL ORDER BY region_name")).ToList();
+            var schemes = (await db.QueryAsync<string>(
+                "SELECT DISTINCT payment_scheme FROM mv_card_portfolio WHERE payment_scheme IS NOT NULL ORDER BY payment_scheme")).ToList();
+            var productTypes = (await db.QueryAsync<string>(
+                "SELECT DISTINCT product_type FROM mv_card_portfolio WHERE product_type IS NOT NULL ORDER BY product_type")).ToList();
+            var contactless = (await db.QueryAsync<string>(
+                "SELECT DISTINCT contactless_status FROM mv_card_portfolio WHERE contactless_status IS NOT NULL ORDER BY contactless_status")).ToList();
+            var expStatuses = (await db.QueryAsync<string>(
+                "SELECT DISTINCT exp_status FROM mv_card_portfolio WHERE exp_status IS NOT NULL ORDER BY exp_status")).ToList();
+            var status3Ds = (await db.QueryAsync<string>(
+                "SELECT DISTINCT status_3d FROM mv_card_portfolio WHERE status_3d IS NOT NULL ORDER BY status_3d")).ToList();
+            var currencies = (await db.QueryAsync<string>(
+                "SELECT DISTINCT base_currency_name FROM mv_card_portfolio WHERE base_currency_name IS NOT NULL ORDER BY base_currency_name")).ToList();
+            var cardProducts = (await db.QueryAsync<string>(
+                "SELECT DISTINCT card_product_name FROM mv_card_portfolio WHERE card_product_name IS NOT NULL ORDER BY card_product_name")).ToList();
 
             return new FilterOptionsResponse
             {
-                Banks = ((string[])row.banks).ToList(),
-                Regions = ((string[])row.regions).ToList(),
-                PaymentSchemes = ((string[])row.schemes).ToList(),
-                ProductTypes = ((string[])row.product_types).ToList(),
-                ContactlessStatuses = ((string[])row.contactless).ToList(),
-                ExpStatuses = ((string[])row.exp_statuses).ToList(),
-                Status3Ds = ((string[])row.status_3ds).ToList(),
-                Currencies = ((string[])row.currencies).ToList(),
-                CardProducts = ((string[])row.card_products).ToList(),
-                MinMonth = (DateTime)row.min_month,
-                MaxMonth = (DateTime)row.max_month
+                Banks = banks,
+                Regions = regions,
+                PaymentSchemes = schemes,
+                ProductTypes = productTypes,
+                ContactlessStatuses = contactless,
+                ExpStatuses = expStatuses,
+                Status3Ds = status3Ds,
+                Currencies = currencies,
+                CardProducts = cardProducts,
+                MinMonth = minMax.min_month,
+                MaxMonth = minMax.max_month
             };
         }
 
@@ -329,7 +335,7 @@ namespace RMS.Persistence.Repositories.Cards
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
             var truncExpr = r.Granularity == "year"
-                ? "DATE_TRUNC('year', report_month)::DATE"
+                ? "TRUNC(report_month, 'YYYY')"
                 : "report_month";
 
             var sql = $"""

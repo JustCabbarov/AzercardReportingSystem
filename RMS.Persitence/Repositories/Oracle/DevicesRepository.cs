@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle.DeviceModel;
 using RMS.Domain.Repositories.Oracle;
 
@@ -12,10 +12,11 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public DevicesRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+            _connStr = config.GetConnectionString("OracleConnection")
+                ?? config.GetConnectionString("PostgreSqlConnection")!;
         }
 
-        private NpgsqlConnection Connect() => new(_connStr);
+        private OracleConnection Connect() => new(_connStr);
 
         // ── shared filter builder ─────────────────────────────────────
         private static FilterBuilder BuildCommonFilter(

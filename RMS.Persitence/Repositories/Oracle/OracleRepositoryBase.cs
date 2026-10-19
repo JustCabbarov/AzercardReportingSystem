@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle;
 using System.Data;
 
@@ -12,12 +12,13 @@ namespace RMS.Persitence.Repositories.Oracle
 
         protected OracleRepositoryBase(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("PostgreSQLConnection")
-                ?? throw new InvalidOperationException("PostgreSQL connection tapılmadı");
+            _connectionString = configuration.GetConnectionString("OracleConnection")
+                ?? configuration.GetConnectionString("PostgreSqlConnection")
+                ?? throw new InvalidOperationException("Oracle connection tapılmadı");
         }
 
         protected IDbConnection CreateConnection() =>
-            new NpgsqlConnection(_connectionString);
+            new OracleConnection(_connectionString);
 
         protected async Task<PagedResult<T>> QueryPagedAsync<T>(
             string baseSql,
@@ -26,12 +27,12 @@ namespace RMS.Persitence.Repositories.Oracle
             DynamicParameters? param,
             CancellationToken ct)
         {
-            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) AS _count";
+            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) _count";
 
             var pagedSql = $"""
-    SELECT * FROM ({baseSql}) AS _paged
+    SELECT * FROM ({baseSql}) _paged
     ORDER BY {orderBy}
-    LIMIT @PageSize OFFSET @Offset
+    OFFSET :Offset ROWS FETCH NEXT :PageSize ROWS ONLY
     """;
 
             var dynParam = new DynamicParameters(param);

@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -22,12 +22,12 @@ namespace RMS.Persitence.Repositories.Oracle
             SOURCE_COUNTRY_CATEGORY             AS SourceCountryCategory,
             IS_ACQUIRING                        AS IsAcquiring,
             IS_ISSUING                          AS IsIssuing,
-            TOTAL_AMOUNT::float8                AS TotalAmount,
-            TOTAL_COUNT::bigint                 AS TotalCount,
-            TOTAL_LOCAL_AMOUNT::float8          AS TotalLocalAmount,
-            AVG_TICKET::float8                  AS AvgTicket,
-            LOCAL_RATIO_PCT::float8             AS LocalRatioPct,
-            SECTOR_MARKET_SHARE_PCT::float8     AS SectorMarketSharePct
+            TOTAL_AMOUNT                        AS TotalAmount,
+            TOTAL_COUNT                         AS TotalCount,
+            TOTAL_LOCAL_AMOUNT                  AS TotalLocalAmount,
+            AVG_TICKET                          AS AvgTicket,
+            LOCAL_RATIO_PCT                     AS LocalRatioPct,
+            SECTOR_MARKET_SHARE_PCT             AS SectorMarketSharePct
         FROM pg_mv_req8_sector_spend
         """;
 
@@ -45,14 +45,14 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct)
         {
             var filter = new FilterBuilder()
-                .AddString("BANK_NAME = @BankName", "BankName", bankName)                          // ← AddString
-                .AddString("MCC_GROUP = @MccGroup", "MccGroup", mccGroup)                          // ← AddString
-                .AddString("SOURCE_CHANNEL = @SourceChannel", "SourceChannel", sourceChannel)      // ← AddString
-                .AddString("OPERATION_TYPE = @OperationType", "OperationType", operationType)      // ← AddString
-                .AddString("SOURCE_CITY_CATEGORY = @CityCategory", "CityCategory", sourceCityCategory)           // ← AddString
-                .AddString("SOURCE_COUNTRY_CATEGORY = @CountryCategory", "CountryCategory", sourceCountryCategory) // ← AddString
-                .Add("IS_ACQUIRING = @IsAcquiring", "IsAcquiring", isAcquiring)                   // int? — Add qalır
-                .Add("IS_ISSUING = @IsIssuing", "IsIssuing", isIssuing)                            // int? — Add qalır
+                .AddString("BANK_NAME = :BankName", "BankName", bankName)
+                .AddString("MCC_GROUP = :MccGroup", "MccGroup", mccGroup)
+                .AddString("SOURCE_CHANNEL = :SourceChannel", "SourceChannel", sourceChannel)
+                .AddString("OPERATION_TYPE = :OperationType", "OperationType", operationType)
+                .AddString("SOURCE_CITY_CATEGORY = :CityCategory", "CityCategory", sourceCityCategory)
+                .AddString("SOURCE_COUNTRY_CATEGORY = :CountryCategory", "CountryCategory", sourceCountryCategory)
+                .Add("IS_ACQUIRING = :IsAcquiring", "IsAcquiring", isAcquiring)
+                .Add("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing)
                 .AddMonth("REPORT_MONTH", "Month", month);
 
             return QueryPagedAsync<SectorSpend>(
@@ -98,16 +98,16 @@ namespace RMS.Persitence.Repositories.Oracle
             string bankName, string mccGroup, CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
-                .Add("BANK_NAME = @BankName", "BankName", bankName)
-                .Add("MCC_GROUP = @MccGroup", "MccGroup", mccGroup);
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("MCC_GROUP = :MccGroup", "MccGroup", mccGroup);
 
             var sql = $"""
             SELECT
                 REPORT_MONTH                                                AS ReportMonth,
-                SUM(TOTAL_AMOUNT)::float8                                   AS TotalAmount,
-                SUM(TOTAL_COUNT)::bigint                                    AS TotalCount,
-                (SUM(TOTAL_AMOUNT) / NULLIF(SUM(TOTAL_COUNT), 0))::float8  AS AvgTicket,
-                AVG(SECTOR_MARKET_SHARE_PCT)::float8                       AS SectorMarketSharePct
+                SUM(TOTAL_AMOUNT)                                           AS TotalAmount,
+                SUM(TOTAL_COUNT)                                            AS TotalCount,
+                ROUND(SUM(TOTAL_AMOUNT) / NULLIF(SUM(TOTAL_COUNT), 0), 2)   AS AvgTicket,
+                AVG(SECTOR_MARKET_SHARE_PCT)                                AS SectorMarketSharePct
             FROM pg_mv_req8_sector_spend
             {filter.WhereClause}
             GROUP BY REPORT_MONTH

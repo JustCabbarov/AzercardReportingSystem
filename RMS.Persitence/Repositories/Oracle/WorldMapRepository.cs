@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -11,22 +11,21 @@ namespace RMS.Persitence.Repositories.Oracle
 
         private FilterBuilder BuildFilter(WorldMapTransaction f) =>
             new FilterBuilder()
-                .AddString("w.BANK_NAME = @BankName", "BankName", f.BankName)
-                .AddString("UPPER(w.SOURCE_COUNTRY) = UPPER(@SourceCountry)", "SourceCountry", f.SourceCountry)
-                .AddString("w.SOURCE_COUNTRY_CATEGORY = @SourceCountryCategory", "SourceCountryCategory", f.SourceCountryCategory)
-                .AddString("UPPER(w.TARGET_COUNTRY) = UPPER(@TargetCountry)", "TargetCountry", f.TargetCountry)
-                .AddString("w.TARGET_COUNTRY_CATEGORY = @TargetCountryCategory", "TargetCountryCategory", f.TargetCountryCategory)
-                .AddString("w.PAYMENT_SYSTEM = @PaymentSystem", "PaymentSystem", f.PaymentSystem)
-.Add("w.IS_ISSUING = @IsIssuing", "IsIssuing", f.IsIssuing.HasValue ? (f.IsIssuing.Value ? 1 : 0) : (object?)null)
-.Add("w.IS_ACQUIRING = @IsAcquiring", "IsAcquiring", f.IsAcquiring.HasValue ? (f.IsAcquiring.Value ? 1 : 0) : (object?)null)
-
+                .AddString("w.BANK_NAME = :BankName", "BankName", f.BankName)
+                .AddString("UPPER(w.SOURCE_COUNTRY) = UPPER(:SourceCountry)", "SourceCountry", f.SourceCountry)
+                .AddString("w.SOURCE_COUNTRY_CATEGORY = :SourceCountryCategory", "SourceCountryCategory", f.SourceCountryCategory)
+                .AddString("UPPER(w.TARGET_COUNTRY) = UPPER(:TargetCountry)", "TargetCountry", f.TargetCountry)
+                .AddString("w.TARGET_COUNTRY_CATEGORY = :TargetCountryCategory", "TargetCountryCategory", f.TargetCountryCategory)
+                .AddString("w.PAYMENT_SYSTEM = :PaymentSystem", "PaymentSystem", f.PaymentSystem)
+                .Add("w.IS_ISSUING = :IsIssuing", "IsIssuing", f.IsIssuing.HasValue ? (f.IsIssuing.Value ? 1 : 0) : (object?)null)
+                .Add("w.IS_ACQUIRING = :IsAcquiring", "IsAcquiring", f.IsAcquiring.HasValue ? (f.IsAcquiring.Value ? 1 : 0) : (object?)null)
                 .AddMonth("w.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
         public Task<PagedResult<WorldMapTransaction>> FilterAsync(
-    WorldMapTransaction f,
-    PageRequest pageReq,
-    CancellationToken ct = default)
+            WorldMapTransaction f,
+            PageRequest pageReq,
+            CancellationToken ct = default)
         {
             var filter = BuildFilter(f);
             var sql = $"""
@@ -67,7 +66,7 @@ namespace RMS.Persitence.Repositories.Oracle
             LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
             LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
             {filter.WhereClause}
-        ) AS _base
+        ) _base
         """;
 
             return QueryPagedAsync<WorldMapTransaction>(
@@ -83,19 +82,19 @@ namespace RMS.Persitence.Repositories.Oracle
         {
             var sql = $"""
                 SELECT
-                    INITCAP(w.SOURCE_COUNTRY)         AS SourceCountry,
-                    w.SOURCE_COUNTRY_CATEGORY         AS SourceCountryCategory,
-                    INITCAP(w.TARGET_COUNTRY)         AS TargetCountry,
-                    w.TARGET_COUNTRY_CATEGORY         AS TargetCountryCategory,
-                    w.PAYMENT_SYSTEM                  AS PaymentSystem,
-                    MAX(w.IS_ISSUING) = 1    AS IsIssuing,
-                    MAX(w.IS_ACQUIRING) = 1  AS IsAcquiring,
-                    SUM(w.TOTAL_AMOUNT)               AS TotalAmount,
-                    SUM(w.TOTAL_COUNT)                AS TotalCount,
-                    sc.latitude                       AS SourceLatitude,
-                    sc.longitude                      AS SourceLongitude,
-                    tc.latitude                       AS TargetLatitude,
-                    tc.longitude                      AS TargetLongitude
+                    INITCAP(w.SOURCE_COUNTRY)                                       AS SourceCountry,
+                    w.SOURCE_COUNTRY_CATEGORY                                       AS SourceCountryCategory,
+                    INITCAP(w.TARGET_COUNTRY)                                       AS TargetCountry,
+                    w.TARGET_COUNTRY_CATEGORY                                       AS TargetCountryCategory,
+                    w.PAYMENT_SYSTEM                                                AS PaymentSystem,
+                    CASE WHEN MAX(w.IS_ISSUING) = 1 THEN 1 ELSE 0 END               AS IsIssuing,
+                    CASE WHEN MAX(w.IS_ACQUIRING) = 1 THEN 1 ELSE 0 END             AS IsAcquiring,
+                    SUM(w.TOTAL_AMOUNT)                                             AS TotalAmount,
+                    SUM(w.TOTAL_COUNT)                                              AS TotalCount,
+                    sc.latitude                                                     AS SourceLatitude,
+                    sc.longitude                                                    AS SourceLongitude,
+                    tc.latitude                                                     AS TargetLatitude,
+                    tc.longitude                                                    AS TargetLongitude
                 FROM pg_mv_req3_world_map w
                 LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
                 LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
@@ -157,42 +156,42 @@ namespace RMS.Persitence.Repositories.Oracle
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName",
+                "w.BANK_NAME = :BankName",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetByMonthAsync(
             DateTime month, CancellationToken ct = default)
             => QueryRawAsync(
-                "DATE_TRUNC('month', w.REPORT_MONTH) = DATE_TRUNC('month', @Month::timestamp)",
+                "TRUNC(w.REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')",
                 new { Month = month.Date },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetBySourceCountryAsync(
             string country, CancellationToken ct = default)
             => QueryRawAsync(
-                "UPPER(w.SOURCE_COUNTRY) = UPPER(@Country)",
+                "UPPER(w.SOURCE_COUNTRY) = UPPER(:Country)",
                 new { Country = country },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetIssuingAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName AND w.IS_ISSUING = 1",
+                "w.BANK_NAME = :BankName AND w.IS_ISSUING = 1",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetAcquiringAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName AND w.IS_ACQUIRING = 1",
+                "w.BANK_NAME = :BankName AND w.IS_ACQUIRING = 1",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAndMonthAsync(
             string bankName, DateTime month, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = @BankName AND DATE_TRUNC('month', w.REPORT_MONTH) = DATE_TRUNC('month', @Month::timestamp)",
+                "w.BANK_NAME = :BankName AND TRUNC(w.REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')",
                 new { BankName = bankName, Month = month.Date },
                 ct);
     }

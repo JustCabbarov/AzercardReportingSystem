@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle.SummaryTransaction;
 using RMS.Domain.Repositories.Oracle;
 using System;
@@ -22,10 +22,11 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public SummaryTransactionRepository(IConfiguration config)
         {
-            _connStr = config.GetConnectionString("PostgreSqlConnection")!;
+            _connStr = config.GetConnectionString("OracleConnection")
+                ?? config.GetConnectionString("PostgreSqlConnection")!;
         }
 
-        private NpgsqlConnection Connect() => new(_connStr);
+        private OracleConnection Connect() => new(_connStr);
 
         public async Task<SummaryTransactionResponse> GetSummaryAsync(SummaryFilterRequest filter)
         {
@@ -39,7 +40,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 acquiring_device_type                   AS AcquiringDeviceType,
                 SUM(total_local_amount) / {scale}       AS TotalLocalAmount,
                 SUM(total_count)                        AS TotalCount
-            FROM public.mv_summary_transaction
+            FROM mv_summary_transaction
             {builder.WhereClause}
             GROUP BY is_issuing, is_acquiring, acquiring_device_type";
 
@@ -106,15 +107,15 @@ namespace RMS.Persitence.Repositories.Oracle
         {
             return new FilterBuilder()
                 .AddRange("report_day", "dateFrom", "dateTo", f.DateFrom, f.DateTo)
-                .AddString("target_bank_name = @targetBank", "targetBank", f.TargetBankName)
-                .AddString("source_bank_name = @sourceBank", "sourceBank", f.SourceBankName)
-                .AddString("card_product_type_category = @cardType", "cardType", f.CardProductType)
-                .AddString("payment_system = @paymentSystem", "paymentSystem", f.PaymentSystem)
-                .AddString("trans_group = @transGroup", "transGroup", f.TransGroup)
-                .AddString("operation_type = @operationType", "operationType", f.OperationType)
-                .AddString("token_status = @tokenStatus", "tokenStatus", f.TokenStatus)
-                .AddString("is_contactless = @isContactless", "isContactless", f.IsContactless)
-                .AddString("transaction_currency = @currency", "currency", f.TransactionCurrency);
+                .AddString("target_bank_name = :targetBank", "targetBank", f.TargetBankName)
+                .AddString("source_bank_name = :sourceBank", "sourceBank", f.SourceBankName)
+                .AddString("card_product_type_category = :cardType", "cardType", f.CardProductType)
+                .AddString("payment_system = :paymentSystem", "paymentSystem", f.PaymentSystem)
+                .AddString("trans_group = :transGroup", "transGroup", f.TransGroup)
+                .AddString("operation_type = :operationType", "operationType", f.OperationType)
+                .AddString("token_status = :tokenStatus", "tokenStatus", f.TokenStatus)
+                .AddString("is_contactless = :isContactless", "isContactless", f.IsContactless)
+                .AddString("transaction_currency = :currency", "currency", f.TransactionCurrency);
         }
     }
 }

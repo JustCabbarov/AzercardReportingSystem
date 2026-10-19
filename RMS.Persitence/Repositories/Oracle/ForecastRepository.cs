@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -41,7 +41,7 @@ public sealed class ForecastRepository : OracleRepositoryBase, IForecastReposito
         string bankName, CancellationToken ct = default)
     {
         var sql = SelectSql + """
-             WHERE BANK_NAME = @BankName
+             WHERE BANK_NAME = :BankName
              ORDER BY MCC_GROUP, REPORT_MONTH
             """;
         using var conn = CreateConnection();
@@ -53,8 +53,8 @@ public sealed class ForecastRepository : OracleRepositoryBase, IForecastReposito
         string bankName, string mccGroup, CancellationToken ct = default)
     {
         var sql = SelectSql + """
-             WHERE BANK_NAME = @BankName
-               AND MCC_GROUP = @MccGroup
+             WHERE BANK_NAME = :BankName
+               AND MCC_GROUP = :MccGroup
              ORDER BY REPORT_MONTH
             """;
         using var conn = CreateConnection();
@@ -68,8 +68,8 @@ public sealed class ForecastRepository : OracleRepositoryBase, IForecastReposito
         DateTime from, DateTime to, CancellationToken ct = default)
     {
         var sql = SelectSql + """
-             WHERE REPORT_MONTH >= @From
-               AND REPORT_MONTH <= @To
+             WHERE REPORT_MONTH >= :From
+               AND REPORT_MONTH <= :To
              ORDER BY BANK_NAME, MCC_GROUP, REPORT_MONTH
             """;
         using var conn = CreateConnection();
@@ -103,7 +103,7 @@ public sealed class ForecastRepository : OracleRepositoryBase, IForecastReposito
         const string sql = """
             SELECT DISTINCT MCC_GROUP
             FROM pg_mv_req1_forecast_input
-            WHERE BANK_NAME = @BankName
+            WHERE BANK_NAME = :BankName
             ORDER BY MCC_GROUP
             """;
         using var conn = CreateConnection();
@@ -117,8 +117,8 @@ public sealed class ForecastRepository : OracleRepositoryBase, IForecastReposito
         const string sql = """
             SELECT MAX(REPORT_MONTH)
             FROM pg_mv_req1_forecast_input
-            WHERE BANK_NAME = @BankName
-              AND MCC_GROUP = @MccGroup
+            WHERE BANK_NAME = :BankName
+              AND MCC_GROUP = :MccGroup
             """;
         using var conn = CreateConnection();
         return await conn.ExecuteScalarAsync<DateTime?>(

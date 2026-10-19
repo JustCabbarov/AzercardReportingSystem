@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -105,6 +105,11 @@ namespace RMS.Domain.Entities.Oracle.CardPortfolio
         {
             public DateTime Period { get; set; }
             public long Count { get; set; }
+
+            // Growth-Rate Proqnoz sahələri
+            public bool IsForecast { get; set; } = false;
+            public decimal? Forecast { get; set; }
+            public decimal? ForecastGrowthRate { get; set; }
         }
 
         public class TrendSeries

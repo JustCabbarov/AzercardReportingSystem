@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -21,7 +21,7 @@ namespace RMS.Persitence.Repositories.Oracle
             BANK_CARD_COUNT     AS BankCardCount,
             MARKET_TOTAL_AMOUNT AS MarketTotalAmount,
             MARKET_TOTAL_CARDS  AS MarketTotalCards
-        FROM public.pg_mv_req7_benchmark
+        FROM pg_mv_req7_benchmark
         """;
 
         private Task<PagedResult<MarketBenchmark>> QueryAsync(
@@ -32,8 +32,8 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct)
         {
             var filter = new FilterBuilder()
-                .Add("BANK_NAME = @BankName", "BankName", bankName)
-                .Add("REGION_NAME_CLEAN = @Region", "Region", regionNameClean)
+                .Add("BANK_NAME = :BankName", "BankName", bankName)
+                .Add("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
                 .AddMonth("REPORT_MONTH", "Month", month);
 
             return QueryPagedAsync<MarketBenchmark>(
@@ -67,7 +67,7 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
-                .Add("REGION_NAME_CLEAN = @Region", "Region", regionNameClean)
+                .Add("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
                 .AddMonth("REPORT_MONTH", "Month", month);
 
             var allSql = SelectColumns + $" {filter.WhereClause}";
@@ -100,17 +100,17 @@ namespace RMS.Persitence.Repositories.Oracle
         }
 
         public Task<PagedResult<MarketBenchmark>> FilterAsync(
-    MarketBenchmark f,
-    PageRequest pageReq,
-    CancellationToken ct = default)
+            MarketBenchmark f,
+            PageRequest pageReq,
+            CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
-                .AddString("BANK_NAME = @BankName", "BankName", f.BankName)           // ← Add → AddString
-                .AddString("REGION_NAME_CLEAN = @Region", "Region", f.RegionNameClean)
-                .AddString("CARD_BRAND_NAME = @CardBrand", "CardBrand", f.CardBrandName)
-                .AddString("PRODUCT_TYPE = @ProductType", "ProductType", f.ProductType)
+                .AddString("BANK_NAME = :BankName", "BankName", f.BankName)
+                .AddString("REGION_NAME_CLEAN = :Region", "Region", f.RegionNameClean)
+                .AddString("CARD_BRAND_NAME = :CardBrand", "CardBrand", f.CardBrandName)
+                .AddString("PRODUCT_TYPE = :ProductType", "ProductType", f.ProductType)
                 .AddMonth("REPORT_MONTH", "Month",
-                    f.ReportMonth == default ? null : (DateTime?)f.ReportMonth);       // ← null cast
+                    f.ReportMonth == default ? null : (DateTime?)f.ReportMonth);
 
             return QueryPagedAsync<MarketBenchmark>(
                 SelectColumns + $" {filter.WhereClause}",
@@ -130,7 +130,7 @@ namespace RMS.Persitence.Repositories.Oracle
         BANK_CARD_COUNT     AS BankCardCount,
         MARKET_TOTAL_CARDS  AS MarketTotalCards
     FROM pg_mv_req7_benchmark
-    WHERE BANK_NAME = @BankName
+    WHERE BANK_NAME = :BankName
     ORDER BY REPORT_MONTH
     """;
 

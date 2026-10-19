@@ -1,7 +1,9 @@
-bin/
-obj/
+**/[Bb]in/
+**/[Oo]bj/
+[Ll]ogs/
+**/[Ll]ogs/
 .vs/
 *.user
 *.suo
 *.log
-publish/
+publish/
