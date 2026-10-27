@@ -58,6 +58,32 @@ public class CardDashboardRepository : ICardDashboardRepository
 
     // ── 1. KPI SUMMARY  (Widget 1-4) ─────────────────────────────────────────
 
+    private record KpiDbRow
+    {
+        public decimal? TotalAmount { get; set; }
+        public decimal? TotalTxCount { get; set; }
+        public decimal? MaxAmount { get; set; }
+        public decimal? AvgAmount { get; set; }
+    }
+
+    private record TrendDbRow
+    {
+        public DateTime? PeriodDate { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? TotalTxCount { get; set; }
+        public decimal? PrevAmount { get; set; }
+        public decimal? PrevTxCount { get; set; }
+    }
+
+    private record BreakdownDbRow
+    {
+        public string? Category { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? TotalTxCount { get; set; }
+        public decimal? AmountPct { get; set; }
+        public decimal? TxCountPct { get; set; }
+    }
+
     public async Task<KpiSummaryResponse> GetKpiSummaryAsync(DashboardFilterRequest filter)
     {
         var fb = BuildFilter(filter);
@@ -74,15 +100,15 @@ public class CardDashboardRepository : ICardDashboardRepository
             {fb.WhereClause}";
 
         using var con = Connection;
-        var r = await con.QuerySingleOrDefaultAsync<dynamic>(sql, fb.Parameters);
+        var r = await con.QuerySingleOrDefaultAsync<KpiDbRow>(sql, fb.Parameters);
         if (r is null) return new();
 
         return new KpiSummaryResponse
         {
-            TotalAmount = Round((decimal)(r.totalamount ?? 0m), filter.RoundTo),
-            TotalTxCount = (long)(r.totaltxcount ?? 0L),
-            MaxAmount = Round((decimal)(r.maxamount ?? 0m), filter.RoundTo),
-            AvgAmount = Round((decimal)(r.avgamount ?? 0m), filter.RoundTo),
+            TotalAmount = Round(r.TotalAmount ?? 0m, filter.RoundTo),
+            TotalTxCount = (long)(r.TotalTxCount ?? 0m),
+            MaxAmount = Round(r.MaxAmount ?? 0m, filter.RoundTo),
+            AvgAmount = Round(r.AvgAmount ?? 0m, filter.RoundTo),
         };
     }
 
@@ -106,15 +132,15 @@ public class CardDashboardRepository : ICardDashboardRepository
             ORDER BY {col}";
 
         using var con = Connection;
-        var rows = await con.QueryAsync<dynamic>(sql, fb.Parameters);
+        var rows = await con.QueryAsync<TrendDbRow>(sql, fb.Parameters);
 
         return rows.Select(r =>
         {
-            decimal total = (decimal)(r.totalamount ?? 0m);
-            decimal totalTx = (decimal)(r.totaltxcount ?? 0m);
-            decimal? prev = r.prevamount == null ? null : (decimal?)r.prevamount;
-            decimal? prevTx = r.prevtxcount == null ? null : (decimal?)r.prevtxcount;
-            DateTime dt = (DateTime)r.perioddate;
+            decimal total = r.TotalAmount ?? 0m;
+            decimal totalTx = r.TotalTxCount ?? 0m;
+            decimal? prev = r.PrevAmount;
+            decimal? prevTx = r.PrevTxCount;
+            DateTime dt = r.PeriodDate ?? DateTime.MinValue;
 
             return new TrendPoint
             {
@@ -168,18 +194,18 @@ public class CardDashboardRepository : ICardDashboardRepository
             ORDER BY TotalAmount DESC";
 
         using var con = Connection;
-        var rows = await con.QueryAsync<dynamic>(sql, fb.Parameters);
+        var rows = await con.QueryAsync<BreakdownDbRow>(sql, fb.Parameters);
 
         return new BreakdownResponse
         {
             GroupBy = categoryCol,
             Items = rows.Select(r => new BreakdownItem
             {
-                Category = (string)(r.category ?? ""),
-                TotalAmount = Round((decimal)(r.totalamount ?? 0m), filter.RoundTo),
-                TotalTxCount = (long)(r.totaltxcount ?? 0L),
-                AmountPct = (decimal)(r.amountpct ?? 0m),
-                TxCountPct = (decimal)(r.txcountpct ?? 0m),
+                Category = r.Category ?? "",
+                TotalAmount = Round(r.TotalAmount ?? 0m, filter.RoundTo),
+                TotalTxCount = (long)(r.TotalTxCount ?? 0m),
+                AmountPct = r.AmountPct ?? 0m,
+                TxCountPct = r.TxCountPct ?? 0m,
             }).ToList()
         };
     }

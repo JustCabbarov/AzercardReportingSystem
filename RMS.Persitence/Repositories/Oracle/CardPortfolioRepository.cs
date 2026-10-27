@@ -66,7 +66,7 @@ namespace RMS.Persistence.Repositories.Cards
             object? parameters,
             CancellationToken ct = default)
         {
-            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) _cnt";
+            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) t_cnt";
             var dataSql = $"""
                 {baseSql}
                 ORDER BY {orderBy}
@@ -350,21 +350,28 @@ namespace RMS.Persistence.Repositories.Cards
                 """;
 
             using var db = Connect();
-            var rows = await db.QueryAsync(sql, filter.Parameters);
+            var rows = await db.QueryAsync<TrendDbItem>(sql, filter.Parameters);
 
             var series = rows
-                .GroupBy(x => (string)x.series_label)
+                .GroupBy(x => x.Series_Label ?? "")
                 .Select(g => new TrendSeries
                 {
                     Label = g.Key,
                     Points = g.Select(x => new TrendPoint
                     {
-                        Period = (DateTime)x.period,
-                        Count = (long)x.cnt
+                        Period = x.Period ?? DateTime.MinValue,
+                        Count = x.Cnt ?? 0L
                     }).ToList()
                 }).ToList();
 
             return new TrendChartResponse { Series = series };
+        }
+
+        private record TrendDbItem
+        {
+            public string? Series_Label { get; set; }
+            public DateTime? Period { get; set; }
+            public long? Cnt { get; set; }
         }
 
         // ─────────────────────────────────────────────

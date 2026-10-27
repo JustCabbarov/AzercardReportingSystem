@@ -76,7 +76,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 SELECT DISTINCT SOURCE_CITY
                 FROM pg_mv_req4_az_map
                 WHERE SOURCE_CITY IS NOT NULL
-                  AND TRIM(SOURCE_CITY) != ''
+                  AND TRIM(SOURCE_CITY) IS NOT NULL
                   AND SOURCE_CITY != 'NAMƏLUM'
                 """;
             using var conn = CreateConnection();
@@ -91,7 +91,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 SELECT DISTINCT SOURCE_CITY_CLEAN
                 FROM pg_mv_req4_az_map
                 WHERE SOURCE_CITY_CLEAN IS NOT NULL
-                  AND TRIM(SOURCE_CITY_CLEAN) != ''
+                  AND TRIM(SOURCE_CITY_CLEAN) IS NOT NULL
                   AND SOURCE_CITY_CLEAN != 'NAMƏLUM'
                 """;
             using var conn = CreateConnection();

@@ -722,7 +722,7 @@ GROUP BY
     COALESCE(t.source_city_clean, 'NAMƏLUM'),
     t.source_city_category;
 
-CREATE UNIQUE INDEX I_SNAP$_PG_MV_REQ4_AZ_MAP
+CREATE UNIQUE INDEX IDX_REQ4_COMPOSITE
 ON PG_MV_REQ4_AZ_MAP
 (
     REPORT_MONTH,
@@ -738,7 +738,7 @@ CREATE INDEX IDX_REQ4_CLEAN ON PG_MV_REQ4_AZ_MAP (SOURCE_CITY_CLEAN) NOLOGGING P
 CREATE INDEX IDX_REQ4_CITY  ON PG_MV_REQ4_AZ_MAP (SOURCE_CITY) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
 CREATE INDEX IDX_REQ4_MONTH ON PG_MV_REQ4_AZ_MAP (REPORT_MONTH) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
 
-ALTER INDEX I_SNAP$_PG_MV_REQ4_AZ_MAP NOPARALLEL LOGGING;
+ALTER INDEX IDX_REQ4_COMPOSITE NOPARALLEL LOGGING;
 ALTER INDEX IDX_REQ4_BANK NOPARALLEL LOGGING;
 ALTER INDEX IDX_REQ4_CLEAN NOPARALLEL LOGGING;
 ALTER INDEX IDX_REQ4_CITY NOPARALLEL LOGGING;
@@ -761,8 +761,15 @@ AS
 SELECT /*+ PARALLEL(t, 8) */
     TRUNC(t.report_date, 'MM') AS report_month,
     t.source_bank_name AS bank_name,
+    COALESCE(t.source_country_category, 'OTHER') AS source_country,
+    COALESCE(t.source_country_category, 'OTHER') AS source_country_category,
+    'Azerbaijan' AS target_country,
+    'Domestic' AS target_country_category,
     COALESCE(t.source_country_category, 'OTHER') AS country_category,
     COALESCE(t.source_city_clean, 'NAMƏLUM') AS city_clean,
+    t.payment_system,
+    t.is_issuing,
+    t.is_acquiring,
     SUM(t.transaction_amount) AS total_amount,
     SUM(t.transaction_count) AS total_count,
     COUNT(*) AS cnt
@@ -772,7 +779,10 @@ GROUP BY
     TRUNC(t.report_date, 'MM'),
     t.source_bank_name,
     COALESCE(t.source_country_category, 'OTHER'),
-    COALESCE(t.source_city_clean, 'NAMƏLUM');
+    COALESCE(t.source_city_clean, 'NAMƏLUM'),
+    t.payment_system,
+    t.is_issuing,
+    t.is_acquiring;
 
 CREATE INDEX IDX_REQ5_WORLD_BANK  ON PG_MV_REQ5_WORLD_MAP (BANK_NAME) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
 CREATE INDEX IDX_REQ5_WORLD_MONTH ON PG_MV_REQ5_WORLD_MAP (REPORT_MONTH) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
@@ -915,19 +925,27 @@ COMMENT ON MATERIALIZED VIEW PG_MV_REQ1_FORECAST_INPUT IS 'Materialized view for
 -- ═══════════════════════════════════════════════════════════════════════════
 -- PostgreSQL sintaksisi (public., text, float8) Oracle tiplərinə çevrildi:
 
-CREATE TABLE COUNTRIES (
-    NAME      VARCHAR2(255) NOT NULL,
-    LATITUDE  NUMBER(10, 7) NULL,
-    LONGITUDE NUMBER(10, 7) NULL,
-    CONSTRAINT PK_COUNTRIES PRIMARY KEY (NAME)
-);
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLE COUNTRIES (
+        NAME      VARCHAR2(255) NOT NULL,
+        LATITUDE  NUMBER(10, 7) NULL,
+        LONGITUDE NUMBER(10, 7) NULL,
+        CONSTRAINT PK_COUNTRIES PRIMARY KEY (NAME)
+    )';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
 
-CREATE TABLE CITIES (
-    CITY_NAME VARCHAR2(255) NOT NULL,
-    LATITUDE  NUMBER(10, 7) NULL,
-    LONGITUDE NUMBER(10, 7) NULL,
-    CONSTRAINT PK_CITIES PRIMARY KEY (CITY_NAME)
-);
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLE CITIES (
+        CITY_NAME VARCHAR2(255) NOT NULL,
+        LATITUDE  NUMBER(10, 7) NULL,
+        LONGITUDE NUMBER(10, 7) NULL,
+        CONSTRAINT PK_CITIES PRIMARY KEY (CITY_NAME)
+    )';
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
 
 
 -- ═══════════════════════════════════════════════════════════════════════════

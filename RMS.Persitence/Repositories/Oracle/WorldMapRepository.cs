@@ -66,7 +66,7 @@ namespace RMS.Persitence.Repositories.Oracle
             LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
             LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
             {filter.WhereClause}
-        ) _base
+        ) t_base
         """;
 
             return QueryPagedAsync<WorldMapTransaction>(

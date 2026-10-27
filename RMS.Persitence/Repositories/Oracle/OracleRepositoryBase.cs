@@ -27,10 +27,10 @@ namespace RMS.Persitence.Repositories.Oracle
             DynamicParameters? param,
             CancellationToken ct)
         {
-            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) _count";
+            var countSql = $"SELECT COUNT(*) FROM ({baseSql}) t_count";
 
             var pagedSql = $"""
-    SELECT * FROM ({baseSql}) _paged
+    SELECT * FROM ({baseSql}) t_paged
     ORDER BY {orderBy}
     OFFSET :Offset ROWS FETCH NEXT :PageSize ROWS ONLY
     """;
