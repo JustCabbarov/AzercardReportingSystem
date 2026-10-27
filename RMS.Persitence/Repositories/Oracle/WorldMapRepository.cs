@@ -62,7 +62,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 sc.longitude                      AS SourceLongitude,
                 tc.latitude                       AS TargetLatitude,
                 tc.longitude                      AS TargetLongitude
-            FROM pg_mv_req3_world_map w
+            FROM pg_mv_req5_world_map w
             LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
             LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
             {filter.WhereClause}
@@ -95,7 +95,7 @@ namespace RMS.Persitence.Repositories.Oracle
                     sc.longitude                                                    AS SourceLongitude,
                     tc.latitude                                                     AS TargetLatitude,
                     tc.longitude                                                    AS TargetLongitude
-                FROM pg_mv_req3_world_map w
+                FROM pg_mv_req5_world_map w
                 LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
                 LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
                 {(where is null ? "" : $"WHERE {where}")}
@@ -137,7 +137,7 @@ namespace RMS.Persitence.Repositories.Oracle
                     sc.longitude                      AS SourceLongitude,
                     tc.latitude                       AS TargetLatitude,
                     tc.longitude                      AS TargetLongitude
-                FROM pg_mv_req3_world_map w
+                FROM pg_mv_req5_world_map w
                 LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
                 LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
                 {(where is null ? "" : $"WHERE {where}")}

@@ -128,7 +128,7 @@ namespace RMS.Persitence.Repositories.Oracle
         FROM (
             SELECT DISTINCT bank_name FROM pg_mv_req1_forecast_input
             UNION
-            SELECT DISTINCT bank_name FROM pg_mv_req3_world_map
+            SELECT DISTINCT bank_name FROM pg_mv_req5_world_map
             UNION
             SELECT DISTINCT bank_name FROM pg_mv_req4_az_map
             UNION

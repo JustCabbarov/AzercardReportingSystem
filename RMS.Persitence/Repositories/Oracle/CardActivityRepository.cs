@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 
 using RMS.Domain.Entities.Oracle;
@@ -32,7 +32,7 @@ namespace RMS.Persitence.Repositories.Oracle
             CHIP_COUNT           AS ChipCount,
             TOKEN_COUNT          AS TokenCount,
             ACTIVE_CARD_RATE_PCT AS ActiveCardRatePct
-        FROM ALI_JABBAROV.PG_MV_REQ6_CARD_ACTIVITY
+        FROM PG_MV_REQ6_CARD_ACTIVITY
         """;
 
         private Task<PagedResult<CardActivity>> QueryAsync(

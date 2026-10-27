@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -28,7 +28,7 @@ namespace RMS.Persistence.Repositories.Oracle
             M3_TRANS            AS M3Trans,
             M3_AMOUNT           AS M3Amount,
             M3_ACTIVE           AS M3Active
-        FROM ALI_JABBAROV.PG_MV_REQ9_NEW_CARD
+        FROM PG_MV_REQ9_NEW_CARD
         """;
 
         public Task<PagedResult<NewCardActivation>> GetAllAsync(
@@ -131,7 +131,7 @@ namespace RMS.Persistence.Repositories.Oracle
         M3_TRANS      AS M3Trans,
         M3_AMOUNT     AS M3Amount,
         M3_ACTIVE     AS M3Active
-    FROM ALI_JABBAROV.PG_MV_REQ9_NEW_CARD
+    FROM PG_MV_REQ9_NEW_CARD
     WHERE BANK_NAME = :BankName
     ORDER BY FIRST_MONTH
     """;
