@@ -22,8 +22,11 @@ Serverdə artıq 600M+ sətirlik baza üzərində Materialized View-lar yaradıl
 ### 4 Vacib Arayış Cədvəlinin Məlumatları
 - **`COUNTRIES`:** `NAME (VARCHAR2)`, `LATITUDE (NUMBER)`, `LONGITUDE (NUMBER)` (Dünya xəritəsi heatmap-i üçün).
 - **`CITIES`:** `CITY_NAME (VARCHAR2)`, `LATITUDE (NUMBER)`, `LONGITUDE (NUMBER)` (Azərbaycan xəritəsi heatmap-i üçün).
-- **`BANKS`:** `BANK_HASH (VARCHAR2)`, `BANK_NAME (VARCHAR2)` (Filtr və hesabatlarda bank adlarının düzgün çıxması üçün).
+- **`BANKS`:** `BANK_HASH (VARCHAR2)`, `BANK_NAME (VARCHAR2)` (Filtr və hesabatlarda bank adlarının maskalanmış hash yerinə oxunaqlı çıxması üçün).
 - **`MCC_GROUPS`:** `MCC_HASH (VARCHAR2)`, `MCC_NAME (VARCHAR2)` (Sektor və MCC qrupları üçün).
+
+> [!NOTE]
+> **Avtomatik Fallback:** Backend tətbiqində (`SectorSpendRepository`) xüsusi fallback qorunması qurulub. Əgər serverdə `BANKS` və ya `MCC_GROUPS` cədvəlləri yaradılmasa və ya boş qalsa belə, sistem qətiyyən xəta (500) vermir; avtomatik olaraq birbaşa mövcud xam adları/hash kodları oxuyaraq fasiləsiz işləyir.
 
 ---
 
