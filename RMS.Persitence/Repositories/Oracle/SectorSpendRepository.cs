@@ -1,5 +1,6 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Oracle.ManagedDataAccess.Client;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
 
@@ -7,6 +8,9 @@ namespace RMS.Persitence.Repositories.Oracle
 {
     public class SectorSpendRepository : OracleRepositoryBase, ISectorSpendRepository
     {
+        private static bool _banksTableMissing;
+        private static bool _mccGroupsTableMissing;
+
         public SectorSpendRepository(IConfiguration configuration) : base(configuration) { }
 
         private const string SelectColumns = """
@@ -121,48 +125,112 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public async Task<IEnumerable<(string Hash, string Name)>> GetDistinctBanksAsync(CancellationToken ct = default)
         {
-            var sql = """
-        SELECT DISTINCT 
-            s.bank_name AS Hash,
-            COALESCE(b.bank_name, s.bank_name) AS Name
-        FROM (
-            SELECT DISTINCT bank_name FROM pg_mv_req1_forecast_input
-            UNION
-            SELECT DISTINCT bank_name FROM pg_mv_req5_world_map
-            UNION
-            SELECT DISTINCT bank_name FROM pg_mv_req4_az_map
-            UNION
-            SELECT DISTINCT bank_name FROM pg_mv_req7_benchmark
-            UNION
-            SELECT DISTINCT bank_name FROM pg_mv_req8_sector_spend
-        ) s
-        LEFT JOIN banks b ON b.bank_hash = s.bank_name
-        WHERE s.bank_name IS NOT NULL
-        ORDER BY Name
-        """;
+            const string sqlWithJoin = """
+            SELECT DISTINCT 
+                s.bank_name AS Hash,
+                COALESCE(b.bank_name, s.bank_name) AS Name
+            FROM (
+                SELECT DISTINCT bank_name FROM pg_mv_req1_forecast_input
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req5_world_map
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req4_az_map
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req7_benchmark
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req8_sector_spend
+            ) s
+            LEFT JOIN banks b ON b.bank_hash = s.bank_name
+            WHERE s.bank_name IS NOT NULL
+            ORDER BY Name
+            """;
+
+            const string fallbackSql = """
+            SELECT DISTINCT 
+                s.bank_name AS Hash,
+                s.bank_name AS Name
+            FROM (
+                SELECT DISTINCT bank_name FROM pg_mv_req1_forecast_input
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req5_world_map
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req4_az_map
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req7_benchmark
+                UNION
+                SELECT DISTINCT bank_name FROM pg_mv_req8_sector_spend
+            ) s
+            WHERE s.bank_name IS NOT NULL
+            ORDER BY Name
+            """;
 
             using var conn = CreateConnection();
-            return await conn.QueryAsync<(string Hash, string Name)>(
-                new CommandDefinition(sql, cancellationToken: ct));
+
+            if (_banksTableMissing)
+            {
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+            }
+
+            try
+            {
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(sqlWithJoin, cancellationToken: ct));
+            }
+            catch (OracleException ex) when (ex.Number == 942)
+            {
+                _banksTableMissing = true;
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+            }
         }
+
         public async Task<IEnumerable<(string Hash, string Name)>> GetDistinctMccGroupsAsync(CancellationToken ct = default)
         {
-            var sql = """
-        SELECT DISTINCT 
-            s.mcc_group AS Hash,
-            COALESCE(m.mcc_name, s.mcc_group) AS Name
-        FROM (
-            SELECT DISTINCT mcc_group FROM pg_mv_req1_forecast_input WHERE mcc_group IS NOT NULL
-            UNION
-            SELECT DISTINCT mcc_group FROM pg_mv_req8_sector_spend WHERE mcc_group IS NOT NULL
-        ) s
-        LEFT JOIN mcc_groups m ON m.mcc_hash = s.mcc_group
-        ORDER BY Name
-        """;
+            const string sqlWithJoin = """
+            SELECT DISTINCT 
+                s.mcc_group AS Hash,
+                COALESCE(m.mcc_name, s.mcc_group) AS Name
+            FROM (
+                SELECT DISTINCT mcc_group FROM pg_mv_req1_forecast_input WHERE mcc_group IS NOT NULL
+                UNION
+                SELECT DISTINCT mcc_group FROM pg_mv_req8_sector_spend WHERE mcc_group IS NOT NULL
+            ) s
+            LEFT JOIN mcc_groups m ON m.mcc_hash = s.mcc_group
+            ORDER BY Name
+            """;
+
+            const string fallbackSql = """
+            SELECT DISTINCT 
+                s.mcc_group AS Hash,
+                s.mcc_group AS Name
+            FROM (
+                SELECT DISTINCT mcc_group FROM pg_mv_req1_forecast_input WHERE mcc_group IS NOT NULL
+                UNION
+                SELECT DISTINCT mcc_group FROM pg_mv_req8_sector_spend WHERE mcc_group IS NOT NULL
+            ) s
+            ORDER BY Name
+            """;
 
             using var conn = CreateConnection();
-            return await conn.QueryAsync<(string Hash, string Name)>(
-                new CommandDefinition(sql, cancellationToken: ct));
+
+            if (_mccGroupsTableMissing)
+            {
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+            }
+
+            try
+            {
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(sqlWithJoin, cancellationToken: ct));
+            }
+            catch (OracleException ex) when (ex.Number == 942)
+            {
+                _mccGroupsTableMissing = true;
+                return await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+            }
         }
     }
 }
