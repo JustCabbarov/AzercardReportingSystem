@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using RMS.Application.Services;
 using RMS.Application.Services.Oracle;
 using RMS.Application.Services.System;
@@ -26,7 +26,6 @@ namespace RMS.Application.Extensions
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
             services.AddScoped<IPasswordResetService, PasswordResetService>();
-            services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddScoped<IAlertService, AlertService>();

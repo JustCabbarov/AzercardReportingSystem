@@ -67,55 +67,71 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddList($"{alias}.payment_system", "PaySys", f.PaymentSystems)
                 .AddList($"{alias}.is_contactless", "Contactless", f.ContactlessStatuses);
 
+        private static AcquiringFilterOptionsResponse? _cachedFilterOptions;
+        private static DateTime _filterOptionsCacheExpiry = DateTime.MinValue;
+
         // ─────────────────────────────────────────────
         // FILTER OPTIONS
         // ─────────────────────────────────────────────
         public async Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync()
         {
-            using var db = Connect();
+            if (_cachedFilterOptions is not null && DateTime.UtcNow < _filterOptionsCacheExpiry)
+                return _cachedFilterOptions;
 
-            var minMax = await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(
-                "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction");
-
-            var deviceTypes = (await db.QueryAsync<string>(
-                "SELECT DISTINCT acquiring_device_type_calc FROM mv_acquiring_device_transaction WHERE acquiring_device_type_calc IS NOT NULL ORDER BY acquiring_device_type_calc")).ToList();
-            var transGroups = (await db.QueryAsync<string>(
-                "SELECT DISTINCT trans_group FROM mv_acquiring_device_transaction WHERE trans_group IS NOT NULL ORDER BY trans_group")).ToList();
-            var opTypes = (await db.QueryAsync<string>(
-                "SELECT DISTINCT operation_type FROM mv_acquiring_device_transaction WHERE operation_type IS NOT NULL ORDER BY operation_type")).ToList();
-            var tokenStatuses = (await db.QueryAsync<string>(
-                "SELECT DISTINCT token_status FROM mv_acquiring_device_transaction WHERE token_status IS NOT NULL ORDER BY token_status")).ToList();
-            var mccs = (await db.QueryAsync<string>(
-                "SELECT DISTINCT mcc FROM mv_acquiring_device_transaction WHERE mcc IS NOT NULL ORDER BY mcc")).ToList();
-            var acqCategories = (await db.QueryAsync<string>(
-                "SELECT DISTINCT is_acquiring_category FROM mv_acquiring_device_transaction WHERE is_acquiring_category IS NOT NULL ORDER BY is_acquiring_category")).ToList();
-            var targetBanks = (await db.QueryAsync<string>(
-                "SELECT DISTINCT target_bank_name FROM mv_acquiring_device_transaction WHERE target_bank_name IS NOT NULL ORDER BY target_bank_name")).ToList();
-            var sourceBanks = (await db.QueryAsync<string>(
-                "SELECT DISTINCT source_bank_name FROM mv_acquiring_device_transaction WHERE source_bank_name IS NOT NULL ORDER BY source_bank_name")).ToList();
-            var targetCities = (await db.QueryAsync<string>(
-                "SELECT DISTINCT target_city FROM mv_acquiring_device_transaction WHERE target_city IS NOT NULL ORDER BY target_city")).ToList();
-            var paymentSystems = (await db.QueryAsync<string>(
-                "SELECT DISTINCT payment_system FROM mv_acquiring_device_transaction WHERE payment_system IS NOT NULL ORDER BY payment_system")).ToList();
-            var contactless = (await db.QueryAsync<string>(
-                "SELECT DISTINCT TO_CHAR(is_contactless) FROM mv_acquiring_device_transaction WHERE is_contactless IS NOT NULL ORDER BY TO_CHAR(is_contactless)")).ToList();
-
-            return new AcquiringFilterOptionsResponse
+            async Task<List<string>> QueryDistinctAsync(string colExpr)
             {
-                AcquiringDeviceTypes = deviceTypes,
-                TransGroups = transGroups,
-                OperationTypes = opTypes,
-                TokenStatuses = tokenStatuses,
-                Mccs = mccs,
-                AcquiringCategories = acqCategories,
-                TargetBanks = targetBanks,
-                SourceBanks = sourceBanks,
-                TargetCities = targetCities,
-                PaymentSystems = paymentSystems,
-                ContactlessStatuses = contactless,
-                MinDate = minMax.min_date,
-                MaxDate = minMax.max_date,
+                using var db = Connect();
+                return (await db.QueryAsync<string>(
+                    $"SELECT DISTINCT {colExpr} FROM mv_acquiring_device_transaction WHERE {colExpr} IS NOT NULL ORDER BY {colExpr}")).ToList();
+            }
+
+            async Task<(DateTime min_date, DateTime max_date)> QueryMinMaxAsync()
+            {
+                using var db = Connect();
+                return await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(
+                    "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction");
+            }
+
+            var minMaxTask         = QueryMinMaxAsync();
+            var deviceTypesTask    = QueryDistinctAsync("acquiring_device_type_calc");
+            var transGroupsTask    = QueryDistinctAsync("trans_group");
+            var opTypesTask        = QueryDistinctAsync("operation_type");
+            var tokenStatusesTask  = QueryDistinctAsync("token_status");
+            var mccsTask           = QueryDistinctAsync("mcc");
+            var acqCategoriesTask  = QueryDistinctAsync("is_acquiring_category");
+            var targetBanksTask    = QueryDistinctAsync("target_bank_name");
+            var sourceBanksTask    = QueryDistinctAsync("source_bank_name");
+            var targetCitiesTask   = QueryDistinctAsync("target_city");
+            var paymentSystemsTask = QueryDistinctAsync("payment_system");
+            var contactlessTask    = QueryDistinctAsync("TO_CHAR(is_contactless)");
+
+            await Task.WhenAll(
+                minMaxTask, deviceTypesTask, transGroupsTask, opTypesTask,
+                tokenStatusesTask, mccsTask, acqCategoriesTask, targetBanksTask,
+                sourceBanksTask, targetCitiesTask, paymentSystemsTask, contactlessTask);
+
+            var minMax = await minMaxTask;
+
+            var response = new AcquiringFilterOptionsResponse
+            {
+                AcquiringDeviceTypes = await deviceTypesTask,
+                TransGroups          = await transGroupsTask,
+                OperationTypes       = await opTypesTask,
+                TokenStatuses        = await tokenStatusesTask,
+                Mccs                 = await mccsTask,
+                AcquiringCategories  = await acqCategoriesTask,
+                TargetBanks          = await targetBanksTask,
+                SourceBanks          = await sourceBanksTask,
+                TargetCities         = await targetCitiesTask,
+                PaymentSystems       = await paymentSystemsTask,
+                ContactlessStatuses  = await contactlessTask,
+                MinDate              = minMax.min_date,
+                MaxDate              = minMax.max_date,
             };
+
+            _cachedFilterOptions = response;
+            _filterOptionsCacheExpiry = DateTime.UtcNow.AddMinutes(30);
+            return response;
         }
 
         // ─────────────────────────────────────────────
@@ -294,24 +310,29 @@ namespace RMS.Persitence.Repositories.Oracle
             """;
 
             using var db = Connect();
-            var rows = (await db.QueryAsync(sql, dp)).ToList();
+            var rows = (await db.QueryAsync<AcqTrendDbRow>(sql, dp)).ToList();
 
             var series = rows
-                .GroupBy(x => (string)(x.series_label ?? ""))
+                .GroupBy(x => x.Series_Label ?? "")
                 .Select(g =>
                 {
                     var points = g.Select(x => new AcqTrendPoint
                     {
-                        Period = (DateTime)x.period,
-                        Actual = (decimal)x.actual
+                        Period = x.Period,
+                        Actual = x.Actual
                     }).ToList();
-
-                 
 
                     return new AcqTrendSeries { Label = g.Key, Points = points };
                 }).ToList();
 
             return new AcqTrendResponse { Series = series };
+        }
+
+        private record AcqTrendDbRow
+        {
+            public string? Series_Label { get; set; }
+            public DateTime Period { get; set; }
+            public decimal Actual { get; set; }
         }
 
      

@@ -33,6 +33,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddList($"{p}retail_category", "RetailCategory", retailCategories);
         }
 
+        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, (DateTime Expiry, List<FilterValue> Data)> _filterCache = new();
+
         // ── /api/filters ─────────────────────────────────────────────
         public async Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension)
         {
@@ -45,10 +47,15 @@ namespace RMS.Persitence.Repositories.Oracle
             if (!allowedColumns.Contains(col))
                 throw new ArgumentException($"Namelum dimension: {dimension}");
 
-            var sql = $"SELECT DISTINCT {col} AS dim_value FROM bi_market_devices_masked WHERE {col} IS NOT NULL ORDER BY {col}";
+            if (_filterCache.TryGetValue(col, out var cached) && DateTime.UtcNow < cached.Expiry)
+                return cached.Data;
+
+            var sql = $"SELECT DISTINCT {col} AS dim_value FROM mv_devices_base WHERE {col} IS NOT NULL ORDER BY {col}";
 
             using var db = Connect();
-            return await db.QueryAsync<FilterValue>(sql);
+            var list = (await db.QueryAsync<FilterValue>(sql)).ToList();
+            _filterCache[col] = (DateTime.UtcNow.AddMinutes(30), list);
+            return list;
         }
 
         // ── /api/summary ─────────────────────────────────────────────
@@ -222,24 +229,34 @@ namespace RMS.Persitence.Repositories.Oracle
                 """;
 
             using var db = Connect();
-            var rows = await db.QueryAsync(sql, filter.Parameters);
+            var rows = await db.QueryAsync<DeviceTrendDbRow>(sql, filter.Parameters);
 
             var series = rows
-                .GroupBy(x => (string)x.series_label)
+                .GroupBy(x => x.Series_Label ?? "")
                 .Select(g => new DeviceTrendSeries
                 {
                     Label = g.Key,
                     Points = g.Select(x => new DeviceTrendPoint
                     {
-                        Period = (DateTime)x.period,
-                        Count = (long)x.cnt,
-                        PrevMonthDevices = (long?)x.prev_month_devices,
-                        MomDiff = (long?)x.mom_diff,
-                        MomPctChange = (decimal?)x.mom_pct_change
+                        Period = x.Period,
+                        Count = x.Cnt,
+                        PrevMonthDevices = x.Prev_Month_Devices,
+                        MomDiff = x.Mom_Diff,
+                        MomPctChange = x.Mom_Pct_Change
                     }).ToList()
                 }).ToList();
 
             return new DeviceTrendResponse { Series = series };
+        }
+
+        private record DeviceTrendDbRow
+        {
+            public string? Series_Label { get; set; }
+            public DateTime Period { get; set; }
+            public long Cnt { get; set; }
+            public long? Prev_Month_Devices { get; set; }
+            public long? Mom_Diff { get; set; }
+            public decimal? Mom_Pct_Change { get; set; }
         }
 
         // ── /api/xy-analysis ─────────────────────────────────────────

@@ -46,9 +46,9 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct)
         {
             var filter = new FilterBuilder()
-                .Add("BANK_NAME = :BankName", "BankName", bankName)
-                .Add("PRODUCT_TYPE = :ProductType", "ProductType", productType)
-                .Add("CARD_BRAND_NAME = :CardBrand", "CardBrand", cardBrandName)
+                .AddString("BANK_NAME = :BankName", "BankName", bankName)
+                .AddString("PRODUCT_TYPE = :ProductType", "ProductType", productType)
+                .AddString("CARD_BRAND_NAME = :CardBrand", "CardBrand", cardBrandName)
                 .Add("ACTIVE_CARD_RATE_PCT >= :Min", "Min", minRate)
                 .Add("ACTIVE_CARD_RATE_PCT <= :Max", "Max", maxRate)
                 .AddMonth("REPORT_MONTH", "Month", month);

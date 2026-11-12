@@ -9,12 +9,19 @@ namespace RMS.Persitence.Repositories.Oracle
         private readonly DynamicParameters _param = new();
 
         /// <summary>
-        /// Ümumi tip üçün — null olduqda şərt əlavə edilmir.
+        /// Ümumi tip üçün — null (və ya boş string) olduqda şərt əlavə edilmir.
         /// String üçün AddString istifadə et.
         /// </summary>
         public FilterBuilder Add(string condition, string paramName, object? value)
         {
             if (value is null) return this;
+            if (value is string s)
+            {
+                if (string.IsNullOrWhiteSpace(s)) return this;
+                _conditions.Add(condition);
+                _param.Add(paramName, s.Trim());
+                return this;
+            }
             _conditions.Add(condition);
             _param.Add(paramName, value);
             return this;
@@ -33,13 +40,13 @@ namespace RMS.Persitence.Repositories.Oracle
 
         /// <summary>
         /// Boolean sahələr üçün — null olduqda şərt əlavə edilmir.
-        /// Oracle-da boolean adətən NUMBER(1) 1/0 saxlanılır.
+        /// Oracle-da həm VARCHAR2 ('1'/'0'), həm də NUMBER(1) (1/0) sütunlarda indeksin işləməsi üçün string ötürülür.
         /// </summary>
         public FilterBuilder AddBool(string column, string paramName, bool? value)
         {
             if (value is null) return this;
             _conditions.Add($"{column} = :{paramName}");
-            _param.Add(paramName, value.Value ? 1 : 0);
+            _param.Add(paramName, value.Value ? "1" : "0");
             return this;
         }
 
@@ -52,14 +59,15 @@ namespace RMS.Persitence.Repositories.Oracle
         }
 
         /// <summary>
-        /// Ay əsaslı tarix filteri üçün — Oracle TRUNC(..., 'MM') istifadə edir.
+        /// Ay əsaslı tarix filteri üçün — MV-lərdə ay sütunları artıq TRUNC(..., 'MM') olduğu üçün
+        /// indeksin işləməsi məqsədilə sütuna TRUNC tətbiq edilmir.
         /// </summary>
         public FilterBuilder AddMonth(string column, string paramName, DateTime? value)
         {
             if (value is null) return this;
-            _conditions.Add(
-                $"TRUNC({column}, 'MM') = TRUNC(:{paramName}, 'MM')");
-            _param.Add(paramName, value.Value.Date);
+            var monthStart = new DateTime(value.Value.Year, value.Value.Month, 1);
+            _conditions.Add($"{column} = TRUNC(:{paramName}, 'MM')");
+            _param.Add(paramName, monthStart);
             return this;
         }
 

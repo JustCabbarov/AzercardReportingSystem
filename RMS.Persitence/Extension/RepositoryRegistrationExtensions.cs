@@ -1,4 +1,4 @@
-﻿// RMS.Persitence/Extensions/RepositoryRegistrationExtensions.cs
+// RMS.Persitence/Extensions/RepositoryRegistrationExtensions.cs
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using RMS.Domain.Entities;
@@ -31,7 +31,6 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<IMarketBenchmarkRepository, MarketBenchmarkRepository>();
             services.AddScoped<ISectorSpendRepository, SectorSpendRepository>();
             services.AddScoped<INewCardRepository, NewCardRepository>();
-            services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddSingleton<IModelStore, DiskModelStore>();
             services.AddScoped<ICardPortfolioRepository, CardPortfolioRepository>();
 

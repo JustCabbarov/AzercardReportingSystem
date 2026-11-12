@@ -50,7 +50,7 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<IEnumerable<AlertSignal>> GetByMonthAsync(
             DateTime month, CancellationToken ct = default)
         {
-            var sql = SelectColumns + " WHERE TRUNC(REPORT_MONTH,'MM') = TRUNC(:Month,'MM') ORDER BY BANK_NAME, MCC_GROUP";
+            var sql = SelectColumns + " WHERE REPORT_MONTH = TRUNC(:Month,'MM') ORDER BY BANK_NAME, MCC_GROUP";
             using var conn = CreateConnection();
             return await conn.QueryAsync<AlertSignal>(
                 new CommandDefinition(sql, new { Month = month.Date }, cancellationToken: ct));

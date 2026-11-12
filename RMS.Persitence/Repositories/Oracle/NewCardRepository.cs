@@ -12,22 +12,22 @@ namespace RMS.Persistence.Repositories.Oracle
 
         private const string SelectColumns = """
         SELECT
-            BANK_NAME           AS BankName,
-            CARD_PRODUCT_NAME   AS CardProductName,
-            CARD_BRAND_NAME     AS CardBrandName,
-            PRODUCT_TYPE        AS ProductType,
-            REGION_NAME_CLEAN   AS RegionNameClean,
-            FIRST_MONTH         AS FirstMonth,
-            M1_CARDS            AS M1Cards,
-            M1_TRANS            AS M1Trans,
-            M1_AMOUNT           AS M1Amount,
-            M1_ACTIVE           AS M1Active,
-            M2_TRANS            AS M2Trans,
-            M2_AMOUNT           AS M2Amount,
-            M2_ACTIVE           AS M2Active,
-            M3_TRANS            AS M3Trans,
-            M3_AMOUNT           AS M3Amount,
-            M3_ACTIVE           AS M3Active
+            BANK_NAME                                                   AS BankName,
+            CARD_PRODUCT_NAME                                           AS CardProductName,
+            CARD_BRAND_NAME                                             AS CardBrandName,
+            PRODUCT_TYPE                                                AS ProductType,
+            REGION_NAME_CLEAN                                           AS RegionNameClean,
+            FIRST_MONTH                                                 AS FirstMonth,
+            M1_CARDS                                                    AS M1Cards,
+            M1_TRANS                                                    AS M1Trans,
+            M1_AMOUNT                                                   AS M1Amount,
+            CASE WHEN TO_CHAR(M1_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M1Active,
+            M2_TRANS                                                    AS M2Trans,
+            M2_AMOUNT                                                   AS M2Amount,
+            CASE WHEN TO_CHAR(M2_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M2Active,
+            M3_TRANS                                                    AS M3Trans,
+            M3_AMOUNT                                                   AS M3Amount,
+            CASE WHEN TO_CHAR(M3_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M3Active
         FROM PG_MV_REQ9_NEW_CARD
         """;
 
@@ -102,11 +102,11 @@ namespace RMS.Persistence.Repositories.Oracle
             NewCardActivation f, PageRequest pageReq, CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
-                .Add("BANK_NAME = :BankName", "BankName", f.BankName)
-                .Add("CARD_PRODUCT_NAME = :CardProduct", "CardProduct", f.CardProductName)
-                .Add("CARD_BRAND_NAME = :CardBrand", "CardBrand", f.CardBrandName)
-                .Add("PRODUCT_TYPE = :ProductType", "ProductType", f.ProductType)
-                .Add("REGION_NAME_CLEAN = :Region", "Region", f.RegionNameClean)
+                .AddString("BANK_NAME = :BankName", "BankName", f.BankName)
+                .AddString("CARD_PRODUCT_NAME = :CardProduct", "CardProduct", f.CardProductName)
+                .AddString("CARD_BRAND_NAME = :CardBrand", "CardBrand", f.CardBrandName)
+                .AddString("PRODUCT_TYPE = :ProductType", "ProductType", f.ProductType)
+                .AddString("REGION_NAME_CLEAN = :Region", "Region", f.RegionNameClean)
                 .AddMonth("FIRST_MONTH", "FirstMonth",
                     f.FirstMonth == default ? null : f.FirstMonth);
 
@@ -116,21 +116,21 @@ namespace RMS.Persistence.Repositories.Oracle
         }
 
         public async Task<IEnumerable<NewCardActivation>> GetTrendAsync(
-     string bankName, CancellationToken ct = default)
+            string bankName, CancellationToken ct = default)
         {
             var sql = """
     SELECT
-        FIRST_MONTH   AS FirstMonth,
-        M1_CARDS      AS M1Cards,
-        M1_TRANS      AS M1Trans,
-        M1_AMOUNT     AS M1Amount,
-        M1_ACTIVE     AS M1Active,
-        M2_TRANS      AS M2Trans,
-        M2_AMOUNT     AS M2Amount,
-        M2_ACTIVE     AS M2Active,
-        M3_TRANS      AS M3Trans,
-        M3_AMOUNT     AS M3Amount,
-        M3_ACTIVE     AS M3Active
+        FIRST_MONTH                                                 AS FirstMonth,
+        M1_CARDS                                                    AS M1Cards,
+        M1_TRANS                                                    AS M1Trans,
+        M1_AMOUNT                                                   AS M1Amount,
+        CASE WHEN TO_CHAR(M1_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M1Active,
+        M2_TRANS                                                    AS M2Trans,
+        M2_AMOUNT                                                   AS M2Amount,
+        CASE WHEN TO_CHAR(M2_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M2Active,
+        M3_TRANS                                                    AS M3Trans,
+        M3_AMOUNT                                                   AS M3Amount,
+        CASE WHEN TO_CHAR(M3_ACTIVE) = '1' THEN 1 ELSE 0 END        AS M3Active
     FROM PG_MV_REQ9_NEW_CARD
     WHERE BANK_NAME = :BankName
     ORDER BY FIRST_MONTH

@@ -138,9 +138,7 @@ BEGIN
     )';
 EXCEPTION WHEN OTHERS THEN NULL;
 END;
-/
-
--- İcazələrin təmin edilməsi (REPORTAPPUSER və ya tətbiq istifadəçisi üçün)
+/-- İcazələrin təmin edilməsi (REPORTAPPUSER və ya tətbiq istifadəçisi üçün)
 BEGIN
     EXECUTE IMMEDIATE 'GRANT SELECT ON COUNTRIES TO REPORTAPPUSER';
     EXECUTE IMMEDIATE 'GRANT SELECT ON CITIES TO REPORTAPPUSER';
@@ -149,4 +147,5 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN NULL;
 END;
 /
+
 

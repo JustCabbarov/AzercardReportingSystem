@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle.DeviceModel;
 
@@ -19,12 +19,19 @@ namespace RMS.Presentation.Controllers.Oracle
         [HttpGet("filters")]
         public async Task<IActionResult> GetAllFilters()
         {
+            var bankTask   = _service.GetFiltersAsync("bank_name");
+            var regionTask = _service.GetFiltersAsync("region_name");
+            var mccTask    = _service.GetFiltersAsync("mcc_name");
+            var retailTask = _service.GetFiltersAsync("retail_category");
+
+            await Task.WhenAll(bankTask, regionTask, mccTask, retailTask);
+
             var result = new
             {
-                BankNames = (await _service.GetFiltersAsync("bank_name")).Select(x => x.DimValue),
-                RegionNames = (await _service.GetFiltersAsync("region_name")).Select(x => x.DimValue),
-                MccNames = (await _service.GetFiltersAsync("mcc_name")).Select(x => x.DimValue),
-                RetailCategories = (await _service.GetFiltersAsync("retail_category")).Select(x => x.DimValue)
+                BankNames        = (await bankTask).Select(x => x.DimValue),
+                RegionNames      = (await regionTask).Select(x => x.DimValue),
+                MccNames         = (await mccTask).Select(x => x.DimValue),
+                RetailCategories = (await retailTask).Select(x => x.DimValue)
             };
             return Ok(result);
         }

@@ -1,4 +1,4 @@
-﻿using RMS.Contract.Services.Oracle;
+using RMS.Contract.Services.Oracle;
 
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -41,11 +41,15 @@ namespace RMS.Application.Services.Oracle
         public async Task<decimal> GetAvgContactlessRateAsync(
             string bankName, DateTime month, CancellationToken ct = default)
         {
-            var pageReq = new PageRequest { Page = 1, PageSize = int.MaxValue };
-            var data = (await _repo.GetByBankAsync(bankName, pageReq, ct)).Items
-                .Where(x => x.ReportMonth.Year == month.Year
-                         && x.ReportMonth.Month == month.Month
-                         && x.TotalTransCount > 0)
+            var pageReq = new PageRequest { Page = 1, PageSize = 10000 };
+            var filter = new CardActivity
+            {
+                BankName = bankName,
+                ReportMonth = month
+            };
+
+            var data = (await _repo.FilterAsync(filter, pageReq, ct)).Items
+                .Where(x => x.TotalTransCount > 0)
                 .ToList();
 
             if (!data.Any()) return 0;
@@ -64,11 +68,14 @@ namespace RMS.Application.Services.Oracle
         public async Task<Dictionary<string, decimal>> GetSegmentDistributionAsync(
             string bankName, DateTime month, CancellationToken ct = default)
         {
-            var pageReq = new PageRequest { Page = 1, PageSize = int.MaxValue };
-            var data = (await _repo.GetByBankAsync(bankName, pageReq, ct)).Items
-                .Where(x => x.ReportMonth.Year == month.Year
-                         && x.ReportMonth.Month == month.Month)
-                .ToList();
+            var pageReq = new PageRequest { Page = 1, PageSize = 10000 };
+            var filter = new CardActivity
+            {
+                BankName = bankName,
+                ReportMonth = month
+            };
+
+            var data = (await _repo.FilterAsync(filter, pageReq, ct)).Items.ToList();
 
             var totalCards = data.Sum(x => x.TotalCards);
             if (totalCards == 0) return new Dictionary<string, decimal>();

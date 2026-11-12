@@ -92,49 +92,66 @@ namespace RMS.Persistence.Repositories.Cards
             };
         }
 
+        private static FilterOptionsResponse? _cachedFilterOptions;
+        private static DateTime _filterOptionsCacheExpiry = DateTime.MinValue;
+
         // ─────────────────────────────────────────────
         // FILTER OPTIONS
         // ─────────────────────────────────────────────
         public async Task<FilterOptionsResponse> GetFilterOptionsAsync()
         {
-            using var db = Connect();
+            if (_cachedFilterOptions is not null && DateTime.UtcNow < _filterOptionsCacheExpiry)
+                return _cachedFilterOptions;
 
-            var minMax = await db.QuerySingleAsync<(DateTime min_month, DateTime max_month)>(
-                "SELECT MIN(report_month) AS min_month, MAX(report_month) AS max_month FROM mv_card_portfolio");
-
-            var banks = (await db.QueryAsync<string>(
-                "SELECT DISTINCT bank_name FROM mv_card_portfolio WHERE bank_name IS NOT NULL ORDER BY bank_name")).ToList();
-            var regions = (await db.QueryAsync<string>(
-                "SELECT DISTINCT region_name FROM mv_card_portfolio WHERE region_name IS NOT NULL ORDER BY region_name")).ToList();
-            var schemes = (await db.QueryAsync<string>(
-                "SELECT DISTINCT payment_scheme FROM mv_card_portfolio WHERE payment_scheme IS NOT NULL ORDER BY payment_scheme")).ToList();
-            var productTypes = (await db.QueryAsync<string>(
-                "SELECT DISTINCT product_type FROM mv_card_portfolio WHERE product_type IS NOT NULL ORDER BY product_type")).ToList();
-            var contactless = (await db.QueryAsync<string>(
-                "SELECT DISTINCT contactless_status FROM mv_card_portfolio WHERE contactless_status IS NOT NULL ORDER BY contactless_status")).ToList();
-            var expStatuses = (await db.QueryAsync<string>(
-                "SELECT DISTINCT exp_status FROM mv_card_portfolio WHERE exp_status IS NOT NULL ORDER BY exp_status")).ToList();
-            var status3Ds = (await db.QueryAsync<string>(
-                "SELECT DISTINCT status_3d FROM mv_card_portfolio WHERE status_3d IS NOT NULL ORDER BY status_3d")).ToList();
-            var currencies = (await db.QueryAsync<string>(
-                "SELECT DISTINCT base_currency_name FROM mv_card_portfolio WHERE base_currency_name IS NOT NULL ORDER BY base_currency_name")).ToList();
-            var cardProducts = (await db.QueryAsync<string>(
-                "SELECT DISTINCT card_product_name FROM mv_card_portfolio WHERE card_product_name IS NOT NULL ORDER BY card_product_name")).ToList();
-
-            return new FilterOptionsResponse
+            async Task<List<string>> QueryDistinctAsync(string col)
             {
-                Banks = banks,
-                Regions = regions,
-                PaymentSchemes = schemes,
-                ProductTypes = productTypes,
-                ContactlessStatuses = contactless,
-                ExpStatuses = expStatuses,
-                Status3Ds = status3Ds,
-                Currencies = currencies,
-                CardProducts = cardProducts,
-                MinMonth = minMax.min_month,
-                MaxMonth = minMax.max_month
+                using var db = Connect();
+                return (await db.QueryAsync<string>(
+                    $"SELECT DISTINCT {col} FROM mv_card_portfolio WHERE {col} IS NOT NULL ORDER BY {col}")).ToList();
+            }
+
+            async Task<(DateTime min_month, DateTime max_month)> QueryMinMaxAsync()
+            {
+                using var db = Connect();
+                return await db.QuerySingleAsync<(DateTime min_month, DateTime max_month)>(
+                    "SELECT MIN(report_month) AS min_month, MAX(report_month) AS max_month FROM mv_card_portfolio");
+            }
+
+            var minMaxTask       = QueryMinMaxAsync();
+            var banksTask        = QueryDistinctAsync("bank_name");
+            var regionsTask      = QueryDistinctAsync("region_name");
+            var schemesTask      = QueryDistinctAsync("payment_scheme");
+            var productTypesTask = QueryDistinctAsync("product_type");
+            var contactlessTask  = QueryDistinctAsync("contactless_status");
+            var expStatusesTask  = QueryDistinctAsync("exp_status");
+            var status3DsTask    = QueryDistinctAsync("status_3d");
+            var currenciesTask   = QueryDistinctAsync("base_currency_name");
+            var cardProductsTask = QueryDistinctAsync("card_product_name");
+
+            await Task.WhenAll(
+                minMaxTask, banksTask, regionsTask, schemesTask, productTypesTask,
+                contactlessTask, expStatusesTask, status3DsTask, currenciesTask, cardProductsTask);
+
+            var minMax = await minMaxTask;
+
+            var response = new FilterOptionsResponse
+            {
+                Banks               = await banksTask,
+                Regions             = await regionsTask,
+                PaymentSchemes      = await schemesTask,
+                ProductTypes        = await productTypesTask,
+                ContactlessStatuses = await contactlessTask,
+                ExpStatuses         = await expStatusesTask,
+                Status3Ds           = await status3DsTask,
+                Currencies          = await currenciesTask,
+                CardProducts        = await cardProductsTask,
+                MinMonth            = minMax.min_month,
+                MaxMonth            = minMax.max_month
             };
+
+            _cachedFilterOptions = response;
+            _filterOptionsCacheExpiry = DateTime.UtcNow.AddMinutes(30);
+            return response;
         }
 
         // ─────────────────────────────────────────────
@@ -267,25 +284,39 @@ namespace RMS.Persistence.Repositories.Cards
                 """;
 
             using var db = Connect();
-            var rows = (await db.QueryAsync(sql, filter.Parameters)).ToList();
+            var rows = (await db.QueryAsync<CrossTableDbItem>(sql, filter.Parameters)).ToList();
 
-            var colHeaders = rows.Select(x => (string)x.product_type).Distinct().OrderBy(x => x).ToList();
+            var colHeaders = rows
+                .Select(x => x.Product_Type ?? "")
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
             var tableRows = rows
-                .GroupBy(x => (string)x.label)
+                .GroupBy(x => x.Label ?? "")
                 .Select(g => new CrossTableRow
                 {
                     Label = g.Key,
-                    Total = g.Sum(x => (long)x.cur_cnt),
+                    Total = g.Sum(x => x.Cur_Cnt),
                     Columns = g.Select(x => new CrossTableCell
                     {
-                        ProductType = (string)x.product_type,
-                        Count = (long)x.cur_cnt,
-                        MomPct = (double)x.mom_pct,
-                        MomUp = (double)x.mom_pct >= 0
+                        ProductType = x.Product_Type ?? "",
+                        Count = x.Cur_Cnt,
+                        MomPct = x.Mom_Pct,
+                        MomUp = x.Mom_Pct >= 0
                     }).ToList()
                 }).ToList();
 
             return new CrossTableResponse { ColumnHeaders = colHeaders, Rows = tableRows };
+        }
+
+        private record CrossTableDbItem
+        {
+            public string? Label { get; set; }
+            public string? Product_Type { get; set; }
+            public long Cur_Cnt { get; set; }
+            public long Prev_Cnt { get; set; }
+            public double Mom_Pct { get; set; }
         }
 
         // ─────────────────────────────────────────────
@@ -310,17 +341,24 @@ namespace RMS.Persistence.Repositories.Cards
                 """;
 
             using var db = Connect();
-            var rows = await db.QueryAsync(sql, filter.Parameters);
+            var rows = await db.QueryAsync<PayChartDbItem>(sql, filter.Parameters);
 
             return new PayChartResponse
             {
                 Items = rows.Select(x => new PayChartItem
                 {
-                    Label = (string)x.label ?? "",
-                    Count = (long)x.cnt,
-                    Percent = (double)x.pct
+                    Label = x.Label ?? "",
+                    Count = x.Cnt,
+                    Percent = x.Pct
                 }).ToList()
             };
+        }
+
+        private record PayChartDbItem
+        {
+            public string? Label { get; set; }
+            public long Cnt { get; set; }
+            public double Pct { get; set; }
         }
 
         // ─────────────────────────────────────────────
@@ -400,7 +438,7 @@ namespace RMS.Persistence.Repositories.Cards
                     COALESCE(ROUND(
                         (SUM(total_cards) - SUM(prev_total_cards)) * 100.0 /
                         NULLIF(SUM(prev_total_cards), 0), 2), 0) AS mom_pct,
-                    SUM(total_cards) >= COALESCE(SUM(prev_total_cards), 0) AS mom_is_up
+                    CASE WHEN SUM(total_cards) >= COALESCE(SUM(prev_total_cards), 0) THEN 1 ELSE 0 END AS mom_is_up
                 FROM mv_card_portfolio m
                 {filter.WhereClause}
                 GROUP BY {xDim}, {yDim}
@@ -408,22 +446,32 @@ namespace RMS.Persistence.Repositories.Cards
                 """;
 
             using var db = Connect();
-            var rows = (await db.QueryAsync(sql, filter.Parameters)).ToList();
+            var rows = (await db.QueryAsync<XyChartDbItem>(sql, filter.Parameters)).ToList();
 
             return new XyChartResponse
             {
-                XLabels = rows.Select(x => (string)x.x_label).Distinct().OrderBy(x => x).ToList(),
-                YLabels = rows.Select(x => (string)x.y_label).Distinct().OrderBy(x => x).ToList(),
+                XLabels = rows.Select(x => x.X_Label ?? "").Distinct().OrderBy(x => x).ToList(),
+                YLabels = rows.Select(x => x.Y_Label ?? "").Distinct().OrderBy(x => x).ToList(),
                 Cells = rows.Select(x => new XyCell
                 {
-                    XLabel = (string)x.x_label,
-                    YLabel = (string)x.y_label,
-                    Count = (long)x.cnt,
-                    SharePct = (double)x.share_pct,
-                    MomPct = (double)x.mom_pct,
-                    MomIsUp = (bool)x.mom_is_up
+                    XLabel = x.X_Label ?? "",
+                    YLabel = x.Y_Label ?? "",
+                    Count = x.Cnt,
+                    SharePct = x.Share_Pct,
+                    MomPct = x.Mom_Pct,
+                    MomIsUp = x.Mom_Is_Up == 1
                 }).ToList()
             };
+        }
+
+        private record XyChartDbItem
+        {
+            public string? X_Label { get; set; }
+            public string? Y_Label { get; set; }
+            public long Cnt { get; set; }
+            public double Share_Pct { get; set; }
+            public double Mom_Pct { get; set; }
+            public int Mom_Is_Up { get; set; }
         }
     }
 }

@@ -11,6 +11,12 @@ namespace RMS.Persitence.Repositories.Oracle
         private static bool _banksTableMissing;
         private static bool _mccGroupsTableMissing;
 
+        private static List<(string Hash, string Name)>? _cachedBanks;
+        private static DateTime _banksCacheExpiry = DateTime.MinValue;
+
+        private static List<(string Hash, string Name)>? _cachedMccGroups;
+        private static DateTime _mccGroupsCacheExpiry = DateTime.MinValue;
+
         public SectorSpendRepository(IConfiguration configuration) : base(configuration) { }
 
         private const string SelectColumns = """
@@ -24,8 +30,8 @@ namespace RMS.Persitence.Repositories.Oracle
             SOURCE_CHANNEL                      AS SourceChannel,
             OPERATION_TYPE                      AS OperationType,
             SOURCE_COUNTRY_CATEGORY             AS SourceCountryCategory,
-            IS_ACQUIRING                        AS IsAcquiring,
-            IS_ISSUING                          AS IsIssuing,
+            CASE WHEN TO_CHAR(IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
+            CASE WHEN TO_CHAR(IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(IS_ISSUING) = '0' THEN 0 ELSE NULL END     AS IsIssuing,
             TOTAL_AMOUNT                        AS TotalAmount,
             TOTAL_COUNT                         AS TotalCount,
             TOTAL_LOCAL_AMOUNT                  AS TotalLocalAmount,
@@ -55,8 +61,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("OPERATION_TYPE = :OperationType", "OperationType", operationType)
                 .AddString("SOURCE_CITY_CATEGORY = :CityCategory", "CityCategory", sourceCityCategory)
                 .AddString("SOURCE_COUNTRY_CATEGORY = :CountryCategory", "CountryCategory", sourceCountryCategory)
-                .Add("IS_ACQUIRING = :IsAcquiring", "IsAcquiring", isAcquiring)
-                .Add("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing)
+                .AddString("IS_ACQUIRING = :IsAcquiring", "IsAcquiring", isAcquiring?.ToString())
+                .AddString("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing?.ToString())
                 .AddMonth("REPORT_MONTH", "Month", month);
 
             return QueryPagedAsync<SectorSpend>(
@@ -125,6 +131,9 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public async Task<IEnumerable<(string Hash, string Name)>> GetDistinctBanksAsync(CancellationToken ct = default)
         {
+            if (_cachedBanks is not null && DateTime.UtcNow < _banksCacheExpiry)
+                return _cachedBanks;
+
             const string sqlWithJoin = """
             SELECT DISTINCT 
                 s.bank_name AS Hash,
@@ -165,28 +174,38 @@ namespace RMS.Persitence.Repositories.Oracle
             """;
 
             using var conn = CreateConnection();
+            List<(string Hash, string Name)> result;
 
             if (_banksTableMissing)
             {
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+                result = (await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct))).ToList();
+            }
+            else
+            {
+                try
+                {
+                    result = (await conn.QueryAsync<(string Hash, string Name)>(
+                        new CommandDefinition(sqlWithJoin, cancellationToken: ct))).ToList();
+                }
+                catch (OracleException ex) when (ex.Number == 942)
+                {
+                    _banksTableMissing = true;
+                    result = (await conn.QueryAsync<(string Hash, string Name)>(
+                        new CommandDefinition(fallbackSql, cancellationToken: ct))).ToList();
+                }
             }
 
-            try
-            {
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(sqlWithJoin, cancellationToken: ct));
-            }
-            catch (OracleException ex) when (ex.Number == 942)
-            {
-                _banksTableMissing = true;
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(fallbackSql, cancellationToken: ct));
-            }
+            _cachedBanks = result;
+            _banksCacheExpiry = DateTime.UtcNow.AddMinutes(30);
+            return result;
         }
 
         public async Task<IEnumerable<(string Hash, string Name)>> GetDistinctMccGroupsAsync(CancellationToken ct = default)
         {
+            if (_cachedMccGroups is not null && DateTime.UtcNow < _mccGroupsCacheExpiry)
+                return _cachedMccGroups;
+
             const string sqlWithJoin = """
             SELECT DISTINCT 
                 s.mcc_group AS Hash,
@@ -213,24 +232,31 @@ namespace RMS.Persitence.Repositories.Oracle
             """;
 
             using var conn = CreateConnection();
+            List<(string Hash, string Name)> result;
 
             if (_mccGroupsTableMissing)
             {
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(fallbackSql, cancellationToken: ct));
+                result = (await conn.QueryAsync<(string Hash, string Name)>(
+                    new CommandDefinition(fallbackSql, cancellationToken: ct))).ToList();
+            }
+            else
+            {
+                try
+                {
+                    result = (await conn.QueryAsync<(string Hash, string Name)>(
+                        new CommandDefinition(sqlWithJoin, cancellationToken: ct))).ToList();
+                }
+                catch (OracleException ex) when (ex.Number == 942)
+                {
+                    _mccGroupsTableMissing = true;
+                    result = (await conn.QueryAsync<(string Hash, string Name)>(
+                        new CommandDefinition(fallbackSql, cancellationToken: ct))).ToList();
+                }
             }
 
-            try
-            {
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(sqlWithJoin, cancellationToken: ct));
-            }
-            catch (OracleException ex) when (ex.Number == 942)
-            {
-                _mccGroupsTableMissing = true;
-                return await conn.QueryAsync<(string Hash, string Name)>(
-                    new CommandDefinition(fallbackSql, cancellationToken: ct));
-            }
+            _cachedMccGroups = result;
+            _mccGroupsCacheExpiry = DateTime.UtcNow.AddMinutes(30);
+            return result;
         }
     }
 }

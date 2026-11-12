@@ -32,8 +32,8 @@ namespace RMS.Persitence.Repositories.Oracle
             CancellationToken ct)
         {
             var filter = new FilterBuilder()
-                .Add("BANK_NAME = :BankName", "BankName", bankName)
-                .Add("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
+                .AddString("BANK_NAME = :BankName", "BankName", bankName)
+                .AddString("REGION_NAME_CLEAN = :Region", "Region", regionNameClean)
                 .AddMonth("REPORT_MONTH", "Month", month);
 
             return QueryPagedAsync<MarketBenchmark>(
@@ -122,36 +122,32 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<IEnumerable<MarketBenchmarkTrend>> GetTrendAsync(
             string bankName, CancellationToken ct = default)
         {
-            var sql = """
-    SELECT
-        REPORT_MONTH        AS ReportMonth,
-        BANK_TRANS_AMOUNT   AS BankTransAmount,
-        MARKET_TOTAL_AMOUNT AS MarketTotalAmount,
-        BANK_CARD_COUNT     AS BankCardCount,
-        MARKET_TOTAL_CARDS  AS MarketTotalCards
-    FROM pg_mv_req7_benchmark
-    WHERE BANK_NAME = :BankName
-    ORDER BY REPORT_MONTH
-    """;
+            const string sql = """
+                WITH partition_dedup AS (
+                    SELECT
+                        REPORT_MONTH,
+                        REGION_NAME_CLEAN,
+                        CARD_BRAND_NAME,
+                        MAX(BANK_TRANS_AMOUNT)   AS BankTransAmount,
+                        MAX(MARKET_TOTAL_AMOUNT) AS MarketTotalAmount,
+                        SUM(BANK_CARD_COUNT)     AS BankCardCount,
+                        MAX(MARKET_TOTAL_CARDS)  AS MarketTotalCards
+                    FROM pg_mv_req7_benchmark
+                    WHERE BANK_NAME = :BankName
+                    GROUP BY REPORT_MONTH, REGION_NAME_CLEAN, CARD_BRAND_NAME
+                )
+                SELECT
+                    REPORT_MONTH AS Month,
+                    NVL(ROUND(MAX(BankTransAmount) / NULLIF(MAX(MarketTotalAmount), 0) * 100, 2), 0) AS MarketSharePct,
+                    NVL(ROUND(SUM(BankCardCount) / NULLIF(SUM(MarketTotalCards), 0) * 100, 2), 0)    AS CardSharePct
+                FROM partition_dedup
+                GROUP BY REPORT_MONTH
+                ORDER BY REPORT_MONTH
+                """;
 
             using var conn = CreateConnection();
-            var rows = await conn.QueryAsync<MarketBenchmark>(
+            return await conn.QueryAsync<MarketBenchmarkTrend>(
                 new CommandDefinition(sql, new { BankName = bankName }, cancellationToken: ct));
-
-            return rows
-                .GroupBy(r => r.ReportMonth)
-                .Select(g => new MarketBenchmarkTrend
-                {
-                    Month = g.Key,
-                    MarketSharePct = g.First().MarketTotalAmount > 0
-                        ? Math.Round(g.First().BankTransAmount / g.First().MarketTotalAmount * 100, 2)
-                        : 0,
-                    CardSharePct = g.First().MarketTotalCards > 0
-                        ? Math.Round((decimal)g.Sum(x => x.BankCardCount) / g.First().MarketTotalCards * 100, 2)
-                        : 0
-                })
-                .OrderBy(x => x.Month)
-                .ToList();
         }
     }
 }

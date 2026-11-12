@@ -210,25 +210,47 @@ public class CardDashboardRepository : ICardDashboardRepository
         };
     }
 
+    private static FilterLookupResponse? _cachedLookups;
+    private static DateTime _lookupsCacheExpiry = DateTime.MinValue;
+
     // ── FILTER LOOKUPS ───────────────────────────────────────────────────────
 
     public async Task<FilterLookupResponse> GetFilterLookupsAsync()
     {
-        using var con = Connection;
+        if (_cachedLookups is not null && DateTime.UtcNow < _lookupsCacheExpiry)
+            return _cachedLookups;
 
-        var q = async (string col) => (await con.QueryAsync<string>(
-            $"SELECT DISTINCT {col} FROM MV_CARD_DASHBOARD WHERE {col} IS NOT NULL ORDER BY 1"
-        )).ToList();
-
-        return new FilterLookupResponse
+        var q = async (string col) =>
         {
-            PaymentSystems = await q("PAYMENT_SYSTEM"),
-            PaymentTypes = await q("IS_ISSUING_CATEGORY"),
-            OperationTypes = await q("OPERATION_TYPE"),
-            CardTypeCategories = await q("CARD_PRODUCT_TYPE_CATEGORY"),
-            TokenStatuses = await q("TOKEN_STATUS"),
-            TransGroups = await q("TRANS_GROUP"),
-            TargetBankNames = await q("TARGET_BANK_NAME"),
+            using var con = Connection;
+            return (await con.QueryAsync<string>(
+                $"SELECT DISTINCT {col} FROM MV_CARD_DASHBOARD WHERE {col} IS NOT NULL ORDER BY 1"
+            )).ToList();
         };
+
+        var psTask = q("PAYMENT_SYSTEM");
+        var ptTask = q("IS_ISSUING_CATEGORY");
+        var otTask = q("OPERATION_TYPE");
+        var ctTask = q("CARD_PRODUCT_TYPE_CATEGORY");
+        var tsTask = q("TOKEN_STATUS");
+        var tgTask = q("TRANS_GROUP");
+        var tbTask = q("TARGET_BANK_NAME");
+
+        await Task.WhenAll(psTask, ptTask, otTask, ctTask, tsTask, tgTask, tbTask);
+
+        var response = new FilterLookupResponse
+        {
+            PaymentSystems     = await psTask,
+            PaymentTypes       = await ptTask,
+            OperationTypes     = await otTask,
+            CardTypeCategories = await ctTask,
+            TokenStatuses      = await tsTask,
+            TransGroups        = await tgTask,
+            TargetBankNames    = await tbTask,
+        };
+
+        _cachedLookups = response;
+        _lookupsCacheExpiry = DateTime.UtcNow.AddMinutes(30);
+        return response;
     }
 }

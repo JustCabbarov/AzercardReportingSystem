@@ -17,8 +17,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("UPPER(w.TARGET_COUNTRY) = UPPER(:TargetCountry)", "TargetCountry", f.TargetCountry)
                 .AddString("w.TARGET_COUNTRY_CATEGORY = :TargetCountryCategory", "TargetCountryCategory", f.TargetCountryCategory)
                 .AddString("w.PAYMENT_SYSTEM = :PaymentSystem", "PaymentSystem", f.PaymentSystem)
-                .Add("w.IS_ISSUING = :IsIssuing", "IsIssuing", f.IsIssuing.HasValue ? (f.IsIssuing.Value ? 1 : 0) : (object?)null)
-                .Add("w.IS_ACQUIRING = :IsAcquiring", "IsAcquiring", f.IsAcquiring.HasValue ? (f.IsAcquiring.Value ? 1 : 0) : (object?)null)
+                .AddBool("w.IS_ISSUING", "IsIssuing", f.IsIssuing)
+                .AddBool("w.IS_ACQUIRING", "IsAcquiring", f.IsAcquiring)
                 .AddMonth("w.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
@@ -37,8 +37,8 @@ namespace RMS.Persitence.Repositories.Oracle
             TargetCountry,
             TARGET_COUNTRY_CATEGORY         AS TargetCountryCategory,
             PAYMENT_SYSTEM                  AS PaymentSystem,
-            IS_ISSUING                      AS IsIssuing,
-            IS_ACQUIRING                    AS IsAcquiring,
+            IsIssuing,
+            IsAcquiring,
             TOTAL_AMOUNT                    AS TotalAmount,
             TOTAL_COUNT                     AS TotalCount,
             SourceLatitude,
@@ -54,8 +54,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 INITCAP(w.TARGET_COUNTRY)         AS TargetCountry,
                 w.TARGET_COUNTRY_CATEGORY,
                 w.PAYMENT_SYSTEM,
-                w.IS_ISSUING,
-                w.IS_ACQUIRING,
+                CASE WHEN TO_CHAR(w.IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ISSUING) = '0' THEN 0 ELSE NULL END   AS IsIssuing,
+                CASE WHEN TO_CHAR(w.IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
                 w.TOTAL_AMOUNT,
                 w.TOTAL_COUNT,
                 sc.latitude                       AS SourceLatitude,
@@ -82,19 +82,19 @@ namespace RMS.Persitence.Repositories.Oracle
         {
             var sql = $"""
                 SELECT
-                    INITCAP(w.SOURCE_COUNTRY)                                       AS SourceCountry,
-                    w.SOURCE_COUNTRY_CATEGORY                                       AS SourceCountryCategory,
-                    INITCAP(w.TARGET_COUNTRY)                                       AS TargetCountry,
-                    w.TARGET_COUNTRY_CATEGORY                                       AS TargetCountryCategory,
-                    w.PAYMENT_SYSTEM                                                AS PaymentSystem,
-                    CASE WHEN MAX(w.IS_ISSUING) = 1 THEN 1 ELSE 0 END               AS IsIssuing,
-                    CASE WHEN MAX(w.IS_ACQUIRING) = 1 THEN 1 ELSE 0 END             AS IsAcquiring,
-                    SUM(w.TOTAL_AMOUNT)                                             AS TotalAmount,
-                    SUM(w.TOTAL_COUNT)                                              AS TotalCount,
-                    sc.latitude                                                     AS SourceLatitude,
-                    sc.longitude                                                    AS SourceLongitude,
-                    tc.latitude                                                     AS TargetLatitude,
-                    tc.longitude                                                    AS TargetLongitude
+                    INITCAP(w.SOURCE_COUNTRY)                                               AS SourceCountry,
+                    w.SOURCE_COUNTRY_CATEGORY                                               AS SourceCountryCategory,
+                    INITCAP(w.TARGET_COUNTRY)                                               AS TargetCountry,
+                    w.TARGET_COUNTRY_CATEGORY                                               AS TargetCountryCategory,
+                    w.PAYMENT_SYSTEM                                                        AS PaymentSystem,
+                    CASE WHEN MAX(TO_CHAR(w.IS_ISSUING)) = '1' THEN 1 ELSE 0 END            AS IsIssuing,
+                    CASE WHEN MAX(TO_CHAR(w.IS_ACQUIRING)) = '1' THEN 1 ELSE 0 END          AS IsAcquiring,
+                    SUM(w.TOTAL_AMOUNT)                                                     AS TotalAmount,
+                    SUM(w.TOTAL_COUNT)                                                      AS TotalCount,
+                    sc.latitude                                                             AS SourceLatitude,
+                    sc.longitude                                                            AS SourceLongitude,
+                    tc.latitude                                                             AS TargetLatitude,
+                    tc.longitude                                                            AS TargetLongitude
                 FROM pg_mv_req5_world_map w
                 LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
                 LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
@@ -129,8 +129,8 @@ namespace RMS.Persitence.Repositories.Oracle
                     INITCAP(w.TARGET_COUNTRY)         AS TargetCountry,
                     w.TARGET_COUNTRY_CATEGORY         AS TargetCountryCategory,
                     w.PAYMENT_SYSTEM                  AS PaymentSystem,
-                    w.IS_ISSUING                      AS IsIssuing,
-                    w.IS_ACQUIRING                    AS IsAcquiring,
+                    CASE WHEN TO_CHAR(w.IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ISSUING) = '0' THEN 0 ELSE NULL END   AS IsIssuing,
+                    CASE WHEN TO_CHAR(w.IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
                     w.TOTAL_AMOUNT                    AS TotalAmount,
                     w.TOTAL_COUNT                     AS TotalCount,
                     sc.latitude                       AS SourceLatitude,
@@ -155,15 +155,15 @@ namespace RMS.Persitence.Repositories.Oracle
 
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAsync(
             string bankName, CancellationToken ct = default)
-            => QueryRawAsync(
+            => QueryAggregatedAsync(
                 "w.BANK_NAME = :BankName",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetByMonthAsync(
             DateTime month, CancellationToken ct = default)
-            => QueryRawAsync(
-                "TRUNC(w.REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')",
+            => QueryAggregatedAsync(
+                "w.REPORT_MONTH = TRUNC(:Month, 'MM')",
                 new { Month = month.Date },
                 ct);
 
@@ -177,21 +177,21 @@ namespace RMS.Persitence.Repositories.Oracle
         public Task<IEnumerable<WorldMapTransaction>> GetIssuingAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = :BankName AND w.IS_ISSUING = 1",
+                "w.BANK_NAME = :BankName AND w.IS_ISSUING = '1'",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetAcquiringAsync(
             string bankName, CancellationToken ct = default)
             => QueryRawAsync(
-                "w.BANK_NAME = :BankName AND w.IS_ACQUIRING = 1",
+                "w.BANK_NAME = :BankName AND w.IS_ACQUIRING = '1'",
                 new { BankName = bankName },
                 ct);
 
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAndMonthAsync(
             string bankName, DateTime month, CancellationToken ct = default)
-            => QueryRawAsync(
-                "w.BANK_NAME = :BankName AND TRUNC(w.REPORT_MONTH, 'MM') = TRUNC(:Month, 'MM')",
+            => QueryAggregatedAsync(
+                "w.BANK_NAME = :BankName AND w.REPORT_MONTH = TRUNC(:Month, 'MM')",
                 new { BankName = bankName, Month = month.Date },
                 ct);
     }

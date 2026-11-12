@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
 
@@ -67,8 +67,9 @@ public sealed class ForecastingController : ControllerBase
             var svc = scope.ServiceProvider.GetRequiredService<IForecastingService>();
             var logger = scope.ServiceProvider
                               .GetRequiredService<ILogger<ForecastingController>>();
+            await svc.TrainGlobalAsync(CancellationToken.None);
             await svc.TrainAllAsync(CancellationToken.None);
-            logger.LogInformation("Bank-specific modellər train tamamlandı.");
+            logger.LogInformation("Global və Bank-specific modellər train tamamlandı.");
         });
 
         return Accepted(new { message = "Bank-specific modellər arxa planda train başladı." });

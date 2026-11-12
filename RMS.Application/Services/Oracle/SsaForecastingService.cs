@@ -1,4 +1,4 @@
-﻿// RMS.Application/Services/Oracle/SsaForecastingService.cs
+// RMS.Application/Services/Oracle/SsaForecastingService.cs
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 using Microsoft.ML.Transforms.TimeSeries;
@@ -38,9 +38,24 @@ public sealed class SsaForecastingService : IForecastingService
     {
         _logger.LogInformation("Global model train başladı.");
 
-        var data = (await _repo.GetAllAsync(ct))
-                       .OrderBy(x => x.TimeIndex)
-                       .ToList();
+        var rawData = await _repo.GetAllAsync(ct);
+
+        // Global model üçün bütün bank və MCC-ləri aylıq olaraq cəmlə
+        var data = rawData
+            .GroupBy(x => new DateTime(x.ReportMonth.Year, x.ReportMonth.Month, 1))
+            .OrderBy(g => g.Key)
+            .Select((g, idx) => new ForecastInput
+            {
+                ReportMonth = g.Key,
+                BankName = "GLOBAL",
+                MccGroup = "ALL",
+                TotalAmount = g.Sum(x => x.TotalAmount),
+                TotalCount = g.Sum(x => x.TotalCount),
+                TotalCards = g.Sum(x => x.TotalCards),
+                SeasonMonth = g.Key.Month,
+                TimeIndex = idx + 1
+            })
+            .ToList();
 
         if (data.Count < MinSeriesLength)
         {
@@ -66,8 +81,6 @@ public sealed class SsaForecastingService : IForecastingService
 
     public async Task TrainAllAsync(CancellationToken ct = default)
     {
-        await TrainGlobalAsync(ct);
-
         var combinations = await _repo.GetAllBankMccGroupsAsync(ct);
         foreach (var (bank, mcc) in combinations)
         {
