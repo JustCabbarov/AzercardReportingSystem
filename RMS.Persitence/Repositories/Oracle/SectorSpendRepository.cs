@@ -117,7 +117,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 SUM(TOTAL_AMOUNT)                                           AS TotalAmount,
                 SUM(TOTAL_COUNT)                                            AS TotalCount,
                 ROUND(SUM(TOTAL_AMOUNT) / NULLIF(SUM(TOTAL_COUNT), 0), 2)   AS AvgTicket,
-                AVG(SECTOR_MARKET_SHARE_PCT)                                AS SectorMarketSharePct
+                ROUND(AVG(SECTOR_MARKET_SHARE_PCT), 2)                      AS SectorMarketSharePct
             FROM pg_mv_req8_sector_spend
             {filter.WhereClause}
             GROUP BY REPORT_MONTH
