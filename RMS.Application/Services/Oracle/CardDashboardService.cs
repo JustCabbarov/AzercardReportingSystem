@@ -42,36 +42,67 @@ namespace RMS.Application.Services.Oracle
             }
 
             var endDate = filter.DateTo ?? DateTime.Today;
+            var historyStart = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-24);
 
-            // 3. Əvvəlki ilin artım faizinə əsasən proqnoz hesabla
-            var actuals = trend
-                .Where(t => !t.IsForecast)
+            // İllik artım faizi üçün seçilmiş aralıq 24 aydan qısadırsa tarixçəni genişləndir
+            var historyTrend = (filter.DateFrom is null || filter.DateFrom.Value > historyStart)
+                ? await _repo.GetTrendAsync(new DashboardFilterRequest
+                {
+                    DateFrom         = historyStart,
+                    DateTo           = endDate,
+                    DateGrouping     = filter.DateGrouping,
+                    RoundTo          = filter.RoundTo,
+                    TargetBankName   = filter.TargetBankName,
+                    TransGroup       = filter.TransGroup,
+                    CardTypeCategory = filter.CardTypeCategory,
+                    PaymentSystem    = filter.PaymentSystem,
+                    PaymentType      = filter.PaymentType,
+                    OperationType    = filter.OperationType,
+                    TokenStatus      = filter.TokenStatus,
+                    IsContactless    = filter.IsContactless
+                })
+                : trend;
+
+            var realHistory = historyTrend.Where(t => !t.IsForecast).ToList();
+            if (realHistory.Count < 2)
+                realHistory = trend.Where(t => !t.IsForecast).ToList();
+
+            // 3. Əvvəlki ilin artım faizinə əsasən həm Dövriyyə, həm Əməliyyat sayı üçün proqnoz hesabla
+            var amountActuals = realHistory
                 .Select(t => (t.PeriodDate, t.TotalAmount))
                 .ToList();
+            var countActuals = realHistory
+                .Select(t => (t.PeriodDate, (decimal)t.TotalTxCount))
+                .ToList();
 
-            var forecasts = GrowthRateForecastEngine.Compute(actuals, endDate, horizonMonths: 12);
+            var amountForecasts = GrowthRateForecastEngine.Compute(amountActuals, endDate, horizonMonths: 12);
+            var countForecastByMonth = GrowthRateForecastEngine
+                .Compute(countActuals, endDate, horizonMonths: 12)
+                .ToDictionary(c => c.Month, c => Math.Round(c.Forecast, 0));
 
             // 4. Forecast nöqtələrini trend siyahısına əlavə et
-            foreach (var f in forecasts)
+            foreach (var f in amountForecasts)
             {
+                countForecastByMonth.TryGetValue(f.Month, out var txForecast);
                 trend.Add(new TrendPoint
                 {
-                    PeriodDate     = f.Month,
-                    PeriodLabel    = f.Month.ToString("MM/yyyy"),
-                    IsForecast     = true,
+                    PeriodDate      = f.Month,
+                    PeriodLabel     = f.Month.ToString("MM/yyyy"),
+                    IsForecast      = true,
 
                     // Proqnoz dəyərləri
-                    ForecastAmount = f.Forecast,
+                    ForecastAmount  = f.Forecast,
+                    ForecastTxCount = txForecast,
 
                     // Real dəyərlər yoxdur (gələcək)
-                    TotalAmount    = 0,
-                    TotalTxCount   = 0,
+                    TotalAmount     = 0,
+                    TotalTxCount    = 0,
                 });
             }
 
             _logger.LogInformation(
                 "GrowthRate forecast əlavə edildi: EndDate={D}, ForecastCount={C}",
-                endDate, forecasts.Count);
+                endDate, amountForecasts.Count);
 
             return trend;
         }

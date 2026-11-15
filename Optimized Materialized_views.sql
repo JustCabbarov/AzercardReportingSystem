@@ -1,305 +1,391 @@
 -- ============================================================================
--- ORACLE PERFORMANCE OPTIMIZATION SCRIPT FOR 600M+ ROWS
--- Schema: Dynamic (Run in target user schema) / RAUF_REPORT
+-- AZERCARD REPORTING SYSTEM - PRODUCTION MATERIALIZED VIEW FIX VƏ PATCH SCRIPT
+-- Hədəf mühit: Oracle Database (600M+ sətir / BI_TRANSACTION_MASKED)
+--
+-- Mənbə Cədvəllər:
+--   1. BI_TRANSACTION_MASKED
+--   2. BI_MARKET_CARDS_MASKED
+--   3. BI_MARKET_DEVICES_MASKED
+--
+-- Əhatə olunan Materialized View-lar (12 ədəd):
+--   1.  MV_SUMMARY_TRANSACTION          (Summary Transaction / Prototip Summary)
+--   2.  MV_TRANSACTION_SUMMARY          (Transaction Detailed / Prototip Card Summary)
+--   3.  MV_ACQUIRING_DEVICE_TRANSACTION (Acquiring Device Transaction)
+--   4.  MV_CARD_DASHBOARD               (Card Dashboard)
+--   5.  MV_CARD_PORTFOLIO               (Card Portfolio Dashboard)
+--   6.  MV_DEVICES_BASE                 (Devices Portfolio - Base)
+--   7.  MV_DEVICES_TREND                (Devices Portfolio - Trend)
+--   8.  PG_MV_REQ4_AZ_MAP               (Azərbaycan Xəritəsi)
+--   9.  PG_MV_REQ5_WORLD_MAP            (Dünya Xəritəsi)
+--   10. PG_MV_REQ8_SECTOR_SPEND         (Sektorlar üzrə Xərcləmə)
+--   11. PG_MV_REQ7_BENCHMARK            (Bazar Müqayisəsi / Benchmark)
+--   12. PG_MV_REQ1_FORECAST_INPUT       (Proqnoz Tətbiqi / Forecast)
 -- ============================================================================
--- 600 Milyondan çox data üçün tətbiq edilən əsas optimizasiyalar:
--- 1. PARALLEL 8: Bütün MV və sorğulara paralel icra dərəcəsi (CPU nüvələrinə görə 8 və ya 16 seçilə bilər).
--- 2. NOLOGGING: Redo log generasiyasını dayandırır, disk I/O-nu minimuma endirir.
--- 3. COMPRESS BASIC: Cədvəl ölçüsünü 60-80% kiçildir, diskdən oxuma sürətini 3-4 dəfə artırır.
--- 4. Optimizer Hints (/*+ PARALLEL(t, 8) */): 600M-lik ana cədvəlin (BI_TRANSACTION_MASKED) serial oxunmasının qarşısını alır.
--- 5. Pre-Aggregation CTEs (Req 7 və Req 1): 600M sətirli cədvəllə JOIN etmək əvəzinə, əvvəlcə tranzaksiyaları GROUP BY edib kiçildib sonra JOIN edir (30 milyardlıq kartesian partlayışının qarşısı alınır!).
--- 6. Fast Index Creation: İndekslər NOLOGGING PARALLEL 8 COMPUTE STATISTICS ilə yaradılır və sonra NOPARALLEL LOGGING edilir.
--- 7. Düzəlişlər: PostgreSQL sintaksisləri (text, float8, public.) və dublikat AZ_MAP adı aradan qaldırıldı.
+
+SET DEFINE OFF;
+
 -- ============================================================================
+-- 0. MÖVCUD İCAZƏLƏRİN (GRANT) AVTOMATİK YADDA SAXLANILMASI
+-- ============================================================================
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE mv_patch_grants_bkp PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
 
--- SESSIYA SƏVİYYƏSİNDƏ OPTİMİZASİYANI AKTİVLƏŞDİRİN (Scripti icra etməzdən əvvəl):
-ALTER SESSION ENABLE PARALLEL DDL;
-ALTER SESSION ENABLE PARALLEL DML;
-ALTER SESSION ENABLE PARALLEL QUERY;
-ALTER SESSION SET WORKAREA_SIZE_POLICY = AUTO;
+CREATE TABLE mv_patch_grants_bkp AS
+SELECT grantee, table_name, privilege, grantable
+FROM all_tab_privs
+WHERE table_schema = SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')
+  AND table_name IN (
+      'MV_SUMMARY_TRANSACTION', 'MV_TRANSACTION_SUMMARY', 'MV_ACQUIRING_DEVICE_TRANSACTION',
+      'MV_CARD_DASHBOARD', 'MV_CARD_PORTFOLIO', 'MV_DEVICES_BASE', 'MV_DEVICES_TREND',
+      'PG_MV_REQ4_AZ_MAP', 'PG_MV_REQ5_WORLD_MAP', 'PG_MV_REQ8_SECTOR_SPEND',
+      'PG_MV_REQ7_BENCHMARK', 'PG_MV_REQ1_FORECAST_INPUT'
+  );
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 1. SummaryTransaction
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_SUMMARY_TRANSACTION
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+
+-- ============================================================================
+-- 1. MV_SUMMARY_TRANSACTION (Slide 1 - Summary Transaction və Prototip Summary)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_summary_transaction'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_summary_transaction'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_summary_transaction CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW mv_summary_transaction
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'DD') AS report_day,
-    t.is_issuing,
-    t.is_acquiring,
-    t.acquiring_device_type,
-    t.target_bank_name,
-    t.source_bank_name,
-    t.card_product_type_category,
-    t.payment_system,
-    t.trans_group,
-    t.operation_type,
-    t.token_status,
-    t.is_contactless,
-    t.transaction_currency,
-    SUM(t.local_amount)      AS total_local_amount,
-    SUM(t.transaction_count) AS total_count,
-    SUM(t.settlement_amount) AS total_settlement_amount
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-GROUP BY
-    TRUNC(t.report_date, 'DD'),
-    t.is_issuing,
-    t.is_acquiring,
-    t.acquiring_device_type,
-    t.target_bank_name,
-    t.source_bank_name,
-    t.card_product_type_category,
-    t.payment_system,
-    t.trans_group,
-    t.operation_type,
-    t.token_status,
-    t.is_contactless,
-    t.transaction_currency;
-
-CREATE INDEX IDX_MV_SUMMARY_FILTERS
-    ON MV_SUMMARY_TRANSACTION (card_product_type_category, trans_group, operation_type, token_status, is_contactless)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_SUMMARY_MAIN
-    ON MV_SUMMARY_TRANSACTION (report_day, is_issuing, is_acquiring, acquiring_device_type)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_SUMMARY_SOURCE_BANK
-    ON MV_SUMMARY_TRANSACTION (source_bank_name)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_SUMMARY_TARGET_BANK
-    ON MV_SUMMARY_TRANSACTION (target_bank_name)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_MV_SUMMARY_FILTERS NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_SUMMARY_MAIN NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_SUMMARY_SOURCE_BANK NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_SUMMARY_TARGET_BANK NOPARALLEL LOGGING;
-
-
--- ═══════════════════════════════════════════════════════════════════════════
--- 2. TransactionDetailed
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_TRANSACTION_SUMMARY
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
-BUILD IMMEDIATE
-REFRESH COMPLETE ON DEMAND
-AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'DD') AS report_day,
-    CASE t.is_issuing_category
-        WHEN 'On-US'          THEN 'Daxili'
-        WHEN 'Domestic AC'     THEN 'AZC'
-        WHEN 'Domestic Non-AC' THEN 'Bazar'
-        WHEN 'Foreign non-AC'  THEN 'Xarici'
-        ELSE t.is_issuing_category
-    END AS issuing_category,
-    t.source_bank_name,
-    t.target_bank_name,
-    t.payment_system,
-    t.acquiring_device_type,
-    t.card_product_type_category,
-    t.transaction_currency,
-    t.operation_type,
-    t.trans_group,
-    t.token_status,
-    SUM(t.local_amount)      AS total_local_amount,
-    SUM(t.transaction_count) AS total_count,
-    SUM(t.settlement_amount) AS total_settlement_amount
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-WHERE t.is_issuing = 1 OR t.is_issuing = '1'
-GROUP BY
-    TRUNC(t.report_date, 'DD'),
-    t.is_issuing_category,
-    t.source_bank_name,
-    t.target_bank_name,
-    t.payment_system,
-    t.acquiring_device_type,
-    t.card_product_type_category,
-    t.transaction_currency,
-    t.operation_type,
-    t.trans_group,
-    t.token_status;
-
-CREATE INDEX IDX_MV_TRANS_CARD_TYPE
-    ON MV_TRANSACTION_SUMMARY (card_product_type_category, transaction_currency, operation_type, trans_group, token_status)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_TRANS_COMPOSITE
-    ON MV_TRANSACTION_SUMMARY (report_day, issuing_category, source_bank_name, payment_system, acquiring_device_type)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_TRANS_TARGET_BANK
-    ON MV_TRANSACTION_SUMMARY (target_bank_name)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_MV_TRANS_CARD_TYPE NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_TRANS_COMPOSITE NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_TRANS_TARGET_BANK NOPARALLEL LOGGING;
-
-
--- ═══════════════════════════════════════════════════════════════════════════
--- 3. Devices
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_DEVICES_BASE
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
-BUILD IMMEDIATE
-REFRESH COMPLETE ON DEMAND
-AS
-WITH monthly_agg AS (
-    SELECT /*+ PARALLEL(d, 8) */
-        TRUNC(d.report_date, 'MM') AS report_month,
-        d.region_name,
-        d.region_name_clean,
-        d.bank_name,
-        d.mcc_name,
-        d.retail_category,
-        d.transaction_class,
-        d.ctls_status,
-        SUM(d.count_dev) AS total_devices
-    FROM RAUF_REPORT.BI_MARKET_DEVICES_MASKED d
-    GROUP BY
-        TRUNC(d.report_date, 'MM'),
-        d.region_name,
-        d.region_name_clean,
-        d.bank_name,
-        d.mcc_name,
-        d.retail_category,
-        d.transaction_class,
-        d.ctls_status
-)
 SELECT
-    report_month,
-    region_name,
-    region_name_clean,
-    bank_name,
-    mcc_name,
-    retail_category,
-    transaction_class,
-    ctls_status,
-    total_devices,
-    ROUND(total_devices * 100.0 / NULLIF(SUM(total_devices) OVER (PARTITION BY report_month, region_name, mcc_name, retail_category), 0), 2) AS share_pct_by_bank,
-    ROUND(total_devices * 100.0 / NULLIF(SUM(total_devices) OVER (PARTITION BY report_month, bank_name, mcc_name, retail_category), 0), 2)   AS share_pct_by_region,
-    ROUND(total_devices * 100.0 / NULLIF(SUM(total_devices) OVER (PARTITION BY report_month, bank_name, region_name, retail_category), 0), 2) AS share_pct_by_mcc,
-    ROUND(total_devices * 100.0 / NULLIF(SUM(total_devices) OVER (PARTITION BY report_month, bank_name, region_name, mcc_name), 0), 2)       AS share_pct_by_retail_cat,
-    SUM(total_devices) OVER (PARTITION BY report_month) AS grand_total_month
-FROM monthly_agg;
+    s.report_day,
+    s.is_issuing,
+    s.is_acquiring,
+    s.acquiring_device_type,
+    s.target_bank_name,
+    s.source_bank_name,
+    s.card_product_type_category,
+    s.payment_system,
+    s.trans_group,
+    s.operation_type,
+    s.token_status,
+    s.is_contactless,
+    s.transaction_currency,
+    SUM(s.local_amount)      AS total_local_amount,
+    SUM(s.transaction_count) AS total_count,
+    SUM(s.settlement_amount) AS total_settlement_amount
+FROM (
+    SELECT /*+ PARALLEL(8) */
+        TRUNC(t.report_date, 'DD')              AS report_day,
+        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')   AS is_issuing,
+        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0') AS is_acquiring,
+        CASE
+            WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
+            WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
+            WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT') THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance'
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT', 'Unk') THEN 'ATM'
+            WHEN t.trans_group = 'Cash' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Retail with CashBack', 'Credit')
+                 AND SUBSTR(t.tr_condition, 1, 3) = 'POS' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Bill Payment', 'Credit')
+                 AND (t.tr_condition IS NULL OR SUBSTR(t.tr_condition, 1, 3) NOT IN ('ATM', 'CAT', 'POS')) THEN 'ECOM'
+            WHEN t.trans_group IN (
+                'UFX Payment Debit offline', 'UFX Payment Credit offline',
+                'UFX Sales Debit offline', 'UFX Sales Debit online',
+                'UFX Sales Credit offline', 'UFX IPS Credit offline', 'UFX IPS Debit offline'
+            ) THEN 'UFX'
+            WHEN t.tr_condition IN (
+                'ATM', 'ATM Chip Contactless', 'ATM Chip Full Grade',
+                'CAT PBT', 'CAT PBT Chip Contactless', 'CAT PBT Chip Full Grade'
+            ) THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance' THEN 'ATM'
+            WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
+            WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
+            ELSE 'ECOM'
+        END                                     AS acquiring_device_type,
+        t.target_bank_name,
+        t.source_bank_name,
+        t.card_product_type_category,
+        t.payment_system,
+        t.trans_group,
+        t.operation_type,
+        t.token_status,
+        CASE
+            WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
+            ELSE '0'
+        END                                     AS is_contactless,
+        t.transaction_currency,
+        NVL(t.local_amount, 0)                  AS local_amount,
+        NVL(t.transaction_count, 0)             AS transaction_count,
+        NVL(t.settlement_amount, 0)             AS settlement_amount
+    FROM bi_transaction_masked t
+) s
+GROUP BY
+    s.report_day,
+    s.is_issuing,
+    s.is_acquiring,
+    s.acquiring_device_type,
+    s.target_bank_name,
+    s.source_bank_name,
+    s.card_product_type_category,
+    s.payment_system,
+    s.trans_group,
+    s.operation_type,
+    s.token_status,
+    s.is_contactless,
+    s.transaction_currency;
 
-CREATE INDEX IDX_BASE_COMPOSITE
-  ON MV_DEVICES_BASE (REPORT_MONTH, BANK_NAME, REGION_NAME, MCC_NAME, RETAIL_CATEGORY)
-  NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
+CREATE INDEX idx_mv_sum_tr_day     ON mv_summary_transaction (report_day) NOLOGGING;
+CREATE INDEX idx_mv_sum_tr_iss_acq ON mv_summary_transaction (is_issuing, is_acquiring, report_day) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_SUMMARY_TRANSACTION', cascade => TRUE); END;
+/
 
-ALTER INDEX IDX_BASE_COMPOSITE NOPARALLEL LOGGING;
 
+-- ============================================================================
+-- 2. MV_TRANSACTION_SUMMARY (Slide 2 - Card Transaction Detailed)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_transaction_summary'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_transaction_summary'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_transaction_summary CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 4. CardPortfolio
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_CARD_PORTFOLIO
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+CREATE MATERIALIZED VIEW mv_transaction_summary
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-WITH base AS (
-    SELECT /*+ PARALLEL(c, 8) */
-        TRUNC(c.report_month, 'MM') AS report_month,
-        c.bank_name,
-        c.region_name_clean AS region_name,
-        c.payment_scheme,
-        c.card_brand_name,
-        c.card_category_name,
-        c.card_product_name,
-        c.card_commercial_name,
-        c.base_currency_name,
-        c.product_type,
-        c.contactless_status,
-        c.exp_status,
-        c.status_3d,
-        SUM(c.count_card) AS total_cards
-    FROM RAUF_REPORT.BI_MARKET_CARDS_MASKED c
-    GROUP BY
-        TRUNC(c.report_month, 'MM'),
-        c.bank_name,
-        c.region_name_clean,
-        c.payment_scheme,
-        c.card_brand_name,
-        c.card_category_name,
-        c.card_product_name,
-        c.card_commercial_name,
-        c.base_currency_name,
-        c.product_type,
-        c.contactless_status,
-        c.exp_status,
-        c.status_3d
-)
 SELECT
-    report_month,
-    bank_name,
-    region_name,
-    payment_scheme,
-    card_brand_name,
-    card_category_name,
-    card_product_name,
-    card_commercial_name,
-    base_currency_name,
-    product_type,
-    contactless_status,
-    exp_status,
-    status_3d,
-    total_cards,
-    LAG(total_cards) OVER (
-        PARTITION BY bank_name, region_name, payment_scheme, base_currency_name,
-                      product_type, contactless_status, exp_status, status_3d,
-                      card_brand_name, card_category_name, card_product_name, card_commercial_name
-        ORDER BY report_month
-    ) AS prev_total_cards
-FROM base;
+    s.report_day,
+    s.issuing_category,
+    s.source_bank_name,
+    s.target_bank_name,
+    s.payment_system,
+    s.acquiring_device_type,
+    s.card_product_type_category,
+    s.transaction_currency,
+    s.operation_type,
+    s.trans_group,
+    s.token_status,
+    SUM(s.local_amount)      AS total_local_amount,
+    SUM(s.transaction_count) AS total_count,
+    SUM(s.settlement_amount) AS total_settlement_amount
+FROM (
+    SELECT /*+ PARALLEL(8) */
+        TRUNC(t.report_date, 'DD') AS report_day,
+        CASE
+            WHEN UPPER(TRIM(t.is_issuing_category)) IN ('ON-US', 'ON US', 'ONUS', 'DAXILI', 'DAXİLİ') THEN 'Daxili'
+            WHEN UPPER(TRIM(t.is_issuing_category)) IN ('DOMESTIC AC', 'AZC') THEN 'AZC'
+            WHEN UPPER(TRIM(t.is_issuing_category)) IN ('DOMESTIC NON-AC', 'DOMESTIC NON AC', 'BAZAR') THEN 'Bazar'
+            WHEN UPPER(TRIM(t.is_issuing_category)) = 'DOMESTIC' THEN 'AZC'
+            WHEN UPPER(TRIM(t.is_issuing_category)) IN ('INTERNATIONAL', 'FOREIGN', 'FOREIGN NON-AC', 'FOREIGN AC', 'XARICI', 'XARİCİ') THEN 'Xarici'
+            ELSE NVL(TRIM(t.is_issuing_category), 'Digər')
+        END                        AS issuing_category,
+        t.source_bank_name,
+        t.target_bank_name,
+        t.payment_system,
+        CASE
+            WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
+            WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
+            WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT') THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance'
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT', 'Unk') THEN 'ATM'
+            WHEN t.trans_group = 'Cash' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Retail with CashBack', 'Credit')
+                 AND SUBSTR(t.tr_condition, 1, 3) = 'POS' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Bill Payment', 'Credit')
+                 AND (t.tr_condition IS NULL OR SUBSTR(t.tr_condition, 1, 3) NOT IN ('ATM', 'CAT', 'POS')) THEN 'ECOM'
+            WHEN t.trans_group IN (
+                'UFX Payment Debit offline', 'UFX Payment Credit offline',
+                'UFX Sales Debit offline', 'UFX Sales Debit online',
+                'UFX Sales Credit offline', 'UFX IPS Credit offline', 'UFX IPS Debit offline'
+            ) THEN 'UFX'
+            WHEN t.tr_condition IN (
+                'ATM', 'ATM Chip Contactless', 'ATM Chip Full Grade',
+                'CAT PBT', 'CAT PBT Chip Contactless', 'CAT PBT Chip Full Grade'
+            ) THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance' THEN 'ATM'
+            WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
+            WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
+            ELSE 'ECOM'
+        END                        AS acquiring_device_type,
+        t.card_product_type_category,
+        COALESCE(NULLIF(TRIM(t.card_account_currency), ''), t.transaction_currency) AS transaction_currency,
+        t.operation_type,
+        t.trans_group,
+        t.token_status,
+        NVL(t.local_amount, 0)      AS local_amount,
+        NVL(t.transaction_count, 0) AS transaction_count,
+        NVL(t.settlement_amount, 0) AS settlement_amount
+    FROM bi_transaction_masked t
+    WHERE TRIM(TO_CHAR(t.is_issuing)) = '1'
+) s
+GROUP BY
+    s.report_day,
+    s.issuing_category,
+    s.source_bank_name,
+    s.target_bank_name,
+    s.payment_system,
+    s.acquiring_device_type,
+    s.card_product_type_category,
+    s.transaction_currency,
+    s.operation_type,
+    s.trans_group,
+    s.token_status;
 
-CREATE INDEX IDX_MVCP_BANK_NAME      ON MV_CARD_PORTFOLIO (bank_name) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_CONTACTLESS    ON MV_CARD_PORTFOLIO (contactless_status) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_EXP_STATUS     ON MV_CARD_PORTFOLIO (exp_status) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_PAYMENT_SCHEME ON MV_CARD_PORTFOLIO (payment_scheme) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_PRODUCT_TYPE   ON MV_CARD_PORTFOLIO (product_type) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_REGION         ON MV_CARD_PORTFOLIO (region_name) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_REPORT_MONTH   ON MV_CARD_PORTFOLIO (report_month) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_MVCP_STATUS_3D      ON MV_CARD_PORTFOLIO (status_3d) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_MVCP_BANK_NAME NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_CONTACTLESS NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_EXP_STATUS NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_PAYMENT_SCHEME NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_PRODUCT_TYPE NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_REGION NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_REPORT_MONTH NOPARALLEL LOGGING;
-ALTER INDEX IDX_MVCP_STATUS_3D NOPARALLEL LOGGING;
+CREATE INDEX idx_mv_tx_sum_day      ON mv_transaction_summary (report_day) NOLOGGING;
+CREATE INDEX idx_mv_tx_sum_src_bank ON mv_transaction_summary (source_bank_name, report_day) NOLOGGING;
+CREATE INDEX idx_mv_tx_sum_cat      ON mv_transaction_summary (issuing_category, report_day) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_TRANSACTION_SUMMARY', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 5. CardDashboard
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_CARD_DASHBOARD
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 3. MV_ACQUIRING_DEVICE_TRANSACTION (Slide 4 - Acquiring Device Transaction)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_acquiring_device_transaction'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_acquiring_device_transaction'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_acquiring_device_transaction CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW mv_acquiring_device_transaction
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'MM')   AS report_month,
-    TRUNC(t.report_date, 'YYYY') AS report_year,
-    TRUNC(t.report_date, 'Q')    AS report_quarter,
+SELECT
+    s.report_date,
+    s.period_month,
+    s.acquiring_device_type_calc,
+    s.acquiring_device_type,
+    s.trans_group,
+    s.operation_type,
+    s.token_status,
+    s.mcc,
+    s.is_acquiring_category,
+    s.target_bank_name,
+    s.source_bank_name,
+    s.target_city,
+    s.payment_system,
+    s.is_contactless,
+    SUM(s.local_amount)      AS local_amount,
+    SUM(s.transaction_count) AS transaction_count,
+    SUM(s.settlement_amount) AS settlement_amount
+FROM (
+    SELECT /*+ PARALLEL(8) */
+        TRUNC(t.report_date, 'DD') AS report_date,
+        TRUNC(t.report_date, 'MM') AS period_month,
+        CASE
+            WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
+            WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
+            WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT') THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance'
+                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT', 'Unk') THEN 'ATM'
+            WHEN t.trans_group = 'Cash' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Retail with CashBack', 'Credit')
+                 AND SUBSTR(t.tr_condition, 1, 3) = 'POS' THEN 'POS'
+            WHEN t.trans_group IN ('Retail', 'Unique', 'Bill Payment', 'Credit')
+                 AND (t.tr_condition IS NULL OR SUBSTR(t.tr_condition, 1, 3) NOT IN ('ATM', 'CAT', 'POS')) THEN 'ECOM'
+            WHEN t.trans_group IN (
+                'UFX Payment Debit offline', 'UFX Payment Credit offline',
+                'UFX Sales Debit offline', 'UFX Sales Debit online',
+                'UFX Sales Credit offline', 'UFX IPS Credit offline', 'UFX IPS Debit offline'
+            ) THEN 'UFX'
+            WHEN t.tr_condition IN (
+                'ATM', 'ATM Chip Contactless', 'ATM Chip Full Grade',
+                'CAT PBT', 'CAT PBT Chip Contactless', 'CAT PBT Chip Full Grade'
+            ) THEN 'ATM'
+            WHEN t.trans_group = 'Note Acceptance' THEN 'ATM'
+            WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
+            WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
+            ELSE 'ECOM'
+        END                        AS acquiring_device_type_calc,
+        t.acquiring_device_type,
+        t.trans_group,
+        t.operation_type,
+        t.token_status,
+        t.mcc,
+        t.is_acquiring_category,
+        t.target_bank_name,
+        t.source_bank_name,
+        CASE
+            WHEN UPPER(TRIM(t.target_city)) IN ('BAKU', 'BAKI', 'BAKİ') THEN 'Baki'
+            WHEN UPPER(TRIM(t.target_city)) IN ('GANJA', 'GANCA', 'GƏNCƏ') THEN 'Ganca'
+            WHEN UPPER(TRIM(t.target_city)) IN ('SUMGAYIT', 'SUMQAYIT') THEN 'Sumqayit'
+            WHEN UPPER(TRIM(t.target_city)) IN ('MINGACHEVIR', 'MINGACEVIR', 'MİNGƏÇEVİR') THEN 'Mingacevir'
+            WHEN UPPER(TRIM(t.target_city)) IN ('SHIRVAN', 'SIRVAN', 'ŞİRVAN') THEN 'Sirvan'
+            WHEN UPPER(TRIM(t.target_city)) IN ('NAKHCHIVAN', 'NAXCIVAN', 'NAXÇIVAN') THEN 'Naxcivan'
+            WHEN UPPER(TRIM(t.target_city)) IN ('SHAKI', 'SAKI', 'ŞƏKİ') THEN 'Saki'
+            WHEN UPPER(TRIM(t.target_city)) IN ('SHUSHA', 'SUSA', 'ŞUŞA') THEN 'Susa'
+            WHEN UPPER(TRIM(t.target_city)) IN ('LANKARAN', 'LƏNKƏRAN') THEN 'Lankaran'
+            WHEN UPPER(TRIM(t.target_city)) IN ('YEVLAKH', 'YEVLAX') THEN 'Yevlakh'
+            ELSE TRIM(t.target_city)
+        END                        AS target_city,
+        t.payment_system,
+        CASE
+            WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
+            ELSE '0'
+        END                        AS is_contactless,
+        NVL(t.local_amount, 0)      AS local_amount,
+        NVL(t.transaction_count, 0) AS transaction_count,
+        NVL(t.settlement_amount, 0) AS settlement_amount
+    FROM bi_transaction_masked t
+    WHERE TRIM(TO_CHAR(t.is_acquiring)) = '1'
+) s
+GROUP BY
+    s.report_date,
+    s.period_month,
+    s.acquiring_device_type_calc,
+    s.acquiring_device_type,
+    s.trans_group,
+    s.operation_type,
+    s.token_status,
+    s.mcc,
+    s.is_acquiring_category,
+    s.target_bank_name,
+    s.source_bank_name,
+    s.target_city,
+    s.payment_system,
+    s.is_contactless;
+
+CREATE INDEX idx_mv_acq_dev_date ON mv_acquiring_device_transaction (report_date) NOLOGGING;
+CREATE INDEX idx_mv_acq_dev_calc ON mv_acquiring_device_transaction (acquiring_device_type_calc, report_date) NOLOGGING;
+CREATE INDEX idx_mv_acq_dev_bank ON mv_acquiring_device_transaction (target_bank_name, report_date) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_ACQUIRING_DEVICE_TRANSACTION', cascade => TRUE); END;
+/
+
+
+-- ============================================================================
+-- 4. MV_CARD_DASHBOARD (Slide 3 - Card Dashboard)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_card_dashboard'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_card_dashboard'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_card_dashboard CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW mv_card_dashboard
+PCTFREE 0 NOLOGGING
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT /*+ PARALLEL(8) */
+    TRUNC(t.report_date, 'MM')                                           AS report_month,
+    TRUNC(t.report_date, 'YYYY')                                         AS report_year,
+    TRUNC(t.report_date, 'Q')                                            AS report_quarter,
     t.payment_system,
     t.is_issuing_category,
     t.operation_type,
@@ -307,13 +393,16 @@ SELECT /*+ PARALLEL(t, 8) */
     t.token_status,
     t.trans_group,
     t.target_bank_name,
-    t.is_contactless,
-    SUM(t.local_amount)      AS total_amount,
-    SUM(t.transaction_count) AS total_tx_count,
-    MAX(t.local_amount)      AS max_amount,
-    SUM(t.settlement_amount) AS total_settlement_amount
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-WHERE t.is_issuing = 1 OR t.is_issuing = '1'
+    CASE
+        WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
+        ELSE '0'
+    END                                                                  AS is_contactless,
+    SUM(NVL(t.local_amount, 0))                                          AS total_amount,
+    SUM(NVL(t.transaction_count, 0))                                     AS total_tx_count,
+    MAX(NVL(t.local_amount, 0))                                          AS max_amount,
+    SUM(NVL(t.settlement_amount, 0))                                     AS total_settlement_amount
+FROM bi_transaction_masked t
+WHERE TRIM(TO_CHAR(t.is_issuing)) = '1'
 GROUP BY
     TRUNC(t.report_date, 'MM'),
     TRUNC(t.report_date, 'YYYY'),
@@ -325,668 +414,703 @@ GROUP BY
     t.token_status,
     t.trans_group,
     t.target_bank_name,
-    t.is_contactless;
+    CASE
+        WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
+        ELSE '0'
+    END;
 
-CREATE INDEX IDX_MV_CARD_DASH_FILTERS
-    ON MV_CARD_DASHBOARD (card_product_type_category, token_status, trans_group, is_contactless)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_CARD_DASH_PAYMENT
-    ON MV_CARD_DASHBOARD (payment_system, is_issuing_category, operation_type)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_CARD_DASH_PERIOD
-    ON MV_CARD_DASHBOARD (report_month, report_quarter, report_year)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_CARD_DASH_TARGET_BANK
-    ON MV_CARD_DASHBOARD (target_bank_name)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_MV_CARD_DASH_FILTERS NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_CARD_DASH_PAYMENT NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_CARD_DASH_PERIOD NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_CARD_DASH_TARGET_BANK NOPARALLEL LOGGING;
+CREATE INDEX idx_mv_card_dash_month ON mv_card_dashboard (report_month) NOLOGGING;
+CREATE INDEX idx_mv_card_dash_bank  ON mv_card_dashboard (target_bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_CARD_DASHBOARD', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 6. AcquiringTransaction (600M Rows - Optimized)
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_ACQUIRING_DEVICE_TRANSACTION
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 5. MV_CARD_PORTFOLIO (PPTX - Card Portfolio Dashboard)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_card_portfolio'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_card_portfolio'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_card_portfolio CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW mv_card_portfolio
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-WITH base AS (
-    SELECT /*+ PARALLEL(t, 8) */
-        t.report_date,
-        TRUNC(t.report_date, 'MM') AS period_month,
-        CASE
-            WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl')
-                THEN 'C2C'
-            WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)')
-                THEN 'ATM'
-            WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
-                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT')
-                THEN 'ATM'
-            WHEN t.trans_group = 'Note Acceptance'
-                 AND SUBSTR(t.tr_condition, 1, 3) IN ('ATM', 'CAT', 'Unk')
-                THEN 'ATM'
-            WHEN t.trans_group = 'Cash'
-                THEN 'POS'
-            WHEN t.trans_group IN ('Retail', 'Unique', 'Retail with CashBack', 'Credit')
-                 AND SUBSTR(t.tr_condition, 1, 3) = 'POS'
-                THEN 'POS'
-            WHEN t.trans_group IN ('Retail', 'Unique', 'Bill Payment', 'Credit')
-                 AND (t.tr_condition IS NULL
-                      OR SUBSTR(t.tr_condition, 1, 3) NOT IN ('ATM', 'CAT', 'POS'))
-                THEN 'ECOM'
-            WHEN t.trans_group IN (
-                    'UFX Payment Debit offline', 'UFX Payment Credit offline',
-                    'UFX Sales Debit offline', 'UFX Sales Debit online',
-                    'UFX Sales Credit offline', 'UFX IPS Credit offline',
-                    'UFX IPS Debit offline')
-                THEN 'UFX'
-            WHEN t.tr_condition IN (
-                    'ATM', 'ATM Chip Contactless', 'ATM Chip Full Grade',
-                    'CAT PBT', 'CAT PBT Chip Contactless', 'CAT PBT Chip Full Grade')
-                THEN 'ATM'
-            WHEN t.trans_group = 'Note Acceptance'
-                THEN 'ATM'
-            WHEN t.tr_condition = 'POS Card Read Partial'
-                THEN 'POS'
-            ELSE 'ECOM'
-        END AS acquiring_device_type_calc,
-        t.acquiring_device_type,
-        t.trans_group,
-        t.operation_type,
-        t.token_status,
-        t.mcc,
-        t.is_acquiring_category,
-        t.target_bank_name,
-        t.source_bank_name,
-        t.target_city,
-        t.payment_system,
-        t.is_contactless,
-        t.local_amount,
-        t.transaction_count,
-        t.settlement_amount
-    FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-    WHERE t.is_acquiring = 1 OR t.is_acquiring = '1'
+WITH latest_cards AS (
+    SELECT c.*,
+           DENSE_RANK() OVER (
+               PARTITION BY TRUNC(c.report_month, 'MM'), c.bank_name
+               ORDER BY c.etl_date DESC NULLS LAST
+           ) AS etl_rnk
+    FROM bi_market_cards_masked c
+),
+base_agg AS (
+    SELECT
+        TRUNC(report_month, 'MM')                                   AS report_month,
+        bank_name,
+        bank_branch_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name)  AS region_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name)  AS region_name_clean,
+        payment_scheme,
+        card_brand_name,
+        card_category_name,
+        product_type,
+        card_product_name,
+        card_commercial_name,
+        exp_status,
+        contactless_status,
+        status_3d,
+        base_currency_name,
+        SUM(NVL(count_card, 0))                                     AS total_cards
+    FROM latest_cards
+    WHERE etl_rnk = 1
+    GROUP BY
+        TRUNC(report_month, 'MM'),
+        bank_name,
+        bank_branch_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name),
+        payment_scheme,
+        card_brand_name,
+        card_category_name,
+        product_type,
+        card_product_name,
+        card_commercial_name,
+        exp_status,
+        contactless_status,
+        status_3d,
+        base_currency_name
 )
 SELECT
-    report_date,
-    period_month,
-    acquiring_device_type_calc,
-    acquiring_device_type,
-    trans_group,
-    operation_type,
-    token_status,
-    mcc,
-    is_acquiring_category,
-    target_bank_name,
-    source_bank_name,
-    target_city,
-    payment_system,
-    is_contactless,
-    SUM(local_amount)      AS local_amount,
-    SUM(transaction_count) AS transaction_count,
-    SUM(settlement_amount) AS settlement_amount
-FROM base
-GROUP BY
-    report_date, period_month, acquiring_device_type_calc, acquiring_device_type,
-    trans_group, operation_type, token_status, mcc, is_acquiring_category,
-    target_bank_name, source_bank_name, target_city, payment_system, is_contactless;
+    b.report_month,
+    b.bank_name,
+    b.bank_branch_name,
+    b.region_name,
+    b.region_name_clean,
+    b.payment_scheme,
+    b.card_brand_name,
+    b.card_category_name,
+    b.product_type,
+    b.card_product_name,
+    b.card_commercial_name,
+    b.exp_status,
+    b.contactless_status,
+    b.status_3d,
+    b.base_currency_name,
+    b.total_cards,
+    LAG(b.total_cards, 1) OVER (
+        PARTITION BY b.bank_name, b.bank_branch_name, b.region_name_clean,
+                     b.payment_scheme, b.card_brand_name, b.card_category_name,
+                     b.product_type, b.card_product_name, b.card_commercial_name,
+                     b.exp_status, b.contactless_status, b.status_3d, b.base_currency_name
+        ORDER BY b.report_month
+    ) AS prev_total_cards,
+    ROUND(
+        (b.total_cards - LAG(b.total_cards, 1) OVER (
+            PARTITION BY b.bank_name, b.bank_branch_name, b.region_name_clean,
+                         b.payment_scheme, b.card_brand_name, b.card_category_name,
+                         b.product_type, b.card_product_name, b.card_commercial_name,
+                         b.exp_status, b.contactless_status, b.status_3d, b.base_currency_name
+            ORDER BY b.report_month
+        )) * 100.0
+        / NULLIF(LAG(b.total_cards, 1) OVER (
+            PARTITION BY b.bank_name, b.bank_branch_name, b.region_name_clean,
+                         b.payment_scheme, b.card_brand_name, b.card_category_name,
+                         b.product_type, b.card_product_name, b.card_commercial_name,
+                         b.exp_status, b.contactless_status, b.status_3d, b.base_currency_name
+            ORDER BY b.report_month
+        ), 0),
+    2) AS mom_growth_pct,
+    ROUND(
+        (b.total_cards - LAG(b.total_cards, 12) OVER (
+            PARTITION BY b.bank_name, b.bank_branch_name, b.region_name_clean,
+                         b.payment_scheme, b.card_brand_name, b.card_category_name,
+                         b.product_type, b.card_product_name, b.card_commercial_name,
+                         b.exp_status, b.contactless_status, b.status_3d, b.base_currency_name
+            ORDER BY b.report_month
+        )) * 100.0
+        / NULLIF(LAG(b.total_cards, 12) OVER (
+            PARTITION BY b.bank_name, b.bank_branch_name, b.region_name_clean,
+                         b.payment_scheme, b.card_brand_name, b.card_category_name,
+                         b.product_type, b.card_product_name, b.card_commercial_name,
+                         b.exp_status, b.contactless_status, b.status_3d, b.base_currency_name
+            ORDER BY b.report_month
+        ), 0),
+    2) AS yoy_growth_pct
+FROM base_agg b;
 
-CREATE INDEX IX_MV_ACQ_BANKS
-  ON MV_ACQUIRING_DEVICE_TRANSACTION (SOURCE_BANK_NAME, TARGET_BANK_NAME, PERIOD_MONTH)
-  NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IX_MV_ACQ_PAYMENT_SYS
-  ON MV_ACQUIRING_DEVICE_TRANSACTION (PAYMENT_SYSTEM, PERIOD_MONTH)
-  NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IX_MV_ACQ_PERIOD
-  ON MV_ACQUIRING_DEVICE_TRANSACTION (PERIOD_MONTH, ACQUIRING_DEVICE_TYPE_CALC)
-  NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IX_MV_ACQ_REPORT_DATE
-  ON MV_ACQUIRING_DEVICE_TRANSACTION (REPORT_DATE, ACQUIRING_DEVICE_TYPE_CALC)
-  NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IX_MV_ACQ_BANKS NOPARALLEL LOGGING;
-ALTER INDEX IX_MV_ACQ_PAYMENT_SYS NOPARALLEL LOGGING;
-ALTER INDEX IX_MV_ACQ_PERIOD NOPARALLEL LOGGING;
-ALTER INDEX IX_MV_ACQ_REPORT_DATE NOPARALLEL LOGGING;
+CREATE INDEX idx_mv_card_port_month ON mv_card_portfolio (report_month) NOLOGGING;
+CREATE INDEX idx_mv_card_port_bank  ON mv_card_portfolio (bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_CARD_PORTFOLIO', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 7. DevicesTrend
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW MV_DEVICES_TREND
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 6. MV_DEVICES_BASE və MV_DEVICES_TREND (PPTX - Devices Portfolio Dashboard)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_devices_trend'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_devices_trend'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_devices_trend CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_devices_base'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW mv_devices_base'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_devices_base CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW mv_devices_base
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-WITH monthly_agg AS (
-    SELECT /*+ PARALLEL(d, 8) */
-        TRUNC(d.report_date, 'MM') AS report_month,
-        d.region_name,
-        d.region_name_clean,
-        d.bank_name,
-        d.mcc_name,
-        d.retail_category,
-        d.transaction_class,
-        d.ctls_status,
-        SUM(d.count_dev) AS total_devices
-    FROM RAUF_REPORT.BI_MARKET_DEVICES_MASKED d
+WITH latest_devices AS (
+    SELECT d.*,
+           DENSE_RANK() OVER (
+               PARTITION BY TRUNC(d.report_date, 'MM'), d.bank_name
+               ORDER BY TRUNC(d.report_date, 'DD') DESC, d.etl_date DESC NULLS LAST
+           ) AS snap_rnk
+    FROM bi_market_devices_masked d
+),
+monthly_agg AS (
+    SELECT
+        TRUNC(report_date, 'MM')                                   AS report_month,
+        bank_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name) AS region_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name) AS region_name_clean,
+        mcc_name,
+        retail_category,
+        transaction_class,
+        ctls_status,
+        SUM(NVL(count_dev, 0))                                     AS total_devices
+    FROM latest_devices
+    WHERE snap_rnk = 1
     GROUP BY
-        TRUNC(d.report_date, 'MM'),
-        d.region_name,
-        d.region_name_clean,
-        d.bank_name,
-        d.mcc_name,
-        d.retail_category,
-        d.transaction_class,
-        d.ctls_status
+        TRUNC(report_date, 'MM'),
+        bank_name,
+        COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name),
+        mcc_name,
+        retail_category,
+        transaction_class,
+        ctls_status
 )
+SELECT
+    m.report_month,
+    m.bank_name,
+    m.region_name,
+    m.region_name_clean,
+    m.mcc_name,
+    m.retail_category,
+    m.transaction_class,
+    m.ctls_status,
+    m.total_devices,
+    SUM(m.total_devices) OVER (PARTITION BY m.report_month) AS grand_total_month,
+    ROUND(
+        SUM(m.total_devices) OVER (PARTITION BY m.report_month, m.bank_name) * 100.0
+        / NULLIF(SUM(m.total_devices) OVER (PARTITION BY m.report_month), 0),
+    2) AS share_pct_by_bank,
+    ROUND(
+        SUM(m.total_devices) OVER (PARTITION BY m.report_month, m.region_name_clean) * 100.0
+        / NULLIF(SUM(m.total_devices) OVER (PARTITION BY m.report_month), 0),
+    2) AS share_pct_by_region,
+    ROUND(
+        SUM(m.total_devices) OVER (PARTITION BY m.report_month, m.mcc_name) * 100.0
+        / NULLIF(SUM(m.total_devices) OVER (PARTITION BY m.report_month), 0),
+    2) AS share_pct_by_mcc,
+    ROUND(
+        SUM(m.total_devices) OVER (PARTITION BY m.report_month, m.retail_category) * 100.0
+        / NULLIF(SUM(m.total_devices) OVER (PARTITION BY m.report_month), 0),
+    2) AS share_pct_by_retail_cat,
+    NVL(LAG(m.total_devices, 1) OVER (
+        PARTITION BY m.bank_name, m.region_name_clean,
+                     m.mcc_name, m.retail_category, m.transaction_class, m.ctls_status
+        ORDER BY m.report_month
+    ), 0) AS prev_month_devices,
+    m.total_devices - NVL(LAG(m.total_devices, 1) OVER (
+        PARTITION BY m.bank_name, m.region_name_clean,
+                     m.mcc_name, m.retail_category, m.transaction_class, m.ctls_status
+        ORDER BY m.report_month
+    ), 0) AS mom_diff,
+    ROUND(
+        (m.total_devices - LAG(m.total_devices, 1) OVER (
+            PARTITION BY m.bank_name, m.region_name_clean,
+                         m.mcc_name, m.retail_category, m.transaction_class, m.ctls_status
+            ORDER BY m.report_month
+        )) * 100.0
+        / NULLIF(LAG(m.total_devices, 1) OVER (
+            PARTITION BY m.bank_name, m.region_name_clean,
+                         m.mcc_name, m.retail_category, m.transaction_class, m.ctls_status
+            ORDER BY m.report_month
+        ), 0),
+    2) AS mom_pct_change
+FROM monthly_agg m;
+
+CREATE INDEX idx_mv_dev_base_month ON mv_devices_base (report_month) NOLOGGING;
+CREATE INDEX idx_mv_dev_base_bank  ON mv_devices_base (bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_DEVICES_BASE', cascade => TRUE); END;
+/
+
+CREATE MATERIALIZED VIEW mv_devices_trend
+PCTFREE 0 NOLOGGING
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
 SELECT
     report_month,
+    bank_name,
     region_name,
     region_name_clean,
-    bank_name,
     mcc_name,
     retail_category,
     transaction_class,
     ctls_status,
     total_devices,
-    LAG(total_devices) OVER (
-        PARTITION BY bank_name, region_name, mcc_name, retail_category, transaction_class, ctls_status
-        ORDER BY report_month
-    ) AS prev_month_devices,
-    total_devices - LAG(total_devices) OVER (
-        PARTITION BY bank_name, region_name, mcc_name, retail_category, transaction_class, ctls_status
-        ORDER BY report_month
-    ) AS mom_diff,
-    ROUND(
-        (total_devices - LAG(total_devices) OVER (
-            PARTITION BY bank_name, region_name, mcc_name, retail_category, transaction_class, ctls_status
-            ORDER BY report_month
-        )) * 100.0 / NULLIF(LAG(total_devices) OVER (
-            PARTITION BY bank_name, region_name, mcc_name, retail_category, transaction_class, ctls_status
-            ORDER BY report_month
-        ), 0), 2
-    ) AS mom_pct_change
-FROM monthly_agg;
+    prev_month_devices,
+    mom_diff,
+    mom_pct_change
+FROM mv_devices_base;
 
-CREATE INDEX IDX_TREND_COMPOSITE
-    ON MV_DEVICES_TREND (report_month, bank_name, region_name, mcc_name, retail_category)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_TREND_COMPOSITE NOPARALLEL LOGGING;
+CREATE INDEX idx_mv_dev_trend_month ON mv_devices_trend (report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'MV_DEVICES_TREND', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 8. Sector Spend (Req 8 - 600M Rows Optimized)
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW PG_MV_REQ8_SECTOR_SPEND
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 7. PG_MV_REQ4_AZ_MAP (PPTX - Azərbaycan Xəritəsi)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW pg_mv_req4_az_map'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW pg_mv_req4_az_map'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req4_az_map CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW pg_mv_req4_az_map
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'MM') AS report_month,
-    t.source_bank_name AS bank_name,
-    COALESCE(t.mcc_group, 'OTHER') AS mcc_group,
-    COALESCE(CAST(t.mcc AS VARCHAR2(10)), 'OTHER') AS mcc,
-    COALESCE(t.source_city_clean, 'NAMƏLUM') AS source_city,
-    COALESCE(t.source_city_category, 'OTHER') AS source_city_category,
-    COALESCE(t.source_channel, 'OTHER') AS source_channel,
-    COALESCE(t.operation_type, 'OTHER') AS operation_type,
-    COALESCE(t.source_country_category, 'OTHER') AS source_country_category,
-    t.is_acquiring,
-    t.is_issuing,
-    SUM(t.transaction_amount) AS total_amount,
-    SUM(t.transaction_count) AS total_count,
-    SUM(t.local_amount) AS total_local_amount,
-    ROUND(SUM(t.transaction_amount) / NULLIF(SUM(t.transaction_count), 0), 4) AS avg_ticket,
-    ROUND(SUM(t.local_amount) / NULLIF(SUM(t.transaction_amount), 0) * 100, 4) AS local_ratio_pct,
-    ROUND(
-        SUM(t.transaction_amount) /
-        NULLIF(
-            SUM(SUM(t.transaction_amount)) OVER (
-                PARTITION BY TRUNC(t.report_date, 'MM'),
-                             COALESCE(t.mcc_group, 'OTHER')
-            ),
-            0
-        ) * 100,
-        4
-    ) AS sector_market_share_pct
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-WHERE t.mcc_group IS NOT NULL
-GROUP BY
-    TRUNC(t.report_date, 'MM'),
-    t.source_bank_name,
-    COALESCE(t.mcc_group, 'OTHER'),
-    COALESCE(CAST(t.mcc AS VARCHAR2(10)), 'OTHER'),
-    COALESCE(t.source_city_clean, 'NAMƏLUM'),
-    COALESCE(t.source_city_category, 'OTHER'),
-    COALESCE(t.source_channel, 'OTHER'),
-    COALESCE(t.operation_type, 'OTHER'),
-    COALESCE(t.source_country_category, 'OTHER'),
-    t.is_acquiring,
-    t.is_issuing;
-
-CREATE INDEX IDX_MV_REQ8_BANK_MONTH
-    ON PG_MV_REQ8_SECTOR_SPEND (BANK_NAME, REPORT_MONTH)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_REQ8_MONTH_MCC
-    ON PG_MV_REQ8_SECTOR_SPEND (REPORT_MONTH, MCC_GROUP, BANK_NAME)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_MV_REQ8_MAIN
-    ON PG_MV_REQ8_SECTOR_SPEND (REPORT_MONTH, BANK_NAME, MCC_GROUP, IS_ACQUIRING, IS_ISSUING)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_MV_REQ8_BANK_MONTH NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_REQ8_MONTH_MCC NOPARALLEL LOGGING;
-ALTER INDEX IDX_MV_REQ8_MAIN NOPARALLEL LOGGING;
-
-GRANT SELECT ON PG_MV_REQ8_SECTOR_SPEND TO REPORTAPPUSER;
-COMMENT ON MATERIALIZED VIEW PG_MV_REQ8_SECTOR_SPEND IS 'Materialized view for sector spend reporting';
-
-
--- ═══════════════════════════════════════════════════════════════════════════
--- 9. Benchmark (Req 7 - CRITICAL OPTIMIZATION: PRE-AGGREGATION)
--- ═══════════════════════════════════════════════════════════════════════════
--- QEYD: Əvvəlki kodda 600M sətirli BI_TRANSACTION_MASKED cədvəli card_agg ilə
--- GROUP BY-dan ƏVVƏL JOIN edilirdi. Bu hər tranzaksiyanı bankın bütün kart kateqoriyalarına
--- vuraraq ON MİLYARDLARLA sətirlik Cartesian partlayış yaradırdı və sorğu saatlarla bitmirdi.
--- Yeni versiyada tranzaksiya cədvəli ƏVVƏLCƏ (report_month, bank) üzrə cəmlənir (~500 sətir qalır),
--- sonra kart cədvəli ilə birləşdirilir! Sorğu bir neçə saniyəyə icra olunur.
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW PG_MV_REQ7_BENCHMARK
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
-BUILD IMMEDIATE
-REFRESH COMPLETE ON DEMAND
-AS
-WITH card_agg AS (
-    SELECT /*+ PARALLEL(c, 8) */
-        c.bank_name,
-        COALESCE(c.region_name_clean, 'NAMƏLUM') AS region_name_clean,
-        COALESCE(c.card_brand_name, 'OTHER') AS card_brand_name,
-        COALESCE(c.product_type, 'OTHER') AS product_type,
-        TRUNC(c.report_month, 'MM') AS report_month,
-        SUM(c.count_card) AS total_cards
-    FROM RAUF_REPORT.BI_MARKET_CARDS_MASKED c
-    GROUP BY
-        c.bank_name,
-        COALESCE(c.region_name_clean, 'NAMƏLUM'),
-        COALESCE(c.card_brand_name, 'OTHER'),
-        COALESCE(c.product_type, 'OTHER'),
-        TRUNC(c.report_month, 'MM')
-),
-trans_monthly AS (
-    SELECT /*+ PARALLEL(t, 8) */
-        TRUNC(t.report_date, 'MM') AS report_month,
-        t.source_bank_name AS bank_name,
-        SUM(t.transaction_amount) AS bank_trans_amount,
-        SUM(t.transaction_count) AS bank_trans_count
-    FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-    GROUP BY
-        TRUNC(t.report_date, 'MM'),
-        t.source_bank_name
-),
-base AS (
-    SELECT
-        ca.report_month,
-        ca.bank_name,
-        ca.region_name_clean,
-        ca.card_brand_name,
-        ca.product_type,
-        NVL(tm.bank_trans_amount, 0) AS bank_trans_amount,
-        NVL(tm.bank_trans_count, 0)  AS bank_trans_count,
-        ca.total_cards               AS bank_card_count,
-        SUM(NVL(tm.bank_trans_amount, 0)) OVER (
-            PARTITION BY ca.report_month, ca.region_name_clean, ca.card_brand_name
-        ) AS market_total_amount,
-        SUM(ca.total_cards) OVER (
-            PARTITION BY ca.report_month, ca.region_name_clean, ca.card_brand_name
-        ) AS market_total_cards
-    FROM card_agg ca
-    LEFT JOIN trans_monthly tm
-        ON tm.bank_name = ca.bank_name
-       AND tm.report_month = ca.report_month
-)
 SELECT
-    report_month,
-    bank_name,
-    region_name_clean,
-    card_brand_name,
-    product_type,
-    bank_trans_amount,
-    bank_trans_count,
-    bank_card_count,
-    market_total_amount,
-    market_total_cards,
-    ROUND(bank_trans_amount / NULLIF(market_total_amount, 0) * 100, 4) AS market_share_amount_pct,
-    ROUND(bank_card_count / NULLIF(market_total_cards, 0) * 100, 4) AS market_share_cards_pct,
-    RANK() OVER (
-        PARTITION BY report_month, region_name_clean, card_brand_name
-        ORDER BY bank_trans_amount DESC
-    ) AS bank_rank
-FROM base;
+    s.report_month,
+    s.bank_name,
+    s.city_norm AS source_city,
+    s.city_norm AS source_city_clean,
+    CASE
+        WHEN UPPER(s.city_norm) = 'BAKI' THEN 'BAKI'
+        ELSE 'REGION'
+    END         AS source_city_category,
+    SUM(s.local_amount)      AS total_amount,
+    SUM(s.transaction_count) AS total_count,
+    COUNT(*)                 AS cnt
+FROM (
+    SELECT /*+ PARALLEL(8) */
+        TRUNC(t.report_date, 'MM')                                         AS report_month,
+        COALESCE(NULLIF(TRIM(t.target_bank_name), ''), t.source_bank_name) AS bank_name,
+        CASE
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('BAKU', 'BAKI', 'BAKİ') THEN 'Baki'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('GANJA', 'GANCA', 'GƏNCƏ') THEN 'Ganca'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('SUMGAYIT', 'SUMQAYIT') THEN 'Sumqayit'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('MINGACHEVIR', 'MINGACEVIR', 'MİNGƏÇEVİR') THEN 'Mingacevir'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('SHIRVAN', 'SIRVAN', 'ŞİRVAN') THEN 'Sirvan'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('NAKHCHIVAN', 'NAXCIVAN', 'NAXÇIVAN') THEN 'Naxcivan'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('SHAKI', 'SAKI', 'ŞƏKİ') THEN 'Saki'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('SHUSHA', 'SUSA', 'ŞUŞA') THEN 'Susa'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('LANKARAN', 'LƏNKƏRAN') THEN 'Lankaran'
+            WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('YEVLAKH', 'YEVLAX') THEN 'Yevlakh'
+            ELSE NVL(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city)), 'NAMƏLUM')
+        END                                                                AS city_norm,
+        NVL(t.local_amount, 0)                                             AS local_amount,
+        NVL(t.transaction_count, 0)                                        AS transaction_count
+    FROM bi_transaction_masked t
+    WHERE TRIM(TO_CHAR(t.is_acquiring)) = '1'
+      AND (t.target_country IS NULL
+           OR UPPER(TRIM(t.target_country)) IN ('AZ', 'AZE', '031', '31', 'AZERBAIJAN', 'AZƏRBAYCAN')
+           OR UPPER(TRIM(t.target_country_category)) IN ('DOMESTIC', 'LOCAL', 'AZERBAIJAN'))
+) s
+WHERE UPPER(s.city_norm) NOT IN ('OTHER', 'ISTANBUL', 'MOSCOW', 'LONDON')
+GROUP BY
+    s.report_month,
+    s.bank_name,
+    s.city_norm;
 
-CREATE INDEX IDX_REQ7_RANK  ON PG_MV_REQ7_BENCHMARK (BANK_RANK) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ7_BANK  ON PG_MV_REQ7_BENCHMARK (BANK_NAME) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ7_MONTH ON PG_MV_REQ7_BENCHMARK (REPORT_MONTH) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_REQ7_RANK NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ7_BANK NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ7_MONTH NOPARALLEL LOGGING;
-
-GRANT SELECT ON PG_MV_REQ7_BENCHMARK TO REPORTAPPUSER;
-COMMENT ON MATERIALIZED VIEW PG_MV_REQ7_BENCHMARK IS 'Materialized view for benchmark reporting';
+CREATE INDEX idx_mv_req4_month ON pg_mv_req4_az_map (report_month) NOLOGGING;
+CREATE INDEX idx_mv_req4_city  ON pg_mv_req4_az_map (source_city_clean, report_month) NOLOGGING;
+CREATE INDEX idx_mv_req4_bank  ON pg_mv_req4_az_map (bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'PG_MV_REQ4_AZ_MAP', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 10. Azerbaijan Map (Req 4)
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW PG_MV_REQ4_AZ_MAP
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 8. PG_MV_REQ5_WORLD_MAP (PPTX - Dünya Xəritəsi)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW pg_mv_req5_world_map'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW pg_mv_req5_world_map'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req5_world_map CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW pg_mv_req5_world_map
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'MM') AS report_month,
-    t.source_bank_name AS bank_name,
-    COALESCE(t.source_city, 'NAMƏLUM') AS source_city,
-    COALESCE(t.source_city_clean, 'NAMƏLUM') AS source_city_clean,
-    t.source_city_category,
-    SUM(t.transaction_amount) AS total_amount,
-    SUM(t.transaction_count) AS total_count,
-    COUNT(*) AS cnt
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-WHERE t.source_country_category = 'Domestic'
-  AND t.source_city_category IN ('BAKI', 'REGION')
+SELECT /*+ PARALLEL(8) */
+    TRUNC(t.report_date, 'MM')                                                                AS report_month,
+    t.source_bank_name                                                                        AS bank_name,
+    COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER')                                     AS source_country,
+    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                            AS source_country_category,
+    COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan')                                AS target_country,
+    COALESCE(NULLIF(TRIM(t.target_country_category), ''), 'OTHER')                            AS target_country_category,
+    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                            AS country_category,
+    COALESCE(NULLIF(TRIM(t.source_city_clean), ''), NULLIF(TRIM(t.source_city), ''), 'OTHER') AS city_clean,
+    t.payment_system,
+    NVL(TRIM(TO_CHAR(t.is_issuing)), '0')                                                     AS is_issuing,
+    NVL(TRIM(TO_CHAR(t.is_acquiring)), '0')                                                   AS is_acquiring,
+    SUM(NVL(t.local_amount, 0))                                                               AS total_amount,
+    SUM(NVL(t.transaction_count, 0))                                                          AS total_count,
+    COUNT(*)                                                                                  AS cnt
+FROM bi_transaction_masked t
+WHERE TRIM(TO_CHAR(t.is_issuing)) = '1'
 GROUP BY
     TRUNC(t.report_date, 'MM'),
     t.source_bank_name,
-    COALESCE(t.source_city, 'NAMƏLUM'),
-    COALESCE(t.source_city_clean, 'NAMƏLUM'),
-    t.source_city_category;
+    COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER'),
+    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER'),
+    COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan'),
+    COALESCE(NULLIF(TRIM(t.target_country_category), ''), 'OTHER'),
+    COALESCE(NULLIF(TRIM(t.source_city_clean), ''), NULLIF(TRIM(t.source_city), ''), 'OTHER'),
+    t.payment_system,
+    NVL(TRIM(TO_CHAR(t.is_issuing)), '0'),
+    NVL(TRIM(TO_CHAR(t.is_acquiring)), '0');
 
-CREATE UNIQUE INDEX IDX_REQ4_COMPOSITE
-ON PG_MV_REQ4_AZ_MAP
-(
-    REPORT_MONTH,
-    BANK_NAME,
-    SOURCE_CITY,
-    SOURCE_CITY_CLEAN,
-    SOURCE_CITY_CATEGORY
-)
-NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_REQ4_BANK  ON PG_MV_REQ4_AZ_MAP (BANK_NAME) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ4_CLEAN ON PG_MV_REQ4_AZ_MAP (SOURCE_CITY_CLEAN) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ4_CITY  ON PG_MV_REQ4_AZ_MAP (SOURCE_CITY) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ4_MONTH ON PG_MV_REQ4_AZ_MAP (REPORT_MONTH) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_REQ4_COMPOSITE NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ4_BANK NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ4_CLEAN NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ4_CITY NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ4_MONTH NOPARALLEL LOGGING;
-
-GRANT SELECT ON PG_MV_REQ4_AZ_MAP TO REPORTAPPUSER;
-COMMENT ON MATERIALIZED VIEW PG_MV_REQ4_AZ_MAP IS 'Materialized view for Azerbaijan map reporting';
+CREATE INDEX idx_mv_req5_month   ON pg_mv_req5_world_map (report_month) NOLOGGING;
+CREATE INDEX idx_mv_req5_country ON pg_mv_req5_world_map (source_country, target_country) NOLOGGING;
+CREATE INDEX idx_mv_req5_bank    ON pg_mv_req5_world_map (bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'PG_MV_REQ5_WORLD_MAP', cascade => TRUE); END;
+/
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 11. World Map (Req 5 - Ad və Şərt Düzəlişi Edildi)
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW PG_MV_REQ5_WORLD_MAP
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
+-- ============================================================================
+-- 9. PG_MV_REQ8_SECTOR_SPEND (Sektorlar üzrə Xərcləmə)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW pg_mv_req8_sector_spend'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW pg_mv_req8_sector_spend'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req8_sector_spend CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW pg_mv_req8_sector_spend
+PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
 AS
-SELECT /*+ PARALLEL(t, 8) */
-    TRUNC(t.report_date, 'MM') AS report_month,
-    t.source_bank_name AS bank_name,
-    COALESCE(t.source_country_category, 'OTHER') AS source_country,
-    COALESCE(t.source_country_category, 'OTHER') AS source_country_category,
-    'Azerbaijan' AS target_country,
-    'Domestic' AS target_country_category,
-    COALESCE(t.source_country_category, 'OTHER') AS country_category,
-    COALESCE(t.source_city_clean, 'NAMƏLUM') AS city_clean,
-    t.payment_system,
-    t.is_issuing,
-    t.is_acquiring,
-    SUM(t.transaction_amount) AS total_amount,
-    SUM(t.transaction_count) AS total_count,
-    COUNT(*) AS cnt
-FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
-WHERE t.source_country_category <> 'Domestic' OR t.source_country_category IS NULL
-GROUP BY
-    TRUNC(t.report_date, 'MM'),
-    t.source_bank_name,
-    COALESCE(t.source_country_category, 'OTHER'),
-    COALESCE(t.source_city_clean, 'NAMƏLUM'),
-    t.payment_system,
-    t.is_issuing,
-    t.is_acquiring;
-
-CREATE INDEX IDX_REQ5_WORLD_BANK  ON PG_MV_REQ5_WORLD_MAP (BANK_NAME) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ5_WORLD_MONTH ON PG_MV_REQ5_WORLD_MAP (REPORT_MONTH) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-CREATE INDEX IDX_REQ5_WORLD_CNTRY ON PG_MV_REQ5_WORLD_MAP (COUNTRY_CATEGORY) NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_REQ5_WORLD_BANK NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ5_WORLD_MONTH NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ5_WORLD_CNTRY NOPARALLEL LOGGING;
-
-GRANT SELECT ON PG_MV_REQ5_WORLD_MAP TO REPORTAPPUSER;
-COMMENT ON MATERIALIZED VIEW PG_MV_REQ5_WORLD_MAP IS 'Materialized view for World map reporting';
-
-
--- ═══════════════════════════════════════════════════════════════════════════
--- 12. Forecasting Input (Req 1 - 600M Rows Optimized Pre-Aggregation)
--- ═══════════════════════════════════════════════════════════════════════════
--- QEYD: Əvvəlki kodda 600M sətir kart cədvəli ilə JOIN edilib sonra GROUP BY edilirdi.
--- Burada əvvəlcə tranzaksiyalar qruplaşdırılır (~20,000 sətir), sonra kartlarla JOIN edilir.
--- ═══════════════════════════════════════════════════════════════════════════
-CREATE MATERIALIZED VIEW PG_MV_REQ1_FORECAST_INPUT
-NOLOGGING
-PARALLEL 8
-COMPRESS BASIC
-BUILD IMMEDIATE
-REFRESH COMPLETE ON DEMAND
-AS
-WITH card_agg AS (
-    SELECT /*+ PARALLEL(c, 8) */
-        c.bank_name,
-        TRUNC(c.report_month, 'MM') AS report_month,
-        SUM(c.count_card) AS total_cards
-    FROM RAUF_REPORT.BI_MARKET_CARDS_MASKED c
-    GROUP BY
-        c.bank_name,
-        TRUNC(c.report_month, 'MM')
-),
-trans_agg AS (
-    SELECT /*+ PARALLEL(t, 8) */
-        TRUNC(t.report_date, 'MM') AS report_month,
-        t.source_bank_name AS bank_name,
-        t.mcc_group,
-        SUM(t.transaction_amount) AS total_amount,
-        SUM(t.transaction_count)  AS total_count
-    FROM RAUF_REPORT.BI_TRANSACTION_MASKED t
+WITH sector_agg AS (
+    SELECT /*+ PARALLEL(8) */
+        TRUNC(t.report_date, 'MM')                    AS report_month,
+        t.source_bank_name                            AS bank_name,
+        NVL(TRIM(t.mcc_group), 'OTHER')               AS mcc_group,
+        NVL(TRIM(TO_CHAR(t.mcc)), '0000')             AS mcc,
+        NVL(TRIM(t.source_city), 'NAMƏLUM')           AS source_city,
+        NVL(TRIM(t.source_city_category), 'OTHER')    AS source_city_category,
+        NVL(TRIM(t.source_channel), 'OTHER')          AS source_channel,
+        t.operation_type,
+        NVL(TRIM(t.source_country_category), 'OTHER') AS source_country_category,
+        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0')       AS is_acquiring,
+        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')         AS is_issuing,
+        SUM(NVL(t.local_amount, 0))                   AS total_amount,
+        SUM(NVL(t.transaction_count, 0))              AS total_count,
+        SUM(CASE WHEN UPPER(TRIM(t.source_country_category)) = 'DOMESTIC'
+                 THEN NVL(t.local_amount, 0) ELSE 0 END) AS total_local_amount
+    FROM bi_transaction_masked t
     GROUP BY
         TRUNC(t.report_date, 'MM'),
         t.source_bank_name,
-        t.mcc_group
-),
-monthly AS (
-    SELECT
-        ta.report_month,
-        ta.bank_name,
-        ta.mcc_group,
-        ta.total_amount,
-        ta.total_count,
-        ca.total_cards
-    FROM trans_agg ta
-    LEFT JOIN card_agg ca
-        ON ca.bank_name = ta.bank_name
-       AND ca.report_month = ta.report_month
-),
-with_lags AS (
-    SELECT
-        report_month,
-        bank_name,
-        mcc_group,
-        total_amount,
-        total_count,
-        total_cards,
-        LAG(total_amount, 1) OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-        ) AS amount_lag1,
-        LAG(total_amount, 3) OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-        ) AS amount_lag3,
-        LAG(total_amount, 12) OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-        ) AS amount_lag12,
-        AVG(total_amount) OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
-        ) AS rolling_avg_3m,
-        AVG(total_amount) OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-            ROWS BETWEEN 5 PRECEDING AND CURRENT ROW
-        ) AS rolling_avg_6m,
-        EXTRACT(MONTH FROM report_month) AS season_month,
-        ROW_NUMBER() OVER (
-            PARTITION BY bank_name, mcc_group
-            ORDER BY report_month
-        ) AS time_index
-    FROM monthly
+        NVL(TRIM(t.mcc_group), 'OTHER'),
+        NVL(TRIM(TO_CHAR(t.mcc)), '0000'),
+        NVL(TRIM(t.source_city), 'NAMƏLUM'),
+        NVL(TRIM(t.source_city_category), 'OTHER'),
+        NVL(TRIM(t.source_channel), 'OTHER'),
+        t.operation_type,
+        NVL(TRIM(t.source_country_category), 'OTHER'),
+        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'),
+        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')
 )
 SELECT
-    report_month,
-    bank_name,
-    mcc_group,
-    total_amount,
-    total_count,
-    total_cards,
-    amount_lag1,
-    amount_lag3,
-    amount_lag12,
-    rolling_avg_3m,
-    rolling_avg_6m,
-    season_month,
-    time_index,
-    ROUND(total_amount / NULLIF(total_count, 0), 4) AS avg_ticket,
-    ROUND(total_amount / NULLIF(total_cards, 0), 4) AS amount_per_card
-FROM with_lags;
+    s.report_month,
+    s.bank_name,
+    s.mcc_group,
+    s.mcc,
+    s.source_city,
+    s.source_city_category,
+    s.source_channel,
+    s.operation_type,
+    s.source_country_category,
+    s.is_acquiring,
+    s.is_issuing,
+    s.total_amount,
+    s.total_count,
+    s.total_local_amount,
+    ROUND(s.total_amount / NULLIF(s.total_count, 0), 2) AS avg_ticket,
+    ROUND(s.total_local_amount * 100.0 / NULLIF(s.total_amount, 0), 2) AS local_ratio_pct,
+    ROUND(s.total_amount * 100.0 / NULLIF(SUM(s.total_amount) OVER (PARTITION BY s.report_month), 0), 4) AS sector_market_share_pct
+FROM sector_agg s;
 
-CREATE UNIQUE INDEX IDX_REQ1_UQ
-    ON PG_MV_REQ1_FORECAST_INPUT (REPORT_MONTH, BANK_NAME, MCC_GROUP)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_REQ1_MONTH
-    ON PG_MV_REQ1_FORECAST_INPUT (REPORT_MONTH)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-CREATE INDEX IDX_REQ1_BANK
-    ON PG_MV_REQ1_FORECAST_INPUT (BANK_NAME)
-    NOLOGGING PARALLEL 8 COMPUTE STATISTICS;
-
-ALTER INDEX IDX_REQ1_UQ NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ1_MONTH NOPARALLEL LOGGING;
-ALTER INDEX IDX_REQ1_BANK NOPARALLEL LOGGING;
-
-GRANT SELECT ON PG_MV_REQ1_FORECAST_INPUT TO REPORTAPPUSER;
-COMMENT ON MATERIALIZED VIEW PG_MV_REQ1_FORECAST_INPUT IS 'Materialized view for forecast input';
-
-
--- ═══════════════════════════════════════════════════════════════════════════
--- 13. Reference Cədvəllər (Oracle DDL Syntax ilə Düzəldildi)
--- ═══════════════════════════════════════════════════════════════════════════
--- PostgreSQL sintaksisi (public., text, float8) Oracle tiplərinə çevrildi:
-
-BEGIN
-    EXECUTE IMMEDIATE 'CREATE TABLE COUNTRIES (
-        NAME      VARCHAR2(255) NOT NULL,
-        LATITUDE  NUMBER(10, 7) NULL,
-        LONGITUDE NUMBER(10, 7) NULL,
-        CONSTRAINT PK_COUNTRIES PRIMARY KEY (NAME)
-    )';
-EXCEPTION WHEN OTHERS THEN NULL;
-END;
-/
-
-BEGIN
-    EXECUTE IMMEDIATE 'CREATE TABLE CITIES (
-        CITY_NAME VARCHAR2(255) NOT NULL,
-        LATITUDE  NUMBER(10, 7) NULL,
-        LONGITUDE NUMBER(10, 7) NULL,
-        CONSTRAINT PK_CITIES PRIMARY KEY (CITY_NAME)
-    )';
-EXCEPTION WHEN OTHERS THEN NULL;
-END;
-/
-
-BEGIN
-    EXECUTE IMMEDIATE 'CREATE TABLE BANKS (
-        BANK_HASH VARCHAR2(100),
-        BANK_NAME VARCHAR2(100)
-    )';
-EXCEPTION WHEN OTHERS THEN NULL;
-END;
-/
-
-BEGIN
-    EXECUTE IMMEDIATE 'CREATE TABLE MCC_GROUPS (
-        MCC_HASH VARCHAR2(100),
-        MCC_NAME VARCHAR2(100)
-    )';
-EXCEPTION WHEN OTHERS THEN NULL;
-END;
+CREATE INDEX idx_mv_req8_month    ON pg_mv_req8_sector_spend (report_month) NOLOGGING;
+CREATE INDEX idx_mv_req8_mcc      ON pg_mv_req8_sector_spend (mcc_group, report_month) NOLOGGING;
+CREATE INDEX idx_mv_req8_bank_mcc ON pg_mv_req8_sector_spend (bank_name, mcc_group, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'PG_MV_REQ8_SECTOR_SPEND', cascade => TRUE); END;
 /
 
 
--- ═══════════════════════════════════════════════════════════════════════════
--- 14. 600M DATA ÜÇÜN ƏN SÜRƏTLİ REFRESH PROSEDURU (DBMS_MVIEW)
--- ═══════════════════════════════════════════════════════════════════════════
--- DİQQƏT: Oracle-da default refresh (atomic_refresh => TRUE) olduqda DELETE + INSERT edir,
--- bu da 600M sətir üçün terabaytlarla UNDO və REDO yaradıb sistemi dondura bilər.
--- Aşağıdakı PL/SQL bloku TRUNCATE + DIRECT-PATH INSERT (/*+ APPEND PARALLEL */)
--- istifadə edərək ən yüksək sürətlə REFRESH edir:
-/*
+-- ============================================================================
+-- 10. PG_MV_REQ7_BENCHMARK (Bazar Müqayisəsi / Market Benchmark)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW pg_mv_req7_benchmark'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW pg_mv_req7_benchmark'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req7_benchmark CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW pg_mv_req7_benchmark
+PCTFREE 0 NOLOGGING
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+WITH trans_monthly AS (
+    SELECT
+        s.report_month,
+        s.bank_name,
+        SUM(s.total_amount) AS bank_trans_amount,
+        SUM(s.total_count)  AS bank_trans_count
+    FROM pg_mv_req8_sector_spend s
+    WHERE s.bank_name IS NOT NULL
+    GROUP BY s.report_month, s.bank_name
+),
+market_trans_monthly AS (
+    SELECT
+        report_month,
+        SUM(bank_trans_amount) AS market_total_amount
+    FROM trans_monthly
+    GROUP BY report_month
+),
+latest_cards AS (
+    SELECT c.*,
+           DENSE_RANK() OVER (
+               PARTITION BY TRUNC(c.report_month, 'MM'), c.bank_name
+               ORDER BY c.etl_date DESC NULLS LAST
+           ) AS etl_rnk
+    FROM bi_market_cards_masked c
+),
+cards_monthly AS (
+    SELECT
+        TRUNC(c.report_month, 'MM')                                                    AS report_month,
+        c.bank_name,
+        NVL(COALESCE(NULLIF(TRIM(c.region_name_clean), ''), TRIM(c.region_name)), 'OTHER') AS region_name_clean,
+        NVL(TRIM(c.card_brand_name), 'OTHER')                                          AS card_brand_name,
+        NVL(TRIM(c.product_type), 'OTHER')                                             AS product_type,
+        SUM(NVL(c.count_card, 0))                                                      AS bank_card_count
+    FROM latest_cards c
+    WHERE c.etl_rnk = 1
+      AND c.bank_name IS NOT NULL
+    GROUP BY
+        TRUNC(c.report_month, 'MM'),
+        c.bank_name,
+        NVL(COALESCE(NULLIF(TRIM(c.region_name_clean), ''), TRIM(c.region_name)), 'OTHER'),
+        NVL(TRIM(c.card_brand_name), 'OTHER'),
+        NVL(TRIM(c.product_type), 'OTHER')
+),
+joined_data AS (
+    SELECT
+        COALESCE(tm.report_month, cm.report_month) AS report_month,
+        COALESCE(tm.bank_name, cm.bank_name)       AS bank_name,
+        NVL(cm.region_name_clean, 'OTHER')         AS region_name_clean,
+        NVL(cm.card_brand_name, 'OTHER')           AS card_brand_name,
+        NVL(cm.product_type, 'OTHER')              AS product_type,
+        NVL(tm.bank_trans_amount, 0)               AS bank_trans_amount,
+        NVL(tm.bank_trans_count, 0)                AS bank_trans_count,
+        NVL(cm.bank_card_count, 0)                 AS bank_card_count
+    FROM trans_monthly tm
+    FULL OUTER JOIN cards_monthly cm
+        ON tm.report_month = cm.report_month
+       AND tm.bank_name    = cm.bank_name
+)
+SELECT
+    j.report_month,
+    j.bank_name,
+    j.region_name_clean,
+    j.card_brand_name,
+    j.product_type,
+    j.bank_trans_amount,
+    j.bank_trans_count,
+    j.bank_card_count,
+    NVL(mt.market_total_amount, 0) AS market_total_amount,
+    SUM(j.bank_card_count) OVER (
+        PARTITION BY j.report_month, j.region_name_clean, j.card_brand_name
+    ) AS market_total_cards,
+    ROUND(j.bank_trans_amount * 100.0 / NULLIF(mt.market_total_amount, 0), 4) AS market_share_amount_pct,
+    ROUND(j.bank_card_count * 100.0 / NULLIF(
+        SUM(j.bank_card_count) OVER (PARTITION BY j.report_month, j.region_name_clean, j.card_brand_name), 0
+    ), 4) AS market_share_cards_pct,
+    DENSE_RANK() OVER (
+        PARTITION BY j.report_month
+        ORDER BY j.bank_trans_amount DESC NULLS LAST
+    ) AS bank_rank
+FROM joined_data j
+LEFT JOIN market_trans_monthly mt
+    ON mt.report_month = j.report_month;
+
+CREATE INDEX idx_mv_req7_month ON pg_mv_req7_benchmark (report_month) NOLOGGING;
+CREATE INDEX idx_mv_req7_bank  ON pg_mv_req7_benchmark (bank_name, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'PG_MV_REQ7_BENCHMARK', cascade => TRUE); END;
+/
+
+
+-- ============================================================================
+-- 11. PG_MV_REQ1_FORECAST_INPUT (PPTX - Proqnoz Tətbiqi / Forecasting)
+-- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW pg_mv_req1_forecast_input'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -12003 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP VIEW pg_mv_req1_forecast_input'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req1_forecast_input CASCADE CONSTRAINTS PURGE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+
+CREATE MATERIALIZED VIEW pg_mv_req1_forecast_input
+PCTFREE 0 NOLOGGING
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+WITH trans_agg AS (
+    SELECT
+        s.report_month,
+        s.bank_name,
+        s.mcc_group,
+        SUM(s.total_amount) AS total_amount,
+        SUM(s.total_count)  AS total_count
+    FROM pg_mv_req8_sector_spend s
+    WHERE s.bank_name IS NOT NULL
+    GROUP BY
+        s.report_month,
+        s.bank_name,
+        s.mcc_group
+),
+latest_cards AS (
+    SELECT c.*,
+           DENSE_RANK() OVER (
+               PARTITION BY TRUNC(c.report_month, 'MM'), c.bank_name
+               ORDER BY c.etl_date DESC NULLS LAST
+           ) AS etl_rnk
+    FROM bi_market_cards_masked c
+),
+card_agg AS (
+    SELECT
+        TRUNC(report_month, 'MM') AS report_month,
+        bank_name,
+        SUM(NVL(count_card, 0))   AS total_cards
+    FROM latest_cards
+    WHERE etl_rnk = 1
+    GROUP BY TRUNC(report_month, 'MM'), bank_name
+),
+base AS (
+    SELECT
+        t.report_month,
+        t.bank_name,
+        t.mcc_group,
+        t.total_amount,
+        t.total_count,
+        NVL(c.total_cards, 0) AS total_cards
+    FROM trans_agg t
+    LEFT JOIN card_agg c
+        ON c.report_month = t.report_month
+       AND c.bank_name    = t.bank_name
+)
+SELECT
+    b.report_month,
+    b.bank_name,
+    b.mcc_group,
+    b.total_amount,
+    b.total_count,
+    b.total_cards,
+    LAG(b.total_amount, 1)  OVER (PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month) AS amount_lag1,
+    LAG(b.total_amount, 3)  OVER (PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month) AS amount_lag3,
+    LAG(b.total_amount, 12) OVER (PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month) AS amount_lag12,
+    ROUND(AVG(b.total_amount) OVER (
+        PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ), 2) AS rolling_avg_3m,
+    ROUND(AVG(b.total_amount) OVER (
+        PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month ROWS BETWEEN 5 PRECEDING AND CURRENT ROW
+    ), 2) AS rolling_avg_6m,
+    EXTRACT(MONTH FROM b.report_month) AS season_month,
+    ROW_NUMBER() OVER (PARTITION BY b.bank_name, b.mcc_group ORDER BY b.report_month) AS time_index,
+    ROUND(b.total_amount / NULLIF(b.total_count, 0), 2) AS avg_ticket,
+    ROUND(b.total_amount / NULLIF(b.total_cards, 0), 2) AS amount_per_card
+FROM base b;
+
+CREATE INDEX idx_mv_req1_month    ON pg_mv_req1_forecast_input (report_month) NOLOGGING;
+CREATE INDEX idx_mv_req1_bank_mcc ON pg_mv_req1_forecast_input (bank_name, mcc_group, report_month) NOLOGGING;
+BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'PG_MV_REQ1_FORECAST_INPUT', cascade => TRUE); END;
+/
+
+
+-- ============================================================================
+-- 12. İCAZƏLƏRİN (GRANT) AVTOMATİK BƏRPASI VƏ YOXLANMASI
+-- ============================================================================
+DECLARE
+    v_sql VARCHAR2(1000);
 BEGIN
-    DBMS_MVIEW.REFRESH(
-        LIST                 => 'MV_SUMMARY_TRANSACTION,MV_TRANSACTION_SUMMARY,MV_ACQUIRING_DEVICE_TRANSACTION,PG_MV_REQ8_SECTOR_SPEND,PG_MV_REQ7_BENCHMARK,PG_MV_REQ4_AZ_MAP,PG_MV_REQ5_WORLD_MAP,PG_MV_REQ1_FORECAST_INPUT',
-        METHOD               => 'C',
-        PARALLELISM          => 8,
-        ATOMIC_REFRESH       => FALSE,
-        NESTED               => FALSE
-    );
+    FOR r IN (SELECT grantee, table_name, privilege, grantable FROM mv_patch_grants_bkp) LOOP
+        BEGIN
+            v_sql := 'GRANT ' || r.privilege || ' ON ' || r.table_name || ' TO "' || r.grantee || '"'
+                     || CASE WHEN r.grantable = 'YES' THEN ' WITH GRANT OPTION' ELSE '' END;
+            EXECUTE IMMEDIATE v_sql;
+        EXCEPTION
+            WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
+
+    FOR t IN (
+        SELECT column_value AS mv_name
+        FROM TABLE(sys.odcivarchar2list(
+            'MV_SUMMARY_TRANSACTION', 'MV_TRANSACTION_SUMMARY', 'MV_ACQUIRING_DEVICE_TRANSACTION',
+            'MV_CARD_DASHBOARD', 'MV_CARD_PORTFOLIO', 'MV_DEVICES_BASE', 'MV_DEVICES_TREND',
+            'PG_MV_REQ4_AZ_MAP', 'PG_MV_REQ5_WORLD_MAP', 'PG_MV_REQ8_SECTOR_SPEND',
+            'PG_MV_REQ7_BENCHMARK', 'PG_MV_REQ1_FORECAST_INPUT'
+        ))
+    ) LOOP
+        BEGIN
+            EXECUTE IMMEDIATE 'GRANT SELECT ON ' || t.mv_name || ' TO REPORTAPPUSER';
+        EXCEPTION
+            WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
+
+    BEGIN
+        EXECUTE IMMEDIATE 'DROP TABLE mv_patch_grants_bkp PURGE';
+    EXCEPTION
+        WHEN OTHERS THEN NULL;
+    END;
 END;
 /
-*/
+
+SELECT
+    mview_name,
+    compile_state,
+    staleness,
+    TO_CHAR(last_refresh_date, 'YYYY-MM-DD HH24:MI:SS') AS refreshed_at
+FROM all_mviews
+WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA')
+  AND mview_name IN (
+      'MV_SUMMARY_TRANSACTION', 'MV_TRANSACTION_SUMMARY', 'MV_ACQUIRING_DEVICE_TRANSACTION',
+      'MV_CARD_DASHBOARD', 'MV_CARD_PORTFOLIO', 'MV_DEVICES_BASE', 'MV_DEVICES_TREND',
+      'PG_MV_REQ4_AZ_MAP', 'PG_MV_REQ5_WORLD_MAP', 'PG_MV_REQ8_SECTOR_SPEND',
+      'PG_MV_REQ7_BENCHMARK', 'PG_MV_REQ1_FORECAST_INPUT'
+  )
+ORDER BY mview_name;

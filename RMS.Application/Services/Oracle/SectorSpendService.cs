@@ -1,4 +1,5 @@
-﻿using RMS.Contract.DTOs;
+using RMS.Application.Caching;
+using RMS.Contract.DTOs;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -7,11 +8,14 @@ namespace RMS.Application.Services.Oracle
 {
     public class SectorSpendService : ISectorSpendService
     {
+        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(2);
         private readonly ISectorSpendRepository _repo;
+        private readonly IInMemoryCacheService? _cache;
 
-        public SectorSpendService(ISectorSpendRepository repo)
+        public SectorSpendService(ISectorSpendRepository repo, IInMemoryCacheService? cache = null)
         {
             _repo = repo;
+            _cache = cache;
         }
 
         public Task<PagedResult<SectorSpend>> GetAllAsync(
@@ -20,22 +24,32 @@ namespace RMS.Application.Services.Oracle
         // SectorSpendService-ə əlavə et
         public async Task<IEnumerable<BankDto>> GetDistinctBanksAsync(CancellationToken ct = default)
         {
-            var data = await _repo.GetDistinctBanksAsync(ct);
-            return data.Select(x => new BankDto
+            if (_cache is null)
             {
-                Id = x.Hash,
-                BankName = x.Name
-            });
+                var raw = await _repo.GetDistinctBanksAsync(ct);
+                return raw.Select(x => new BankDto { Id = x.Hash, BankName = x.Name }).ToList();
+            }
+
+            return await _cache.GetOrCreateAsync("oracle:lookup:banks", async token =>
+            {
+                var data = await _repo.GetDistinctBanksAsync(token);
+                return data.Select(x => new BankDto { Id = x.Hash, BankName = x.Name }).ToList();
+            }, LookupTtl, ct);
         }
 
         public async Task<IEnumerable<MccGroupDto>> GetDistinctMccGroupsAsync(CancellationToken ct = default)
         {
-            var data = await _repo.GetDistinctMccGroupsAsync(ct);
-            return data.Select(x => new MccGroupDto
+            if (_cache is null)
             {
-                Id = x.Hash,
-                MccName = x.Name
-            });
+                var raw = await _repo.GetDistinctMccGroupsAsync(ct);
+                return raw.Select(x => new MccGroupDto { Id = x.Hash, MccName = x.Name }).ToList();
+            }
+
+            return await _cache.GetOrCreateAsync("oracle:lookup:mcc-groups", async token =>
+            {
+                var data = await _repo.GetDistinctMccGroupsAsync(token);
+                return data.Select(x => new MccGroupDto { Id = x.Hash, MccName = x.Name }).ToList();
+            }, LookupTtl, ct);
         }
         public Task<PagedResult<SectorSpend>> GetByBankAsync(
             string bankName, PageRequest pageReq, CancellationToken ct = default)

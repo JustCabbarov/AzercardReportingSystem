@@ -12,6 +12,8 @@ using RMS.Application.Services.System;
 using RMS.Domain.Entities;
 using RMS.Persitence.Data;
 using RMS.Persitence.Extensions;
+using RMS.Presentation.BackgroundServices;
+using RMS.Presentation.Caching;
 using RMS.Presentation.ExceptionHandler;
 using Serilog;
 using System.Text;
@@ -45,6 +47,23 @@ namespace RMS.Presentation
             // CONTROLLERS
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+            // IN-MEMORY OUTPUT CACHE (Oracle BI queries, 600M-row optimization)
+            var cacheSection = builder.Configuration.GetSection(InMemoryCacheOptions.SectionName);
+            var cacheConfig = cacheSection.Get<InMemoryCacheOptions>() ?? new InMemoryCacheOptions();
+            var cacheStats = new CacheStatsTracker();
+
+            builder.Services.Configure<InMemoryCacheOptions>(cacheSection);
+            builder.Services.AddSingleton(cacheStats);
+            builder.Services.AddSingleton<OracleCacheWarmupService>();
+            builder.Services.AddHostedService(sp => sp.GetRequiredService<OracleCacheWarmupService>());
+            builder.Services.AddOutputCache(options =>
+            {
+                options.SizeLimit = Math.Max(64L, cacheConfig.SizeLimitMb) * 1024L * 1024L;
+                options.MaximumBodySize = Math.Max(4L, cacheConfig.MaximumBodySizeMb) * 1024L * 1024L;
+                options.DefaultExpirationTimeSpan = TimeSpan.FromMinutes(Math.Max(1, cacheConfig.DefaultExpirationMinutes));
+                options.AddBasePolicy(new OracleOutputCachePolicy(cacheConfig, cacheStats));
+            });
 
             // IDENTITY
             builder.Services.AddIdentity<AppUser, AppRole>(options =>
@@ -149,6 +168,7 @@ namespace RMS.Presentation
             app.UseCors("cors");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseOutputCache();
 
             app.MapControllers();
 

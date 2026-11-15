@@ -40,12 +40,20 @@ public class CardDashboardRepository : ICardDashboardRepository
         prev is null or 0 ? null
         : Math.Round((cur - prev.Value) / Math.Abs(prev.Value) * 100, 2);
 
+    private static DateTime NormalizePeriodStart(DateTime dt, DateGrouping g) => g switch
+    {
+        DateGrouping.Quarterly => new DateTime(dt.Year, ((dt.Month - 1) / 3) * 3 + 1, 1),
+        DateGrouping.Yearly    => new DateTime(dt.Year, 1, 1),
+        _                      => new DateTime(dt.Year, dt.Month, 1)
+    };
+
     private static FilterBuilder BuildFilter(DashboardFilterRequest f)
     {
         var col = PeriodColumn(f.DateGrouping);
 
         return new FilterBuilder()
-            .AddRange(col, "DateFrom", "DateTo", f.DateFrom, f.DateTo)
+            .AddPeriodRange(col, "DateFrom", "DateTo", f.DateFrom, f.DateTo,
+                dt => NormalizePeriodStart(dt, f.DateGrouping))
             .AddString("PAYMENT_SYSTEM = :PS", "PS", f.PaymentSystem)
             .AddString("IS_ISSUING_CATEGORY = :PT", "PT", f.PaymentType)
             .AddString("OPERATION_TYPE = :OT", "OT", f.OperationType)

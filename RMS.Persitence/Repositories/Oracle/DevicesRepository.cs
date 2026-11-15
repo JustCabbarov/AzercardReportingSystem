@@ -65,7 +65,8 @@ namespace RMS.Persitence.Repositories.Oracle
             List<string>? mccNames, List<string>? retailCategories)
         {
             var filter = BuildCommonFilter(bankNames, regionNames, mccNames, retailCategories)
-                .AddRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo);
+                .AddPeriodRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo,
+                    d => new DateTime(d.Year, d.Month, 1));
 
             var sql = $"""
                 SELECT
@@ -96,7 +97,8 @@ namespace RMS.Persitence.Repositories.Oracle
     };
 
             var filter = new FilterBuilder()
-                .AddRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo)
+                .AddPeriodRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo,
+                    d => new DateTime(d.Year, d.Month, 1))
                 .AddList("bank_name", "BankName", bankNames)
                 .AddList("region_name", "RegionName", regionNames)
                 .AddList("mcc_name", "MccName", mccNames)
@@ -117,35 +119,12 @@ namespace RMS.Persitence.Repositories.Oracle
             }
             else
             {
-                var dim = dimension.ToLower();
+                var dim = dimension.ToLowerInvariant();
 
                 if (!allowedColumns.Contains(dim))
                     throw new ArgumentException($"Namelum dimension: {dimension}");
 
-                var filterConflicts = new Dictionary<string, bool>
-        {
-            { "bank_name",       bankNames?.Any()        == true },
-            { "region_name",     regionNames?.Any()      == true },
-            { "mcc_name",        mccNames?.Any()         == true },
-            { "retail_category", retailCategories?.Any() == true }
-        };
-
-                if (filterConflicts.TryGetValue(dim, out var hasConflict) && hasConflict)
-                {
-                    // Dimension ignore edilir, yalnız filter işləyir
-                    sql = $"""
-                SELECT
-                    {dim}              AS dimension_value,
-                    SUM(total_devices) AS total_devices,
-                    100.00             AS share_pct
-                FROM mv_devices_base
-                {filter.WhereClause}
-                GROUP BY {dim}
-                """;
-                }
-                else
-                {
-                    sql = $"""
+                sql = $"""
                 WITH filtered_data AS (
                     SELECT *
                     FROM mv_devices_base
@@ -162,13 +141,12 @@ namespace RMS.Persitence.Repositories.Oracle
                     dimension_value,
                     total_devices,
                     ROUND(
-                        total_devices * 100.0 / SUM(total_devices) OVER (),
+                        total_devices * 100.0 / NULLIF(SUM(total_devices) OVER (), 0),
                         2
                     ) AS share_pct
                 FROM grouped_data
                 ORDER BY total_devices DESC
                 """;
-                }
             }
 
             using var db = Connect();
@@ -182,7 +160,8 @@ namespace RMS.Persitence.Repositories.Oracle
             List<string>? mccNames, List<string>? retailCategories)
         {
             var filter = BuildCommonFilter(bankNames, regionNames, mccNames, retailCategories)
-                .AddRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo);
+                .AddPeriodRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo,
+                    d => new DateTime(d.Year, d.Month, 1));
 
             var sql = $"""
                 SELECT
@@ -211,7 +190,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 throw new ArgumentException($"Namelum dimension: {r.Dimension}");
 
             var filter = new FilterBuilder()
-                .AddRange("report_month", "DateFrom", "DateTo", r.DateFrom, r.DateTo)
+                .AddPeriodRange("report_month", "DateFrom", "DateTo", r.DateFrom, r.DateTo,
+                    d => new DateTime(d.Year, d.Month, 1))
                 .AddList(dim, "DimensionValues", r.DimensionValues);
 
             var sql = $"""
@@ -221,7 +201,11 @@ namespace RMS.Persitence.Repositories.Oracle
                     SUM(total_devices)            AS cnt,
                     SUM(prev_month_devices)       AS prev_month_devices,
                     SUM(mom_diff)                 AS mom_diff,
-                    ROUND(AVG(mom_pct_change), 2) AS mom_pct_change
+                    ROUND(
+                        (SUM(total_devices) - SUM(prev_month_devices)) * 100.0 /
+                        NULLIF(SUM(prev_month_devices), 0),
+                        2
+                    )                             AS mom_pct_change
                 FROM mv_devices_trend
                 {filter.WhereClause}
                 GROUP BY {dim}, report_month
@@ -281,7 +265,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 throw new ArgumentException("X ve Y eyni ola bilmez");
 
             var filter = BuildCommonFilter(bankNames, regionNames, mccNames, retailCategories, tableAlias: "b")
-                .AddRange("b.report_month", "DateFrom", "DateTo", dateFrom, dateTo);
+                .AddPeriodRange("b.report_month", "DateFrom", "DateTo", dateFrom, dateTo,
+                    d => new DateTime(d.Year, d.Month, 1));
 
             var sql = $"""
                 WITH grouped AS (
@@ -290,14 +275,21 @@ namespace RMS.Persitence.Repositories.Oracle
                         b.{y} AS y_value,
                         SUM(b.total_devices) AS device_count,
                         SUM(t.mom_diff)      AS mom_diff,
-                        ROUND(AVG(t.mom_pct_change), 2) AS mom_pct_change
+                        ROUND(
+                            (SUM(b.total_devices) - SUM(t.prev_month_devices)) * 100.0 /
+                            NULLIF(SUM(t.prev_month_devices), 0),
+                            2
+                        )                    AS mom_pct_change
                     FROM mv_devices_base b
                     LEFT JOIN mv_devices_trend t
-                        ON  b.report_month    = t.report_month
-                        AND b.bank_name       = t.bank_name
-                        AND b.region_name     = t.region_name
-                        AND b.mcc_name        = t.mcc_name
-                        AND b.retail_category = t.retail_category
+                        ON  b.report_month                          = t.report_month
+                        AND DECODE(b.bank_name,         t.bank_name,         1, 0) = 1
+                        AND DECODE(b.region_name,       t.region_name,       1, 0) = 1
+                        AND DECODE(b.region_name_clean, t.region_name_clean, 1, 0) = 1
+                        AND DECODE(b.mcc_name,          t.mcc_name,          1, 0) = 1
+                        AND DECODE(b.retail_category,   t.retail_category,   1, 0) = 1
+                        AND DECODE(b.transaction_class, t.transaction_class, 1, 0) = 1
+                        AND DECODE(b.ctls_status,       t.ctls_status,       1, 0) = 1
                     {filter.WhereClause}
                     GROUP BY b.{x}, b.{y}
                 ),
@@ -337,7 +329,8 @@ namespace RMS.Persitence.Repositories.Oracle
             List<string>? mccNames, List<string>? retailCategories)
         {
             var filter = BuildCommonFilter(bankNames, regionNames, mccNames, retailCategories)
-                .AddRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo);
+                .AddPeriodRange("report_month", "DateFrom", "DateTo", dateFrom, dateTo,
+                    d => new DateTime(d.Year, d.Month, 1));
 
             var sql = $"""
                 SELECT

@@ -1,3 +1,4 @@
+using RMS.Application.Caching;
 using RMS.Application.Forecasting;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
@@ -8,15 +9,25 @@ namespace RMS.Application.Services.Oracle
 {
     public class CardPortfolioService : ICardPortfolioService
     {
+        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(2);
         private readonly ICardPortfolioRepository _repo;
+        private readonly IInMemoryCacheService? _cache;
 
-        public CardPortfolioService(ICardPortfolioRepository repo)
+        public CardPortfolioService(ICardPortfolioRepository repo, IInMemoryCacheService? cache = null)
         {
             _repo = repo;
+            _cache = cache;
         }
 
-        public Task<FilterOptionsResponse> GetFilterOptionsAsync() => _repo.GetFilterOptionsAsync();
-        public Task<DateTime> GetLatestReportMonthAsync() => _repo.GetLatestReportMonthAsync();
+        public Task<FilterOptionsResponse> GetFilterOptionsAsync()
+            => _cache is null
+                ? _repo.GetFilterOptionsAsync()
+                : _cache.GetOrCreateAsync("oracle:lookup:cards:filter-options", _ => _repo.GetFilterOptionsAsync(), LookupTtl);
+
+        public Task<DateTime> GetLatestReportMonthAsync()
+            => _cache is null
+                ? _repo.GetLatestReportMonthAsync()
+                : _cache.GetOrCreateAsync("oracle:lookup:cards:latest-month", _ => _repo.GetLatestReportMonthAsync(), LookupTtl);
 
         public Task<IEnumerable<TopSchemeCardDto>> GetTopCardsAsync(CardPortfolioFilter f, string? dimension)
             => _repo.GetTopCardsAsync(f, dimension);
@@ -30,11 +41,46 @@ namespace RMS.Application.Services.Oracle
         {
             var response = await _repo.GetTrendAsync(r);
 
-            // EndDate-dən sonrakı 12 ayı proqnozlaşdır
+            var isMonthly = string.IsNullOrWhiteSpace(r.Granularity)
+                || r.Granularity.Trim().Equals("month", StringComparison.OrdinalIgnoreCase);
+            if (!isMonthly)
+                return response;
+
+            // EndDate-dən sonrakı 12 ayı proqnozlaşdır; illik artım faizi üçün 24 aylıq tarixçə lazımdır
             var endDate = r.ToMonth ?? DateTime.Today;
+            var historyStart = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-24);
+
+            TrendChartResponse? historyResponse = null;
+            if (r.FromMonth is null || r.FromMonth.Value > historyStart)
+            {
+                historyResponse = await _repo.GetTrendAsync(new TrendChartRequest
+                {
+                    FromMonth         = historyStart,
+                    ToMonth           = endDate,
+                    BankNames         = r.BankNames,
+                    RegionNames       = r.RegionNames,
+                    PaymentSchemes    = r.PaymentSchemes,
+                    ProductTypes      = r.ProductTypes,
+                    ContactlessStatus = r.ContactlessStatus,
+                    ExpStatus         = r.ExpStatus,
+                    Status3Ds         = r.Status3Ds,
+                    BaseCurrencies    = r.BaseCurrencies,
+                    CardProductNames  = r.CardProductNames,
+                    Dimension         = r.Dimension,
+                    DimValues         = r.DimValues,
+                    Granularity       = "month"
+                });
+            }
+
+            var historyByLabel = historyResponse?.Series
+                .ToDictionary(s => s.Label, s => s.Points.Where(p => !p.IsForecast).ToList());
 
             foreach (var series in response.Series)
-                AppendGrowthRateForecast(series, endDate);
+            {
+                List<TrendPoint>? historyPoints = null;
+                historyByLabel?.TryGetValue(series.Label, out historyPoints);
+                AppendGrowthRateForecast(series, endDate, historyPoints);
+            }
 
             return response;
         }
@@ -42,13 +88,18 @@ namespace RMS.Application.Services.Oracle
         /// <summary>
         /// Kart portfoliosu trend seriyasına Growth-Rate əsaslı proqnoz nöqtələri əlavə edir.
         /// </summary>
-        private static void AppendGrowthRateForecast(TrendSeries series, DateTime endDate)
+        private static void AppendGrowthRateForecast(
+            TrendSeries series,
+            DateTime endDate,
+            List<TrendPoint>? historyPoints = null)
         {
             // Yalnız real nöqtələri götür
-            var actualPoints = series.Points.Where(p => !p.IsForecast).ToList();
-            if (actualPoints.Count < 2) return;
+            var sourcePoints = (historyPoints is { Count: >= 2 } ? historyPoints : series.Points)
+                .Where(p => !p.IsForecast)
+                .ToList();
+            if (sourcePoints.Count < 2) return;
 
-            var actuals = actualPoints
+            var actuals = sourcePoints
                 .Select(p => (p.Period, (decimal)p.Count))
                 .ToList();
 

@@ -31,18 +31,18 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<SummaryTransactionResponse> GetSummaryAsync(SummaryFilterRequest filter)
         {
             var builder = BuildFilters(filter);
-            var scale = (int)filter.Scale;
+            var scale = (int)filter.Scale <= 0 ? 1 : (int)filter.Scale;
 
             var sql = $@"
             SELECT
-                is_issuing                              AS IsIssuing,
-                is_acquiring                            AS IsAcquiring,
+                TRIM(TO_CHAR(is_issuing))               AS IsIssuing,
+                TRIM(TO_CHAR(is_acquiring))             AS IsAcquiring,
                 acquiring_device_type                   AS AcquiringDeviceType,
                 SUM(total_local_amount) / {scale}       AS TotalLocalAmount,
                 SUM(total_count)                        AS TotalCount
             FROM mv_summary_transaction
             {builder.WhereClause}
-            GROUP BY is_issuing, is_acquiring, acquiring_device_type";
+            GROUP BY TRIM(TO_CHAR(is_issuing)), TRIM(TO_CHAR(is_acquiring)), acquiring_device_type";
 
             using var con = Connect();
             var rows = (await con.QueryAsync<SummaryRaw>(sql, builder.Parameters)).ToList();
@@ -76,10 +76,10 @@ namespace RMS.Persitence.Repositories.Oracle
                 .Where(r => r.IsIssuing == isIssuing && r.IsAcquiring == isAcquiring)
                 .ToList();
 
-            // Device-ları lookup-a çevir
+            // Device-ları lookup-a çevir (ECOM/E-COM -> ECO uyğunlaşdırması frontend sırasına görə)
             var lookup = filtered
                 .Where(r => !string.IsNullOrWhiteSpace(r.AcquiringDeviceType))
-                .GroupBy(r => r.AcquiringDeviceType!)
+                .GroupBy(r => NormalizeDeviceType(r.AcquiringDeviceType!))
                 .ToDictionary(g => g.Key, g => new
                 {
                     Amount = g.Sum(x => x.TotalLocalAmount),
@@ -102,11 +102,28 @@ namespace RMS.Persitence.Repositories.Oracle
             };
         }
 
+        private static string NormalizeDeviceType(string raw)
+        {
+            var upper = raw.Trim().ToUpperInvariant();
+            return upper is "ECOM" or "E-COM" or "E_COM" ? "ECO" : upper;
+        }
+
+        private static string? NormalizeContactless(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            return value.Trim().ToLowerInvariant() switch
+            {
+                "true" or "contactless" => "1",
+                "false" or "contact" => "0",
+                _ => value.Trim()
+            };
+        }
+
         // ─── Filter builder ───────────────────────────────────────────────────────
         private static FilterBuilder BuildFilters(SummaryFilterRequest f)
         {
             return new FilterBuilder()
-                .AddRange("report_day", "dateFrom", "dateTo", f.DateFrom, f.DateTo)
+                .AddTimestampRange("report_day", "dateFrom", "dateTo", f.DateFrom, f.DateTo)
                 .AddString("target_bank_name = :targetBank", "targetBank", f.TargetBankName)
                 .AddString("source_bank_name = :sourceBank", "sourceBank", f.SourceBankName)
                 .AddString("card_product_type_category = :cardType", "cardType", f.CardProductType)
@@ -114,7 +131,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("trans_group = :transGroup", "transGroup", f.TransGroup)
                 .AddString("operation_type = :operationType", "operationType", f.OperationType)
                 .AddString("token_status = :tokenStatus", "tokenStatus", f.TokenStatus)
-                .AddString("is_contactless = :isContactless", "isContactless", f.IsContactless)
+                .AddString("TRIM(TO_CHAR(is_contactless)) = :isContactless", "isContactless", NormalizeContactless(f.IsContactless))
                 .AddString("transaction_currency = :currency", "currency", f.TransactionCurrency);
         }
     }

@@ -78,7 +78,10 @@ namespace RMS.Persitence.Repositories.Oracle
                 .GroupBy(r => r.BankName)
                 .Select(g => new
                 {
-                    BankTransAmount = g.Sum(x => x.BankTransAmount),
+                    // PG_MV_REQ7_BENCHMARK-da bank_trans_amount aylıq bank səviyyəsində hər kart/region sətrində təkrarlanır
+                    BankTransAmount = g
+                        .GroupBy(x => x.ReportMonth)
+                        .Sum(m => m.Max(x => x.BankTransAmount)),
                     Rows = g.ToList()
                 })
                 .OrderByDescending(g => g.BankTransAmount)

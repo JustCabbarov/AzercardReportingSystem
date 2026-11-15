@@ -101,6 +101,47 @@ namespace RMS.Persitence.Repositories.Oracle
             return this;
         }
 
+        /// <summary>
+        /// Saat komponenti ola bilən tarix sütunları üçün — son günün 23:59:59-a qədər tam daxil edilməsi.
+        /// </summary>
+        public FilterBuilder AddTimestampRange(string column,
+            string fromParam, string toParam,
+            DateTime? from, DateTime? to)
+        {
+            if (from is not null)
+            {
+                _conditions.Add($"{column} >= :{fromParam}");
+                _param.Add(fromParam, from.Value.Date);
+            }
+            if (to is not null)
+            {
+                _conditions.Add($"{column} < :{toParam}");
+                _param.Add(toParam, to.Value.Date.AddDays(1));
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Ay/Rüb/İl kimi TRUNC olunmuş dövr sütunları üçün — tarixləri dövrün başlanğıcına normallaşdırır.
+        /// </summary>
+        public FilterBuilder AddPeriodRange(string column,
+            string fromParam, string toParam,
+            DateTime? from, DateTime? to,
+            Func<DateTime, DateTime> normalizePeriodStart)
+        {
+            if (from is not null)
+            {
+                _conditions.Add($"{column} >= :{fromParam}");
+                _param.Add(fromParam, normalizePeriodStart(from.Value.Date));
+            }
+            if (to is not null)
+            {
+                _conditions.Add($"{column} <= :{toParam}");
+                _param.Add(toParam, normalizePeriodStart(to.Value.Date));
+            }
+            return this;
+        }
+
         public string WhereClause => _conditions.Count > 0
             ? "WHERE " + string.Join(" AND ", _conditions)
             : "";

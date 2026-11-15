@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using RMS.Application.Caching;
 using RMS.Application.Services;
 using RMS.Application.Services.Oracle;
 using RMS.Application.Services.System;
@@ -22,6 +23,12 @@ namespace RMS.Application.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddMemoryCache(options =>
+            {
+                options.SizeLimit = 10_000;
+            });
+            services.AddSingleton<IInMemoryCacheService, InMemoryCacheService>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));

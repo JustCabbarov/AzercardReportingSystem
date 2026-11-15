@@ -24,7 +24,7 @@ namespace RMS.Persistence.Repositories.Cards
         {
             "bank_name", "region_name", "payment_scheme", "base_currency_name",
             "product_type", "card_product_name", "contactless_status",
-            "exp_status", "card_category_name", "card_commercial_name", "card_brand_name"
+            "exp_status", "status_3d", "card_category_name", "card_commercial_name", "card_brand_name"
         };
 
         private static string SafeDim(string dim) =>
@@ -42,7 +42,8 @@ namespace RMS.Persistence.Repositories.Cards
                 .AddList($"{alias}.status_3d", "Status3d", f.Status3Ds)
                 .AddList($"{alias}.base_currency_name", "Currency", f.BaseCurrencies)
                 .AddList($"{alias}.card_product_name", "CardProduct", f.CardProductNames)
-                .AddRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth);
+                .AddPeriodRange($"{alias}.report_month", "FromMonth", "ToMonth", f.FromMonth, f.ToMonth,
+                    d => new DateTime(d.Year, d.Month, 1));
 
             if (!string.IsNullOrEmpty(f.ContactlessStatus))
             {
@@ -174,7 +175,8 @@ namespace RMS.Persistence.Repositories.Cards
             var allowedColumns = new HashSet<string>
             {
                 "payment_scheme", "product_type", "bank_name",
-                "region_name", "contactless_status", "exp_status", "card_product_name"
+                "region_name", "contactless_status", "exp_status",
+                "card_product_name", "status_3d", "base_currency_name"
             };
 
             var filter = BuildCommonFilter(f, "m");
@@ -194,61 +196,34 @@ namespace RMS.Persistence.Repositories.Cards
             }
             else
             {
-                var dim = dimension.ToLower();
+                var dim = dimension.ToLowerInvariant();
 
                 if (!allowedColumns.Contains(dim))
                     throw new ArgumentException($"Namelum dimension: {dimension}");
 
-                var filterConflicts = new Dictionary<string, bool>
-                {
-                    { "payment_scheme",     f.PaymentSchemes?.Any()      == true },
-                    { "product_type",       f.ProductTypes?.Any()        == true },
-                    { "bank_name",          f.BankNames?.Any()           == true },
-                    { "region_name",        f.RegionNames?.Any()         == true },
-                    { "contactless_status", !string.IsNullOrEmpty(f.ContactlessStatus) },
-                    { "exp_status",         !string.IsNullOrEmpty(f.ExpStatus) },
-                    { "card_product_name",  f.CardProductNames?.Any()    == true }
-                };
-
-                if (filterConflicts.TryGetValue(dim, out var hasConflict) && hasConflict)
-                {
-                    sql = $"""
-                        SELECT
-                            m.{dim}          AS payment_scheme,
-                            SUM(total_cards) AS total_cards,
-                            100.00           AS share_percent
+                sql = $"""
+                    WITH filtered_data AS (
+                        SELECT *
                         FROM mv_card_portfolio m
                         {filter.WhereClause}
-                        GROUP BY m.{dim}
-                        ORDER BY total_cards DESC
-                        """;
-                }
-                else
-                {
-                    sql = $"""
-                        WITH filtered_data AS (
-                            SELECT *
-                            FROM mv_card_portfolio m
-                            {filter.WhereClause}
-                        ),
-                        grouped_data AS (
-                            SELECT
-                                {dim}            AS payment_scheme,
-                                SUM(total_cards) AS total_cards
-                            FROM filtered_data
-                            GROUP BY {dim}
-                        )
+                    ),
+                    grouped_data AS (
                         SELECT
-                            payment_scheme,
-                            total_cards,
-                            ROUND(
-                                total_cards * 100.0 / SUM(total_cards) OVER (),
-                                2
-                            ) AS share_percent
-                        FROM grouped_data
-                        ORDER BY total_cards DESC
-                        """;
-                }
+                            {dim}            AS payment_scheme,
+                            SUM(total_cards) AS total_cards
+                        FROM filtered_data
+                        GROUP BY {dim}
+                    )
+                    SELECT
+                        payment_scheme,
+                        total_cards,
+                        ROUND(
+                            total_cards * 100.0 / NULLIF(SUM(total_cards) OVER (), 0),
+                            2
+                        ) AS share_percent
+                    FROM grouped_data
+                    ORDER BY total_cards DESC
+                    """;
             }
 
             using var db = Connect();
@@ -372,7 +347,7 @@ namespace RMS.Persistence.Repositories.Cards
             if (r.DimValues != null && r.DimValues.Count > 0)
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
-            var truncExpr = r.Granularity == "year"
+            var truncExpr = string.Equals(r.Granularity?.Trim(), "year", StringComparison.OrdinalIgnoreCase)
                 ? "TRUNC(report_month, 'YYYY')"
                 : "report_month";
 

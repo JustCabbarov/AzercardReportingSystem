@@ -39,22 +39,27 @@ namespace RMS.Persitence.Repositories.Oracle
 
         private static decimal GetDivisor(string unit) => unit switch
         {
+            // Frontend (Mln/Mlrd) artıq client tərəfdə bölür — ikiqat bölmənin qarşısını almaq üçün
+            // yalnız kiçik hərfli birbaşa API çağırışlarında divisor tətbiq olunur.
             "mlrd" => 1_000_000_000m,
             "mln" => 1_000_000m,
             _ => 1m
         };
 
-        private static string GetValueExpr(string category) => category switch
+        private static string GetValueExpr(string? category) => (category?.Trim().ToLowerInvariant()) switch
         {
             "count" => "SUM(transaction_count)",
-            "avg" => "CASE WHEN SUM(transaction_count) = 0 THEN 0 " +
-                       "ELSE SUM(local_amount) / NULLIF(SUM(transaction_count), 0) END",
+            "avg" or "average" => "CASE WHEN SUM(transaction_count) = 0 THEN 0 " +
+                                  "ELSE SUM(local_amount) / NULLIF(SUM(transaction_count), 0) END",
             _ => "SUM(local_amount)"
         };
 
+        private static bool IsCountCategory(string? category) =>
+            string.Equals(category?.Trim(), "count", StringComparison.OrdinalIgnoreCase);
+
         private static FilterBuilder BuildCommonFilter(AcquiringDeviceFilter f, string alias = "m")
             => new FilterBuilder()
-                .AddRange($"{alias}.report_date", "FromDate", "ToDate", f.FromDate, f.ToDate)
+                .AddTimestampRange($"{alias}.report_date", "FromDate", "ToDate", f.FromDate, f.ToDate)
                 .AddList($"{alias}.acquiring_device_type_calc", "DeviceTypes", f.AcquiringDeviceTypes)
                 .AddList($"{alias}.trans_group", "TransGroups", f.TransGroups)
                 .AddList($"{alias}.operation_type", "OpTypes", f.OperationTypes)
@@ -179,7 +184,7 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<List<AcqPieItem>> GetPieChartAsync(AcquiringDeviceFilter f)
         {
             var filter = BuildCommonFilter(f);
-            var divisor = GetDivisor(f.AmountUnit);
+            var divisor = IsCountCategory(f.Category) ? 1m : GetDivisor(f.AmountUnit);
             var valExpr = GetValueExpr(f.Category);
             var dp = new DynamicParameters(filter.Parameters);
             dp.Add("Divisor", divisor);
@@ -214,7 +219,7 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<List<TransGroupItem>> GetTransGroupChartAsync(AcquiringDeviceFilter f)
         {
             var filter = BuildCommonFilter(f);
-            var divisor = GetDivisor(f.AmountUnit);
+            var divisor = IsCountCategory(f.Category) ? 1m : GetDivisor(f.AmountUnit);
             var valExpr = GetValueExpr(f.Category);
             var dp = new DynamicParameters(filter.Parameters);
             dp.Add("Divisor", divisor);
@@ -249,7 +254,7 @@ namespace RMS.Persitence.Repositories.Oracle
         public async Task<List<PaymentSystemItem>> GetPaymentSystemChartAsync(AcquiringDeviceFilter f)
         {
             var filter = BuildCommonFilter(f);
-            var divisor = GetDivisor(f.AmountUnit);
+            var divisor = IsCountCategory(f.Category) ? 1m : GetDivisor(f.AmountUnit);
             var valExpr = GetValueExpr(f.Category);
             var dp = new DynamicParameters(filter.Parameters);
             dp.Add("Divisor", divisor);
@@ -289,11 +294,15 @@ namespace RMS.Persitence.Repositories.Oracle
             if (r.DimValues?.Count > 0)
                 filter.AddList($"m.{dim}", "DimValues", r.DimValues);
 
-            var truncExpr = r.Granularity == "year"
-                ? "TRUNC(period_month, 'YYYY')"
-                : "period_month";
+            var truncExpr = (r.Granularity?.Trim().ToLowerInvariant()) switch
+            {
+                "year"    => "TRUNC(period_month, 'YYYY')",
+                "quarter" => "TRUNC(period_month, 'Q')",
+                "day"     => "TRUNC(report_date, 'DD')",
+                _         => "period_month"
+            };
 
-            var divisor = GetDivisor(r.AmountUnit);
+            var divisor = IsCountCategory(r.Category) ? 1m : GetDivisor(r.AmountUnit);
             var valExpr = GetValueExpr(r.Category);
             var dp = new DynamicParameters(filter.Parameters);
             dp.Add("Divisor", divisor);
@@ -350,7 +359,7 @@ namespace RMS.Persitence.Repositories.Oracle
             AcquiringDeviceFilter f, string bankColumn)
         {
             var filter = BuildCommonFilter(f).AddRaw($"{bankColumn} IS NOT NULL");
-            var divisor = GetDivisor(f.AmountUnit);
+            var divisor = IsCountCategory(f.Category) ? 1m : GetDivisor(f.AmountUnit);
             var valExpr = GetValueExpr(f.Category);
             var dp = new DynamicParameters(filter.Parameters);
             dp.Add("Divisor", divisor);

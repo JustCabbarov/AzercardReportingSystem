@@ -1,3 +1,4 @@
+using RMS.Application.Caching;
 using RMS.Application.Forecasting;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
@@ -8,15 +9,27 @@ namespace RMS.Application.Services.Oracle
 {
     public class DevicesService : IDevicesService
     {
+        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(2);
         private readonly IDevicesRepository _repo;
+        private readonly IInMemoryCacheService? _cache;
 
-        public DevicesService(IDevicesRepository repo)
+        public DevicesService(IDevicesRepository repo, IInMemoryCacheService? cache = null)
         {
             _repo = repo;
+            _cache = cache;
         }
 
-        public Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension)
-            => _repo.GetFiltersAsync(dimension);
+        public async Task<IEnumerable<FilterValue>> GetFiltersAsync(string dimension)
+        {
+            if (_cache is null)
+                return await _repo.GetFiltersAsync(dimension);
+
+            var key = $"oracle:lookup:devices:filters:{dimension.ToLowerInvariant()}";
+            return await _cache.GetOrCreateAsync(
+                key,
+                async _ => (await _repo.GetFiltersAsync(dimension)).ToList(),
+                LookupTtl);
+        }
 
         public Task<IEnumerable<SummaryItem>> GetSummaryAsync(
             DateTime dateFrom, DateTime dateTo,
@@ -46,11 +59,31 @@ namespace RMS.Application.Services.Oracle
         {
             var response = await _repo.GetTrendAsync(r);
 
-            // EndDate-dən sonrakı 12 ayı proqnozlaşdır
+            // EndDate-dən sonrakı 12 ayı proqnozlaşdır; illik artım faizi üçün 24 aylıq tarixçə lazımdır
             var endDate = r.DateTo;
+            var historyStart = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-24);
+
+            DeviceTrendResponse? historyResponse = null;
+            if (r.DateFrom > historyStart)
+            {
+                historyResponse = await _repo.GetTrendAsync(new DeviceTrendRequest
+                {
+                    DateFrom        = historyStart,
+                    DateTo          = endDate,
+                    Dimension       = r.Dimension,
+                    DimensionValues = r.DimensionValues
+                });
+            }
+
+            var historyByLabel = historyResponse?.Series
+                .ToDictionary(s => s.Label, s => s.Points.Where(p => !p.IsForecast).ToList());
 
             foreach (var series in response.Series)
-                AppendGrowthRateForecast(series, endDate);
+            {
+                List<DeviceTrendPoint>? historyPoints = null;
+                historyByLabel?.TryGetValue(series.Label, out historyPoints);
+                AppendGrowthRateForecast(series, endDate, historyPoints);
+            }
 
             return response;
         }
@@ -58,13 +91,18 @@ namespace RMS.Application.Services.Oracle
         /// <summary>
         /// Terminal aktivliyi trend seriyasına Growth-Rate əsaslı proqnoz nöqtələri əlavə edir.
         /// </summary>
-        private static void AppendGrowthRateForecast(DeviceTrendSeries series, DateTime endDate)
+        private static void AppendGrowthRateForecast(
+            DeviceTrendSeries series,
+            DateTime endDate,
+            List<DeviceTrendPoint>? historyPoints = null)
         {
             // Yalnız real nöqtələri götür
-            var actualPoints = series.Points.Where(p => !p.IsForecast).ToList();
-            if (actualPoints.Count < 2) return;
+            var sourcePoints = (historyPoints is { Count: >= 2 } ? historyPoints : series.Points)
+                .Where(p => !p.IsForecast)
+                .ToList();
+            if (sourcePoints.Count < 2) return;
 
-            var actuals = actualPoints
+            var actuals = sourcePoints
                 .Select(p => (p.Period, (decimal)p.Count))
                 .ToList();
 
@@ -93,7 +131,9 @@ namespace RMS.Application.Services.Oracle
             => _repo.GetXyAnalysisAsync(dateFrom, dateTo, xDimension, yDimension, bankNames, regionNames, mccNames, retailCategories);
 
         public Task<DateTime> GetLatestReportMonthAsync()
-            => _repo.GetLatestReportMonthAsync();
+            => _cache is null
+                ? _repo.GetLatestReportMonthAsync()
+                : _cache.GetOrCreateAsync("oracle:lookup:devices:latest-month", _ => _repo.GetLatestReportMonthAsync(), LookupTtl);
 
         public Task<object> GetTotalDevicesAsync(
             DateTime dateFrom, DateTime dateTo,

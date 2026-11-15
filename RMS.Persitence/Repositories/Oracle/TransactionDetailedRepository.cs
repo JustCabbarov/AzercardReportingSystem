@@ -19,7 +19,7 @@ namespace RMS.Persitence.Repositories.Oracle
         private OracleConnection Connect() => new(_connStr);
 
         // =============================================
-        // 1. KPI + Issuing Category bölgüsü
+        // 1. KPI + Issuing Category + Target Bank bölgüsü
         // =============================================
         public async Task<TransactionSummaryResponse> GetSummaryAsync(TransactionFilterRequest filter)
         {
@@ -29,7 +29,7 @@ namespace RMS.Persitence.Repositories.Oracle
             var where = builder.WhereClause;
             var param = builder.Parameters;
 
-            var sql = $@"
+            var catSql = $@"
                 SELECT
                     issuing_category                        AS Label,
                     SUM(total_local_amount)                 AS Amount,
@@ -43,12 +43,38 @@ namespace RMS.Persitence.Repositories.Oracle
                 GROUP BY issuing_category
                 ORDER BY Amount DESC";
 
-            using var con = Connect();
-            var rows = await con.QueryAsync<DistributionRaw>(sql, param);
+            var targetBuilder = BuildFilters(filter, includeTargetBank: false);
+            var targetSql = $@"
+                SELECT
+                    target_bank_name                        AS Label,
+                    SUM(total_local_amount)                 AS Amount,
+                    SUM(total_count)                        AS Count,
+                    ROUND(
+                        SUM({measureCol}) * 100.0 /
+                        NULLIF(SUM(SUM({measureCol})) OVER (), 0)
+                    , 2)                                    AS Percent
+                FROM mv_transaction_summary
+                {targetBuilder.WhereClause}
+                GROUP BY target_bank_name
+                ORDER BY Amount DESC";
 
-            var categories = rows.Select(r => new CategoryDistributionDto
+            using var con1 = Connect();
+            using var con2 = Connect();
+            var catTask = con1.QueryAsync<DistributionRaw>(catSql, param);
+            var targetTask = con2.QueryAsync<DistributionRaw>(targetSql, targetBuilder.Parameters);
+            await Task.WhenAll(catTask, targetTask);
+
+            var categories = (await catTask).Select(r => new CategoryDistributionDto
             {
                 Label = r.Label,
+                Amount = r.Amount,
+                Count = r.Count,
+                Percent = r.Percent
+            }).ToList();
+
+            var targetBanks = (await targetTask).Select(r => new BankDistributionDto
+            {
+                BankName = r.Label,
                 Amount = r.Amount,
                 Count = r.Count,
                 Percent = r.Percent
@@ -61,16 +87,17 @@ namespace RMS.Persitence.Repositories.Oracle
                     TotalAmount = categories.Sum(c => c.Amount),
                     TotalCount = categories.Sum(c => c.Count)
                 },
-                IssuingCategories = categories
+                IssuingCategories = categories,
+                TargetBanks = targetBanks
             };
         }
 
         // =============================================
-        // 2. Target Bank bölgüsü (kaskad)
+        // 2. Source Bank bölgüsü (kaskad — Bank sütunu SOURCE_BANK_NAME göstərir)
         // =============================================
         public async Task<List<BankDistributionDto>> GetTargetBanksAsync(TransactionFilterRequest filter)
         {
-            var builder = BuildFilters(filter, includeTargetBank: false);
+            var builder = BuildFilters(filter, includeSourceBank: false);
 
             var measureCol = GetMeasureColumn(filter.Measure);
             var where = builder.WhereClause;
@@ -78,7 +105,7 @@ namespace RMS.Persitence.Repositories.Oracle
 
             var sql = $@"
                 SELECT
-                    target_bank_name                        AS Label,
+                    source_bank_name                        AS Label,
                     SUM(total_local_amount)                 AS Amount,
                     SUM(total_count)                        AS Count,
                     ROUND(
@@ -87,7 +114,7 @@ namespace RMS.Persitence.Repositories.Oracle
                     , 2)                                    AS Percent
                 FROM mv_transaction_summary
                 {where}
-                GROUP BY target_bank_name
+                GROUP BY source_bank_name
                 ORDER BY Amount DESC";
 
             using var con = Connect();
@@ -142,14 +169,16 @@ namespace RMS.Persitence.Repositories.Oracle
         // =============================================
         // Köməkçi metodlar
         // =============================================
-        private static FilterBuilder BuildFilters(TransactionFilterRequest filter, bool includeTargetBank = true)
+        private static FilterBuilder BuildFilters(
+            TransactionFilterRequest filter,
+            bool includeTargetBank = true,
+            bool includeSourceBank = true)
         {
             var builder = new FilterBuilder();
 
             builder
-                .AddRange("report_day", "dateFrom", "dateTo", filter.DateFrom, filter.DateTo)
+                .AddTimestampRange("report_day", "dateFrom", "dateTo", filter.DateFrom, filter.DateTo)
                 .AddString("issuing_category = :issuingCategory", "issuingCategory", filter.IssuingCategory)
-                .AddString("source_bank_name = :sourceBankName", "sourceBankName", filter.SourceBankName)
                 .AddString("payment_system = :paymentSystem", "paymentSystem", filter.PaymentSystem)
                 .AddString("acquiring_device_type = :device", "device", filter.AcquiringDevice)
                 .AddString("card_product_type_category = :cardType", "cardType", filter.CardType)
@@ -157,6 +186,9 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("operation_type = :operationType", "operationType", filter.OperationType)
                 .AddString("trans_group = :transGroup", "transGroup", filter.TransGroup)
                 .AddString("token_status = :tokenStatus", "tokenStatus", filter.TokenStatus);
+
+            if (includeSourceBank)
+                builder.AddString("source_bank_name = :sourceBankName", "sourceBankName", filter.SourceBankName);
 
             if (includeTargetBank)
                 builder.AddString("target_bank_name = :targetBank", "targetBank", filter.TargetBankName);
