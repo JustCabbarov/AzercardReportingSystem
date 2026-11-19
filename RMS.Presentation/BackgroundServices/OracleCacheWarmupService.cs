@@ -29,8 +29,7 @@ public sealed class OracleCacheWarmupService : BackgroundService
         "/api/SummaryTransaction/summary",
         "/api/TransactionDetailed/summary",
         "/api/AcquiringDevice/dashboard",
-        "/api/CardDashboard/dashboard",
-        "/api/Forecasting?horizon=6"
+        "/api/CardDashboard/dashboard"
     ];
 
     private readonly IServiceProvider _services;

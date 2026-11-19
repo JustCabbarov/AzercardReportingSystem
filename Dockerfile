@@ -1,9 +1,6 @@
 # 1. Base runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends libomp5 \
-    && ln -sf /usr/lib/x86_64-linux-gnu/libomp.so.5 /usr/lib/libiomp5.so \
-    && rm -rf /var/lib/apt/lists/*
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
@@ -37,7 +34,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Create directory for logs and models if needed
-RUN mkdir -p Logs models
+# Create directory for logs if needed
+RUN mkdir -p Logs
 
 ENTRYPOINT ["dotnet", "RMS.Presentation.dll"]

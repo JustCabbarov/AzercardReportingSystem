@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,8 @@ namespace RMS.Domain.Entities.Oracle
     public class MarketBenchmark
     {
         public DateTime ReportMonth { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string BankName { get; set; } = "";
         public string? RegionNameClean { get; set; }
         public string? CardBrandName { get; set; }

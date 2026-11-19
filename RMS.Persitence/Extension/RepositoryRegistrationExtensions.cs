@@ -23,7 +23,6 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<IUnityOfWork, UnityOfWork>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
-            services.AddScoped<IForecastRepository, ForecastRepository>();
             services.AddScoped<IAlertRepository, AlertRepository>();
             services.AddScoped<IWorldMapRepository, WorldMapRepository>();
             services.AddScoped<IAzMapRepository, AzMapRepository>();
@@ -31,7 +30,6 @@ namespace RMS.Persitence.Extensions
             services.AddScoped<IMarketBenchmarkRepository, MarketBenchmarkRepository>();
             services.AddScoped<ISectorSpendRepository, SectorSpendRepository>();
             services.AddScoped<INewCardRepository, NewCardRepository>();
-            services.AddSingleton<IModelStore, DiskModelStore>();
             services.AddScoped<ICardPortfolioRepository, CardPortfolioRepository>();
 
 

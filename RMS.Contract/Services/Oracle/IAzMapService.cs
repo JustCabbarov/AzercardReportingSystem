@@ -14,5 +14,6 @@ namespace RMS.Contract.Services.Oracle
         Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken ct = default);
         Task<IEnumerable<string>> GetDistinctRegionsAsync(CancellationToken ct = default);
         Task<IEnumerable<string>> GetDistinctBanksAsync(CancellationToken ct = default);
+        Task<AzMapFilterOptionsDto> GetFilterOptionsAsync(CancellationToken ct = default);
     }
 }

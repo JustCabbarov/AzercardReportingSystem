@@ -13,5 +13,6 @@ namespace RMS.Domain.Repositories.Oracle
         Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken ct = default);
         Task<IEnumerable<string>> GetDistinctRegionsAsync(CancellationToken ct = default);
         Task<IEnumerable<string>> GetDistinctBanksAsync(CancellationToken ct = default);
+        Task<IEnumerable<string>> GetDistinctColumnValuesAsync(string columnName, bool normalizeCity = false, CancellationToken ct = default);
     }
 }

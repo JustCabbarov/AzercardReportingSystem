@@ -62,5 +62,13 @@ namespace RMS.Presentation.Controllers.Oracle
             var result = await _service.GetDistinctBanksAsync(ct);
             return Ok(result);
         }
+
+        [HttpGet("filter-options")]
+        public async Task<ActionResult<AzMapFilterOptionsDto>> GetFilterOptions(
+            CancellationToken ct = default)
+        {
+            var result = await _service.GetFilterOptionsAsync(ct);
+            return Ok(result);
+        }
     }
 }

@@ -20,6 +20,34 @@ namespace RMS.Application.Services.Oracle
             CancellationToken ct = default)
             => _repo.FilterAsync(f, pageReq, ct);
 
+        public async Task<WorldMapFilterOptionsDto> GetFilterOptionsAsync(CancellationToken ct = default)
+        {
+            var isIssuingCategories = (await _repo.GetDistinctColumnValuesAsync("IS_ISSUING_CATEGORY", ct)).ToList();
+            var cardProductTypeCategories = (await _repo.GetDistinctColumnValuesAsync("CARD_PRODUCT_TYPE_CATEGORY", ct)).ToList();
+            var paymentSystems = (await _repo.GetDistinctColumnValuesAsync("PAYMENT_SYSTEM", ct)).ToList();
+            var cardAccountCurrencies = (await _repo.GetDistinctColumnValuesAsync("CARD_ACCOUNT_CURRENCY", ct)).ToList();
+            var sourceBankNames = (await _repo.GetDistinctColumnValuesAsync("SOURCE_BANK_NAME", ct)).ToList();
+            if (sourceBankNames.Count == 0)
+                sourceBankNames = (await _repo.GetDistinctColumnValuesAsync("BANK_NAME", ct)).ToList();
+            var acquiringDeviceTypes = (await _repo.GetDistinctColumnValuesAsync("ACQUIRING_DEVICE_TYPE", ct)).ToList();
+            var transGroups = (await _repo.GetDistinctColumnValuesAsync("TRANS_GROUP", ct)).ToList();
+            var operationTypes = (await _repo.GetDistinctColumnValuesAsync("OPERATION_TYPE", ct)).ToList();
+            var tokenStatuses = (await _repo.GetDistinctColumnValuesAsync("TOKEN_STATUS", ct)).ToList();
+
+            return new WorldMapFilterOptionsDto
+            {
+                IsIssuingCategories = isIssuingCategories,
+                CardProductTypeCategories = cardProductTypeCategories,
+                PaymentSystems = paymentSystems,
+                CardAccountCurrencies = cardAccountCurrencies,
+                SourceBankNames = sourceBankNames,
+                AcquiringDeviceTypes = acquiringDeviceTypes,
+                TransGroups = transGroups,
+                OperationTypes = operationTypes,
+                TokenStatuses = tokenStatuses,
+            };
+        }
+
         public Task<IEnumerable<WorldMapTransaction>> GetByBankAsync(
             string bankName, CancellationToken ct = default)
             => _repo.GetByBankAsync(bankName, ct);

@@ -8,7 +8,7 @@ namespace RMS.Application.Services.Oracle
 {
     public class SectorSpendService : ISectorSpendService
     {
-        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(2);
+        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(20);
         private readonly ISectorSpendRepository _repo;
         private readonly IInMemoryCacheService? _cache;
 

@@ -9,7 +9,6 @@ using RMS.Contract.Services.System;
 using RMS.Domain.Repositories.Oracle;
 using RMS.Persitence.Repositories;
 using RMS.Persitence.Repositories.Oracle;
-using RMS.Presentation.BackgroundServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -42,8 +41,6 @@ namespace RMS.Application.Extensions
             services.AddScoped<IMarketBenchmarkService, MarketBenchmarkService>();
             services.AddScoped<ISectorSpendService, SectorSpendService>();
             services.AddScoped<INewCardService, NewCardService>();
-            services.AddScoped<IForecastingService, SsaForecastingService>();
-         services.AddHostedService<ForecastTrainingBackgroundService>();
             services.AddScoped<IDevicesService, DevicesService>();
 
             services.AddScoped<ICardPortfolioService, CardPortfolioService>();

@@ -9,7 +9,7 @@ namespace RMS.Application.Services.Oracle
 {
     public class CardPortfolioService : ICardPortfolioService
     {
-        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(2);
+        private static readonly TimeSpan LookupTtl = TimeSpan.FromHours(20);
         private readonly ICardPortfolioRepository _repo;
         private readonly IInMemoryCacheService? _cache;
 

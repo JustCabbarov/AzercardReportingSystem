@@ -27,5 +27,7 @@ namespace RMS.Contract.Services.Oracle
             WorldMapTransaction f,
             PageRequest? pageReq = null,
             CancellationToken ct = default);
+
+        Task<WorldMapFilterOptionsDto> GetFilterOptionsAsync(CancellationToken ct = default);
     }
 }

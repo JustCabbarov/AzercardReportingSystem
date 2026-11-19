@@ -52,7 +52,9 @@ namespace RMS.Persitence.Repositories.Oracle
             int? isAcquiring,
             int? isIssuing,
             PageRequest? pageReq,
-            CancellationToken ct)
+            CancellationToken ct,
+            DateTime? startDate = null,
+            DateTime? endDate = null)
         {
             var filter = new FilterBuilder()
                 .AddString("BANK_NAME = :BankName", "BankName", bankName)
@@ -64,6 +66,14 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("IS_ACQUIRING = :IsAcquiring", "IsAcquiring", isAcquiring?.ToString())
                 .AddString("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing?.ToString())
                 .AddMonth("REPORT_MONTH", "Month", month);
+
+            if (startDate is not null)
+                filter.Add("REPORT_MONTH >= TRUNC(:StartDate, 'MM')", "StartDate",
+                    new DateTime(startDate.Value.Year, startDate.Value.Month, 1));
+
+            if (endDate is not null)
+                filter.Add("REPORT_MONTH <= TRUNC(:EndDate, 'MM')", "EndDate",
+                    new DateTime(endDate.Value.Year, endDate.Value.Month, 1));
 
             var baseSql = SelectColumns + $" {filter.WhereClause}";
 
@@ -77,10 +87,42 @@ namespace RMS.Persitence.Repositories.Oracle
                     ct);
             }
 
-            var fullSql = baseSql + "\nORDER BY ReportMonth DESC, MccGroup";
+            var aggSql = $"""
+                SELECT
+                    MAX(REPORT_MONTH)                                                   AS ReportMonth,
+                    BANK_NAME                                                           AS BankName,
+                    MCC_GROUP                                                           AS MccGroup,
+                    MAX(MCC)                                                            AS Mcc,
+                    SOURCE_CITY                                                         AS SourceCity,
+                    SOURCE_CITY_CATEGORY                                                AS SourceCityCategory,
+                    SOURCE_CHANNEL                                                      AS SourceChannel,
+                    OPERATION_TYPE                                                      AS OperationType,
+                    SOURCE_COUNTRY_CATEGORY                                             AS SourceCountryCategory,
+                    CASE WHEN TO_CHAR(IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
+                    CASE WHEN TO_CHAR(IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(IS_ISSUING) = '0' THEN 0 ELSE NULL END     AS IsIssuing,
+                    SUM(TOTAL_AMOUNT)                                                   AS TotalAmount,
+                    SUM(TOTAL_COUNT)                                                    AS TotalCount,
+                    SUM(TOTAL_LOCAL_AMOUNT)                                             AS TotalLocalAmount,
+                    ROUND(SUM(TOTAL_AMOUNT) / NULLIF(SUM(TOTAL_COUNT), 0), 2)           AS AvgTicket,
+                    ROUND(SUM(TOTAL_LOCAL_AMOUNT) / NULLIF(SUM(TOTAL_AMOUNT), 0) * 100, 2) AS LocalRatioPct,
+                    MAX(SECTOR_MARKET_SHARE_PCT)                                        AS SectorMarketSharePct
+                FROM pg_mv_req8_sector_spend
+                {filter.WhereClause}
+                GROUP BY
+                    BANK_NAME,
+                    MCC_GROUP,
+                    SOURCE_CITY,
+                    SOURCE_CITY_CATEGORY,
+                    SOURCE_CHANNEL,
+                    OPERATION_TYPE,
+                    SOURCE_COUNTRY_CATEGORY,
+                    CASE WHEN TO_CHAR(IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(IS_ACQUIRING) = '0' THEN 0 ELSE NULL END,
+                    CASE WHEN TO_CHAR(IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(IS_ISSUING) = '0' THEN 0 ELSE NULL END
+                ORDER BY SUM(TOTAL_AMOUNT) DESC
+                """;
             using var conn = CreateConnection();
             var items = (await conn.QueryAsync<SectorSpend>(
-                new CommandDefinition(fullSql, filter.Parameters, cancellationToken: ct))).ToList();
+                new CommandDefinition(aggSql, filter.Parameters, cancellationToken: ct))).ToList();
 
             return new PagedResult<SectorSpend>
             {
@@ -120,7 +162,9 @@ namespace RMS.Persitence.Repositories.Oracle
                 f.IsAcquiring,
                 f.IsIssuing,
                 pageReq,
-                ct);
+                ct,
+                f.StartDate,
+                f.EndDate);
 
         public async Task<IEnumerable<SectorSpendTrend>> GetTrendAsync(
             string bankName, string mccGroup, CancellationToken ct = default)

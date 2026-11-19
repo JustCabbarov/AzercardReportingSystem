@@ -5,7 +5,7 @@ namespace RMS.Application.Caching;
 
 public sealed class InMemoryCacheService : IInMemoryCacheService
 {
-    private static readonly TimeSpan DefaultTtl = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(20);
 
     private readonly IMemoryCache _cache;
     private readonly ConcurrentDictionary<string, byte> _keys = new(StringComparer.OrdinalIgnoreCase);

@@ -45,5 +45,13 @@ namespace RMS.Presentation.Controllers.Oracle
             var result = await _service.GetAmountByCountryAsync(bankName, month, ct);
             return Ok(result);
         }
+
+        [HttpGet("filter-options")]
+        public async Task<ActionResult<WorldMapFilterOptionsDto>> GetFilterOptions(
+            CancellationToken ct = default)
+        {
+            var result = await _service.GetFilterOptionsAsync(ct);
+            return Ok(result);
+        }
     }
 }

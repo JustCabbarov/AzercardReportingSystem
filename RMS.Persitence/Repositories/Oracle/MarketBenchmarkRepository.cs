@@ -115,6 +115,14 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddMonth("REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : (DateTime?)f.ReportMonth);
 
+            if (f.StartDate is not null)
+                filter.Add("REPORT_MONTH >= TRUNC(:StartDate, 'MM')", "StartDate",
+                    new DateTime(f.StartDate.Value.Year, f.StartDate.Value.Month, 1));
+
+            if (f.EndDate is not null)
+                filter.Add("REPORT_MONTH <= TRUNC(:EndDate, 'MM')", "EndDate",
+                    new DateTime(f.EndDate.Value.Year, f.EndDate.Value.Month, 1));
+
             var baseSql = SelectColumns + $" {filter.WhereClause}";
 
             if (pageReq is not null)
@@ -127,10 +135,30 @@ namespace RMS.Persitence.Repositories.Oracle
                     ct);
             }
 
-            var fullSql = baseSql + "\nORDER BY ReportMonth DESC";
+            var aggSql = $"""
+                SELECT
+                    MAX(REPORT_MONTH)        AS ReportMonth,
+                    BANK_NAME                AS BankName,
+                    REGION_NAME_CLEAN        AS RegionNameClean,
+                    CARD_BRAND_NAME          AS CardBrandName,
+                    PRODUCT_TYPE             AS ProductType,
+                    SUM(BANK_TRANS_AMOUNT)   AS BankTransAmount,
+                    SUM(BANK_TRANS_COUNT)    AS BankTransCount,
+                    SUM(BANK_CARD_COUNT)     AS BankCardCount,
+                    SUM(MARKET_TOTAL_AMOUNT) AS MarketTotalAmount,
+                    SUM(MARKET_TOTAL_CARDS)  AS MarketTotalCards
+                FROM pg_mv_req7_benchmark
+                {filter.WhereClause}
+                GROUP BY
+                    BANK_NAME,
+                    REGION_NAME_CLEAN,
+                    CARD_BRAND_NAME,
+                    PRODUCT_TYPE
+                ORDER BY SUM(BANK_TRANS_AMOUNT) DESC
+                """;
             using var conn = CreateConnection();
             var items = (await conn.QueryAsync<MarketBenchmark>(
-                new CommandDefinition(fullSql, filter.Parameters, cancellationToken: ct))).ToList();
+                new CommandDefinition(aggSql, filter.Parameters, cancellationToken: ct))).ToList();
 
             return new PagedResult<MarketBenchmark>
             {

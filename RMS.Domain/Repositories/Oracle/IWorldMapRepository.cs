@@ -15,5 +15,6 @@ namespace RMS.Domain.Repositories.Oracle
             WorldMapTransaction f,
             PageRequest? pageReq = null,
             CancellationToken ct = default);
+        Task<IEnumerable<string>> GetDistinctColumnValuesAsync(string columnName, CancellationToken ct = default);
     }
 }

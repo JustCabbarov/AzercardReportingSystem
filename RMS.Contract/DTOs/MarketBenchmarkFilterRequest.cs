@@ -14,6 +14,8 @@ namespace RMS.Contract.DTOs
         public string? CardBrandName { get; set; }
         public string? ProductType { get; set; }
         public DateTime? ReportMonth { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int Page { get; set; } = 1;
         public int? PageSize { get; set; }
     }

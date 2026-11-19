@@ -56,7 +56,9 @@ namespace RMS.Presentation.Controllers.Oracle
                 RegionNameClean = f.RegionNameClean,
                 CardBrandName = f.CardBrandName,
                 ProductType = f.ProductType,
-                ReportMonth = f.ReportMonth ?? default
+                ReportMonth = f.ReportMonth ?? default,
+                StartDate = f.StartDate,
+                EndDate = f.EndDate
             };
 
             var result = await _service.FilterAsync(entity, pageReq, ct);

@@ -21,6 +21,8 @@ namespace RMS.Presentation.Controllers.Oracle
         public async Task<ActionResult<PagedResult<SectorSpend>>> Filter(
             [FromQuery] string? bankName = null,
             [FromQuery] DateTime? month = null,
+            [FromQuery] DateTime? startDate = null,
+            [FromQuery] DateTime? endDate = null,
             [FromQuery] string? mccGroup = null,
             [FromQuery] string? sourceChannel = null,
             [FromQuery] string? operationType = null,
@@ -36,6 +38,8 @@ namespace RMS.Presentation.Controllers.Oracle
             {
                 BankName = bankName ?? "",
                 ReportMonth = month ?? default,
+                StartDate = startDate,
+                EndDate = endDate,
                 MccGroup = mccGroup ?? "",
                 SourceChannel = sourceChannel ?? "",
                 OperationType = operationType ?? "",

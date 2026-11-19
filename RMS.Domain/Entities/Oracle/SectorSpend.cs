@@ -1,8 +1,10 @@
-﻿namespace RMS.Domain.Entities.Oracle
+namespace RMS.Domain.Entities.Oracle
 {
     public class SectorSpend
     {
         public DateTime ReportMonth { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string BankName { get; set; } = "";
         public string MccGroup { get; set; } = "";
         public string Mcc { get; set; } = "";

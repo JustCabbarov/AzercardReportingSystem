@@ -12,7 +12,6 @@ namespace RMS.Presentation.Caching;
 public sealed class OracleOutputCachePolicy : IOutputCachePolicy
 {
     public const string AllOracleTag = "oracle-analytics";
-    public const string ForecastingTag = "oracle-forecasting";
 
     private static readonly string[] OraclePrefixes =
     [
@@ -22,7 +21,6 @@ public sealed class OracleOutputCachePolicy : IOutputCachePolicy
         "/api/CardDashboard",
         "/api/cards",
         "/api/devices",
-        "/api/Forecasting",
         "/api/General",
         "/api/MarketBenchmark",
         "/api/NewCard",
@@ -95,10 +93,6 @@ public sealed class OracleOutputCachePolicy : IOutputCachePolicy
         context.ResponseExpirationTimeSpan = isLookup ? _lookupTtl : _defaultTtl;
 
         context.Tags.Add(AllOracleTag);
-        if (pathValue.StartsWith("/api/Forecasting", StringComparison.OrdinalIgnoreCase))
-        {
-            context.Tags.Add(ForecastingTag);
-        }
 
         return ValueTask.CompletedTask;
     }
