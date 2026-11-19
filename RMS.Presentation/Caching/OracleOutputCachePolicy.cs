@@ -82,15 +82,16 @@ public sealed class OracleOutputCachePolicy : IOutputCachePolicy
             return ValueTask.CompletedTask;
         }
 
+        var pathValue = request.Path.Value ?? string.Empty;
+        var isLookup = LookupSegments.Any(s => pathValue.EndsWith(s, StringComparison.OrdinalIgnoreCase));
+
         context.EnableOutputCaching = true;
         context.AllowCacheLookup = true;
         context.AllowCacheStorage = true;
-        context.AllowLocking = true; // Stampede protection on concurrent 600M-row queries
+        context.AllowLocking = !isLookup; // Stampede protection on concurrent 600M-row queries; keep lookups lock-free
         context.CacheVaryByRules.QueryKeys = "*";
         context.CacheVaryByRules.VaryByHost = false;
 
-        var pathValue = request.Path.Value ?? string.Empty;
-        var isLookup = LookupSegments.Any(s => pathValue.EndsWith(s, StringComparison.OrdinalIgnoreCase));
         context.ResponseExpirationTimeSpan = isLookup ? _lookupTtl : _defaultTtl;
 
         context.Tags.Add(AllOracleTag);

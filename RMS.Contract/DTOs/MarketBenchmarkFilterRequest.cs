@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +15,6 @@ namespace RMS.Contract.DTOs
         public string? ProductType { get; set; }
         public DateTime? ReportMonth { get; set; }
         public int Page { get; set; } = 1;
-        public int PageSize { get; set; } = 25;
+        public int? PageSize { get; set; }
     }
 }

@@ -78,58 +78,52 @@ namespace RMS.Persitence.Repositories.Oracle
         // ─────────────────────────────────────────────
         // FILTER OPTIONS
         // ─────────────────────────────────────────────
-        public async Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync()
+        public async Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default)
         {
             if (_cachedFilterOptions is not null && DateTime.UtcNow < _filterOptionsCacheExpiry)
                 return _cachedFilterOptions;
 
+            using var db = Connect();
+            await db.OpenAsync(ct);
+
             async Task<List<string>> QueryDistinctAsync(string colExpr)
             {
-                using var db = Connect();
-                return (await db.QueryAsync<string>(
-                    $"SELECT DISTINCT {colExpr} FROM mv_acquiring_device_transaction WHERE {colExpr} IS NOT NULL ORDER BY {colExpr}")).ToList();
+                return (await db.QueryAsync<string>(new CommandDefinition(
+                    $"SELECT DISTINCT {colExpr} FROM mv_acquiring_device_transaction WHERE {colExpr} IS NOT NULL ORDER BY {colExpr}",
+                    commandTimeout: 30,
+                    cancellationToken: ct))).ToList();
             }
 
-            async Task<(DateTime min_date, DateTime max_date)> QueryMinMaxAsync()
-            {
-                using var db = Connect();
-                return await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(
-                    "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction");
-            }
+            var minMax = await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(new CommandDefinition(
+                "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction",
+                commandTimeout: 30,
+                cancellationToken: ct));
 
-            var minMaxTask         = QueryMinMaxAsync();
-            var deviceTypesTask    = QueryDistinctAsync("acquiring_device_type_calc");
-            var transGroupsTask    = QueryDistinctAsync("trans_group");
-            var opTypesTask        = QueryDistinctAsync("operation_type");
-            var tokenStatusesTask  = QueryDistinctAsync("token_status");
-            var mccsTask           = QueryDistinctAsync("mcc");
-            var acqCategoriesTask  = QueryDistinctAsync("is_acquiring_category");
-            var targetBanksTask    = QueryDistinctAsync("target_bank_name");
-            var sourceBanksTask    = QueryDistinctAsync("source_bank_name");
-            var targetCitiesTask   = QueryDistinctAsync("target_city");
-            var paymentSystemsTask = QueryDistinctAsync("payment_system");
-            var contactlessTask    = QueryDistinctAsync("TO_CHAR(is_contactless)");
-
-            await Task.WhenAll(
-                minMaxTask, deviceTypesTask, transGroupsTask, opTypesTask,
-                tokenStatusesTask, mccsTask, acqCategoriesTask, targetBanksTask,
-                sourceBanksTask, targetCitiesTask, paymentSystemsTask, contactlessTask);
-
-            var minMax = await minMaxTask;
+            var deviceTypes    = await QueryDistinctAsync("acquiring_device_type_calc");
+            var transGroups    = await QueryDistinctAsync("trans_group");
+            var opTypes        = await QueryDistinctAsync("operation_type");
+            var tokenStatuses  = await QueryDistinctAsync("token_status");
+            var mccs           = await QueryDistinctAsync("mcc");
+            var acqCategories  = await QueryDistinctAsync("is_acquiring_category");
+            var targetBanks    = await QueryDistinctAsync("target_bank_name");
+            var sourceBanks    = await QueryDistinctAsync("source_bank_name");
+            var targetCities   = await QueryDistinctAsync("target_city");
+            var paymentSystems = await QueryDistinctAsync("payment_system");
+            var contactless    = await QueryDistinctAsync("TO_CHAR(is_contactless)");
 
             var response = new AcquiringFilterOptionsResponse
             {
-                AcquiringDeviceTypes = await deviceTypesTask,
-                TransGroups          = await transGroupsTask,
-                OperationTypes       = await opTypesTask,
-                TokenStatuses        = await tokenStatusesTask,
-                Mccs                 = await mccsTask,
-                AcquiringCategories  = await acqCategoriesTask,
-                TargetBanks          = await targetBanksTask,
-                SourceBanks          = await sourceBanksTask,
-                TargetCities         = await targetCitiesTask,
-                PaymentSystems       = await paymentSystemsTask,
-                ContactlessStatuses  = await contactlessTask,
+                AcquiringDeviceTypes = deviceTypes,
+                TransGroups          = transGroups,
+                OperationTypes       = opTypes,
+                TokenStatuses        = tokenStatuses,
+                Mccs                 = mccs,
+                AcquiringCategories  = acqCategories,
+                TargetBanks          = targetBanks,
+                SourceBanks          = sourceBanks,
+                TargetCities         = targetCities,
+                PaymentSystems       = paymentSystems,
+                ContactlessStatuses  = contactless,
                 MinDate              = minMax.min_date,
                 MaxDate              = minMax.max_date,
             };

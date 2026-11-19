@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle.AcquiringTransaction;
@@ -19,9 +19,9 @@ namespace RMS.Presentation.Controllers.Oracle
         }
 
         [HttpGet("filter-options")]
-        public async Task<IActionResult> GetFilterOptions()
+        public async Task<IActionResult> GetFilterOptions(CancellationToken ct = default)
         {
-            var result = await _service.GetFilterOptionsAsync();
+            var result = await _service.GetFilterOptionsAsync(ct);
             return Ok(result);
         }
 

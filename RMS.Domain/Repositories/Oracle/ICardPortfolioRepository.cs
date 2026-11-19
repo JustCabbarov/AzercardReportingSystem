@@ -1,4 +1,4 @@
-﻿using RMS.Domain.Entities.Oracle.CardPortfolio.RMS.Domain.Entities.Oracle;
+using RMS.Domain.Entities.Oracle.CardPortfolio.RMS.Domain.Entities.Oracle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace RMS.Domain.Repositories.Oracle
 {
     public interface ICardPortfolioRepository
     {
-        Task<FilterOptionsResponse> GetFilterOptionsAsync();
+        Task<FilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default);
         Task<DateTime> GetLatestReportMonthAsync();
         Task<IEnumerable<TopSchemeCardDto>> GetTopCardsAsync(
       CardPortfolioFilter f,

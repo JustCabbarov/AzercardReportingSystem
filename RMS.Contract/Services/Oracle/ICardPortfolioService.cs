@@ -10,7 +10,7 @@ namespace RMS.Contract.Services.Oracle
 
     public interface ICardPortfolioService
     {
-        Task<FilterOptionsResponse> GetFilterOptionsAsync();
+        Task<FilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default);
         Task<DateTime> GetLatestReportMonthAsync(); 
         Task<IEnumerable<TopSchemeCardDto>> GetTopCardsAsync(CardPortfolioFilter f, string? dimension);
         Task<CrossTableResponse> GetCrossTableAsync(CrossTableRequest request);

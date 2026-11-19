@@ -42,7 +42,9 @@ public sealed class InMemoryCacheService : IInMemoryCacheService
             }
 
             Interlocked.Increment(ref _misses);
-            var value = await factory(ct);
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            timeoutCts.CancelAfter(TimeSpan.FromSeconds(60));
+            var value = await factory(timeoutCts.Token);
 
             var options = new MemoryCacheEntryOptions
             {

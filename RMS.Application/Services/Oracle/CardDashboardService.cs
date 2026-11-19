@@ -139,7 +139,7 @@ namespace RMS.Application.Services.Oracle
 
         // ── FILTER LOOKUPS ───────────────────────────────────────────────────────
 
-        public Task<FilterLookupResponse> GetFilterLookupsAsync()
-            => _repo.GetFilterLookupsAsync();
+        public Task<FilterLookupResponse> GetFilterLookupsAsync(CancellationToken ct = default)
+            => _repo.GetFilterLookupsAsync(ct);
     }
 }

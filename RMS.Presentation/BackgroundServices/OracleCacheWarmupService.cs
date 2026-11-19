@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -36,28 +37,43 @@ public sealed class OracleCacheWarmupService : BackgroundService
     private readonly InMemoryCacheOptions _options;
     private readonly CacheStatsTracker _stats;
     private readonly ILogger<OracleCacheWarmupService> _logger;
+    private readonly int _delaySeconds;
+    private readonly bool _runOnStartup;
 
     public OracleCacheWarmupService(
         IServiceProvider services,
         IOptions<InMemoryCacheOptions> options,
         CacheStatsTracker stats,
-        ILogger<OracleCacheWarmupService> logger)
+        ILogger<OracleCacheWarmupService> logger,
+        IConfiguration? configuration = null)
     {
         _services = services;
         _options = options.Value;
         _stats = stats;
         _logger = logger;
+        _delaySeconds = Math.Max(0, configuration?.GetValue<int?>("CacheWarmup:DelaySeconds") ?? 10);
+        _runOnStartup = configuration?.GetValue<bool?>("CacheWarmup:RunOnStartup") ?? true;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (!_options.WarmupOnStartup)
+        if (!_options.WarmupOnStartup || !_runOnStartup)
             return;
 
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
-            await WarmupAsync(stoppingToken);
+            if (_delaySeconds > 0)
+                await Task.Delay(TimeSpan.FromSeconds(_delaySeconds), stoppingToken);
+
+            var (warmed, _) = await WarmupAsync(stoppingToken);
+            if (warmed < WarmupRoutes.Length && !stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation(
+                    "Oracle cache warmup qismən tamamlandı ({Warmed}/{Total}), 15 san sonra təkrar yoxlanılır.",
+                    warmed, WarmupRoutes.Length);
+                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                await WarmupAsync(stoppingToken);
+            }
         }
         catch (OperationCanceledException)
         {
@@ -78,7 +94,7 @@ public sealed class OracleCacheWarmupService : BackgroundService
         using var http = new HttpClient
         {
             BaseAddress = new Uri(baseUrl),
-            Timeout = TimeSpan.FromSeconds(120)
+            Timeout = TimeSpan.FromSeconds(45)
         };
 
         using var concurrency = new SemaphoreSlim(3, 3);

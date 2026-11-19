@@ -60,6 +60,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_summary_transaction CASCADE CONSTRAINTS P
 CREATE MATERIALIZED VIEW mv_summary_transaction
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT
@@ -82,9 +83,9 @@ SELECT
 FROM (
     SELECT /*+ PARALLEL(8) */
         TRUNC(t.report_date, 'DD')              AS report_day,
-        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')   AS is_issuing,
-        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0') AS is_acquiring,
-        CASE
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_issuing)), '0'), 1, 10) AS VARCHAR2(10 BYTE))   AS is_issuing,
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'), 1, 10) AS VARCHAR2(10 BYTE)) AS is_acquiring,
+        CAST(CASE
             WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
             WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
             WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
@@ -109,7 +110,7 @@ FROM (
             WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
             WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
             ELSE 'ECOM'
-        END                                     AS acquiring_device_type,
+        END AS VARCHAR2(20 CHAR))               AS acquiring_device_type,
         t.target_bank_name,
         t.source_bank_name,
         t.card_product_type_category,
@@ -161,6 +162,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_transaction_summary CASCADE CONSTRAINTS P
 CREATE MATERIALIZED VIEW mv_transaction_summary
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT
@@ -181,18 +183,18 @@ SELECT
 FROM (
     SELECT /*+ PARALLEL(8) */
         TRUNC(t.report_date, 'DD') AS report_day,
-        CASE
+        CAST(SUBSTR(CASE
             WHEN UPPER(TRIM(t.is_issuing_category)) IN ('ON-US', 'ON US', 'ONUS', 'DAXILI', 'DAXİLİ') THEN 'Daxili'
             WHEN UPPER(TRIM(t.is_issuing_category)) IN ('DOMESTIC AC', 'AZC') THEN 'AZC'
             WHEN UPPER(TRIM(t.is_issuing_category)) IN ('DOMESTIC NON-AC', 'DOMESTIC NON AC', 'BAZAR') THEN 'Bazar'
             WHEN UPPER(TRIM(t.is_issuing_category)) = 'DOMESTIC' THEN 'AZC'
             WHEN UPPER(TRIM(t.is_issuing_category)) IN ('INTERNATIONAL', 'FOREIGN', 'FOREIGN NON-AC', 'FOREIGN AC', 'XARICI', 'XARİCİ') THEN 'Xarici'
             ELSE NVL(TRIM(t.is_issuing_category), 'Digər')
-        END                        AS issuing_category,
-        t.source_bank_name,
+        END, 1, 100) AS VARCHAR2(100 CHAR)) AS issuing_category,
+        CAST(SUBSTR(t.source_bank_name, 1, 200) AS VARCHAR2(200 CHAR)) AS source_bank_name,
         t.target_bank_name,
         t.payment_system,
-        CASE
+        CAST(CASE
             WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
             WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
             WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
@@ -217,7 +219,7 @@ FROM (
             WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
             WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
             ELSE 'ECOM'
-        END                        AS acquiring_device_type,
+        END AS VARCHAR2(20 CHAR)) AS acquiring_device_type,
         t.card_product_type_category,
         COALESCE(NULLIF(TRIM(t.card_account_currency), ''), t.transaction_currency) AS transaction_currency,
         t.operation_type,
@@ -262,6 +264,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_acquiring_device_transaction CASCADE CONS
 CREATE MATERIALIZED VIEW mv_acquiring_device_transaction
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT
@@ -286,7 +289,7 @@ FROM (
     SELECT /*+ PARALLEL(8) */
         TRUNC(t.report_date, 'DD') AS report_date,
         TRUNC(t.report_date, 'MM') AS period_month,
-        CASE
+        CAST(CASE
             WHEN t.trans_group IN ('CH Payment', 'CH Debit', 'CH Payment Gmbl') THEN 'C2C'
             WHEN t.trans_group IN ('ATM', 'Cash Dispense (Cardless)') THEN 'ATM'
             WHEN t.trans_group NOT IN ('ATM', 'Cash Dispense (Cardless)', 'Note Acceptance')
@@ -311,14 +314,14 @@ FROM (
             WHEN t.tr_condition = 'POS Card Read Partial' THEN 'POS'
             WHEN UPPER(TRIM(t.acquiring_device_type)) IN ('ATM', 'POS', 'C2C', 'UFX') THEN UPPER(TRIM(t.acquiring_device_type))
             ELSE 'ECOM'
-        END                        AS acquiring_device_type_calc,
+        END AS VARCHAR2(20 CHAR))   AS acquiring_device_type_calc,
         t.acquiring_device_type,
         t.trans_group,
         t.operation_type,
         t.token_status,
         t.mcc,
         t.is_acquiring_category,
-        t.target_bank_name,
+        CAST(SUBSTR(t.target_bank_name, 1, 200) AS VARCHAR2(200 CHAR)) AS target_bank_name,
         t.source_bank_name,
         CASE
             WHEN UPPER(TRIM(t.target_city)) IN ('BAKU', 'BAKI', 'BAKİ') THEN 'Baki'
@@ -380,6 +383,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_card_dashboard CASCADE CONSTRAINTS PURGE'
 CREATE MATERIALIZED VIEW mv_card_dashboard
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT /*+ PARALLEL(8) */
@@ -392,7 +396,7 @@ SELECT /*+ PARALLEL(8) */
     t.card_product_type_category,
     t.token_status,
     t.trans_group,
-    t.target_bank_name,
+    CAST(SUBSTR(t.target_bank_name, 1, 200) AS VARCHAR2(200 CHAR))       AS target_bank_name,
     CASE
         WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
         ELSE '0'
@@ -413,7 +417,7 @@ GROUP BY
     t.card_product_type_category,
     t.token_status,
     t.trans_group,
-    t.target_bank_name,
+    CAST(SUBSTR(t.target_bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
     CASE
         WHEN LOWER(TRIM(TO_CHAR(t.is_contactless))) IN ('1', 'true', 'yes', 'y', 'contactless') THEN '1'
         ELSE '0'
@@ -438,6 +442,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_card_portfolio CASCADE CONSTRAINTS PURGE'
 CREATE MATERIALIZED VIEW mv_card_portfolio
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 WITH latest_cards AS (
@@ -451,7 +456,7 @@ WITH latest_cards AS (
 base_agg AS (
     SELECT
         TRUNC(report_month, 'MM')                                   AS report_month,
-        bank_name,
+        CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR))       AS bank_name,
         bank_branch_name,
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name)  AS region_name,
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name)  AS region_name_clean,
@@ -470,7 +475,7 @@ base_agg AS (
     WHERE etl_rnk = 1
     GROUP BY
         TRUNC(report_month, 'MM'),
-        bank_name,
+        CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
         bank_branch_name,
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name),
         payment_scheme,
@@ -567,6 +572,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE mv_devices_base CASCADE CONSTRAINTS PURGE'; 
 CREATE MATERIALIZED VIEW mv_devices_base
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 WITH latest_devices AS (
@@ -580,7 +586,7 @@ WITH latest_devices AS (
 monthly_agg AS (
     SELECT
         TRUNC(report_date, 'MM')                                   AS report_month,
-        bank_name,
+        CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR))      AS bank_name,
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name) AS region_name,
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name) AS region_name_clean,
         mcc_name,
@@ -592,7 +598,7 @@ monthly_agg AS (
     WHERE snap_rnk = 1
     GROUP BY
         TRUNC(report_date, 'MM'),
-        bank_name,
+        CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
         COALESCE(NULLIF(TRIM(region_name_clean), ''), region_name),
         mcc_name,
         retail_category,
@@ -658,6 +664,7 @@ BEGIN DBMS_STATS.GATHER_TABLE_STATS(SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA'), 'M
 CREATE MATERIALIZED VIEW mv_devices_trend
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT
@@ -693,6 +700,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req4_az_map CASCADE CONSTRAINTS PURGE'
 CREATE MATERIALIZED VIEW pg_mv_req4_az_map
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT
@@ -710,8 +718,8 @@ SELECT
 FROM (
     SELECT /*+ PARALLEL(8) */
         TRUNC(t.report_date, 'MM')                                         AS report_month,
-        COALESCE(NULLIF(TRIM(t.target_bank_name), ''), t.source_bank_name) AS bank_name,
-        CASE
+        CAST(SUBSTR(COALESCE(NULLIF(TRIM(t.target_bank_name), ''), t.source_bank_name), 1, 200) AS VARCHAR2(200 CHAR)) AS bank_name,
+        CAST(SUBSTR(CASE
             WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('BAKU', 'BAKI', 'BAKİ') THEN 'Baki'
             WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('GANJA', 'GANCA', 'GƏNCƏ') THEN 'Ganca'
             WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('SUMGAYIT', 'SUMQAYIT') THEN 'Sumqayit'
@@ -723,7 +731,7 @@ FROM (
             WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('LANKARAN', 'LƏNKƏRAN') THEN 'Lankaran'
             WHEN UPPER(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city))) IN ('YEVLAKH', 'YEVLAX') THEN 'Yevlakh'
             ELSE NVL(TRIM(COALESCE(NULLIF(TRIM(t.target_city), ''), NULLIF(TRIM(t.source_city_clean), ''), t.source_city)), 'NAMƏLUM')
-        END                                                                AS city_norm,
+        END, 1, 150) AS VARCHAR2(150 CHAR))                                AS city_norm,
         NVL(t.local_amount, 0)                                             AS local_amount,
         NVL(t.transaction_count, 0)                                        AS transaction_count
     FROM bi_transaction_masked t
@@ -758,36 +766,37 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req5_world_map CASCADE CONSTRAINTS PUR
 CREATE MATERIALIZED VIEW pg_mv_req5_world_map
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 SELECT /*+ PARALLEL(8) */
-    TRUNC(t.report_date, 'MM')                                                                AS report_month,
-    t.source_bank_name                                                                        AS bank_name,
-    COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER')                                     AS source_country,
-    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                            AS source_country_category,
-    COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan')                                AS target_country,
-    COALESCE(NULLIF(TRIM(t.target_country_category), ''), 'OTHER')                            AS target_country_category,
-    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                            AS country_category,
-    COALESCE(NULLIF(TRIM(t.source_city_clean), ''), NULLIF(TRIM(t.source_city), ''), 'OTHER') AS city_clean,
+    TRUNC(t.report_date, 'MM')                                                                                      AS report_month,
+    CAST(SUBSTR(t.source_bank_name, 1, 200) AS VARCHAR2(200 CHAR))                                                  AS bank_name,
+    CAST(SUBSTR(COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER'), 1, 150) AS VARCHAR2(150 CHAR))               AS source_country,
+    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                                                  AS source_country_category,
+    CAST(SUBSTR(COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan'), 1, 150) AS VARCHAR2(150 CHAR))          AS target_country,
+    COALESCE(NULLIF(TRIM(t.target_country_category), ''), 'OTHER')                                                  AS target_country_category,
+    COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER')                                                  AS country_category,
+    COALESCE(NULLIF(TRIM(t.source_city_clean), ''), NULLIF(TRIM(t.source_city), ''), 'OTHER')                       AS city_clean,
     t.payment_system,
-    NVL(TRIM(TO_CHAR(t.is_issuing)), '0')                                                     AS is_issuing,
-    NVL(TRIM(TO_CHAR(t.is_acquiring)), '0')                                                   AS is_acquiring,
-    SUM(NVL(t.local_amount, 0))                                                               AS total_amount,
-    SUM(NVL(t.transaction_count, 0))                                                          AS total_count,
-    COUNT(*)                                                                                  AS cnt
+    CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_issuing)), '0'), 1, 10) AS VARCHAR2(10 BYTE))                                 AS is_issuing,
+    CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'), 1, 10) AS VARCHAR2(10 BYTE))                               AS is_acquiring,
+    SUM(NVL(t.local_amount, 0))                                                                                     AS total_amount,
+    SUM(NVL(t.transaction_count, 0))                                                                                AS total_count,
+    COUNT(*)                                                                                                        AS cnt
 FROM bi_transaction_masked t
 WHERE TRIM(TO_CHAR(t.is_issuing)) = '1'
 GROUP BY
     TRUNC(t.report_date, 'MM'),
-    t.source_bank_name,
-    COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER'),
+    CAST(SUBSTR(t.source_bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
+    CAST(SUBSTR(COALESCE(NULLIF(TRIM(t.source_country), ''), 'OTHER'), 1, 150) AS VARCHAR2(150 CHAR)),
     COALESCE(NULLIF(TRIM(t.source_country_category), ''), 'OTHER'),
-    COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan'),
+    CAST(SUBSTR(COALESCE(NULLIF(TRIM(t.target_country), ''), 'Azerbaijan'), 1, 150) AS VARCHAR2(150 CHAR)),
     COALESCE(NULLIF(TRIM(t.target_country_category), ''), 'OTHER'),
     COALESCE(NULLIF(TRIM(t.source_city_clean), ''), NULLIF(TRIM(t.source_city), ''), 'OTHER'),
     t.payment_system,
-    NVL(TRIM(TO_CHAR(t.is_issuing)), '0'),
-    NVL(TRIM(TO_CHAR(t.is_acquiring)), '0');
+    CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_issuing)), '0'), 1, 10) AS VARCHAR2(10 BYTE)),
+    CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'), 1, 10) AS VARCHAR2(10 BYTE));
 
 CREATE INDEX idx_mv_req5_month   ON pg_mv_req5_world_map (report_month) NOLOGGING;
 CREATE INDEX idx_mv_req5_country ON pg_mv_req5_world_map (source_country, target_country) NOLOGGING;
@@ -809,38 +818,39 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req8_sector_spend CASCADE CONSTRAINTS 
 CREATE MATERIALIZED VIEW pg_mv_req8_sector_spend
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 WITH sector_agg AS (
     SELECT /*+ PARALLEL(8) */
-        TRUNC(t.report_date, 'MM')                    AS report_month,
-        t.source_bank_name                            AS bank_name,
-        NVL(TRIM(t.mcc_group), 'OTHER')               AS mcc_group,
-        NVL(TRIM(TO_CHAR(t.mcc)), '0000')             AS mcc,
-        NVL(TRIM(t.source_city), 'NAMƏLUM')           AS source_city,
-        NVL(TRIM(t.source_city_category), 'OTHER')    AS source_city_category,
-        NVL(TRIM(t.source_channel), 'OTHER')          AS source_channel,
+        TRUNC(t.report_date, 'MM')                                                    AS report_month,
+        CAST(SUBSTR(t.source_bank_name, 1, 200) AS VARCHAR2(200 CHAR))                AS bank_name,
+        CAST(SUBSTR(NVL(TRIM(t.mcc_group), 'OTHER'), 1, 200) AS VARCHAR2(200 CHAR))   AS mcc_group,
+        NVL(TRIM(TO_CHAR(t.mcc)), '0000')                                             AS mcc,
+        NVL(TRIM(t.source_city), 'NAMƏLUM')                                           AS source_city,
+        NVL(TRIM(t.source_city_category), 'OTHER')                                    AS source_city_category,
+        NVL(TRIM(t.source_channel), 'OTHER')                                          AS source_channel,
         t.operation_type,
-        NVL(TRIM(t.source_country_category), 'OTHER') AS source_country_category,
-        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0')       AS is_acquiring,
-        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')         AS is_issuing,
-        SUM(NVL(t.local_amount, 0))                   AS total_amount,
-        SUM(NVL(t.transaction_count, 0))              AS total_count,
+        NVL(TRIM(t.source_country_category), 'OTHER')                                 AS source_country_category,
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'), 1, 10) AS VARCHAR2(10 BYTE)) AS is_acquiring,
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_issuing)), '0'), 1, 10) AS VARCHAR2(10 BYTE))   AS is_issuing,
+        SUM(NVL(t.local_amount, 0))                                                   AS total_amount,
+        SUM(NVL(t.transaction_count, 0))                                              AS total_count,
         SUM(CASE WHEN UPPER(TRIM(t.source_country_category)) = 'DOMESTIC'
-                 THEN NVL(t.local_amount, 0) ELSE 0 END) AS total_local_amount
+                 THEN NVL(t.local_amount, 0) ELSE 0 END)                              AS total_local_amount
     FROM bi_transaction_masked t
     GROUP BY
         TRUNC(t.report_date, 'MM'),
-        t.source_bank_name,
-        NVL(TRIM(t.mcc_group), 'OTHER'),
+        CAST(SUBSTR(t.source_bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
+        CAST(SUBSTR(NVL(TRIM(t.mcc_group), 'OTHER'), 1, 200) AS VARCHAR2(200 CHAR)),
         NVL(TRIM(TO_CHAR(t.mcc)), '0000'),
         NVL(TRIM(t.source_city), 'NAMƏLUM'),
         NVL(TRIM(t.source_city_category), 'OTHER'),
         NVL(TRIM(t.source_channel), 'OTHER'),
         t.operation_type,
         NVL(TRIM(t.source_country_category), 'OTHER'),
-        NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'),
-        NVL(TRIM(TO_CHAR(t.is_issuing)), '0')
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_acquiring)), '0'), 1, 10) AS VARCHAR2(10 BYTE)),
+        CAST(SUBSTR(NVL(TRIM(TO_CHAR(t.is_issuing)), '0'), 1, 10) AS VARCHAR2(10 BYTE))
 )
 SELECT
     s.report_month,
@@ -882,6 +892,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req7_benchmark CASCADE CONSTRAINTS PUR
 CREATE MATERIALIZED VIEW pg_mv_req7_benchmark
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 WITH trans_monthly AS (
@@ -912,7 +923,7 @@ latest_cards AS (
 cards_monthly AS (
     SELECT
         TRUNC(c.report_month, 'MM')                                                    AS report_month,
-        c.bank_name,
+        CAST(SUBSTR(c.bank_name, 1, 200) AS VARCHAR2(200 CHAR))                        AS bank_name,
         NVL(COALESCE(NULLIF(TRIM(c.region_name_clean), ''), TRIM(c.region_name)), 'OTHER') AS region_name_clean,
         NVL(TRIM(c.card_brand_name), 'OTHER')                                          AS card_brand_name,
         NVL(TRIM(c.product_type), 'OTHER')                                             AS product_type,
@@ -922,7 +933,7 @@ cards_monthly AS (
       AND c.bank_name IS NOT NULL
     GROUP BY
         TRUNC(c.report_month, 'MM'),
-        c.bank_name,
+        CAST(SUBSTR(c.bank_name, 1, 200) AS VARCHAR2(200 CHAR)),
         NVL(COALESCE(NULLIF(TRIM(c.region_name_clean), ''), TRIM(c.region_name)), 'OTHER'),
         NVL(TRIM(c.card_brand_name), 'OTHER'),
         NVL(TRIM(c.product_type), 'OTHER')
@@ -986,6 +997,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE pg_mv_req1_forecast_input CASCADE CONSTRAINT
 CREATE MATERIALIZED VIEW pg_mv_req1_forecast_input
 PCTFREE 0 NOLOGGING
 BUILD IMMEDIATE
+USING NO INDEX
 REFRESH COMPLETE ON DEMAND
 AS
 WITH trans_agg AS (
@@ -1012,12 +1024,12 @@ latest_cards AS (
 ),
 card_agg AS (
     SELECT
-        TRUNC(report_month, 'MM') AS report_month,
-        bank_name,
-        SUM(NVL(count_card, 0))   AS total_cards
+        TRUNC(report_month, 'MM')                                   AS report_month,
+        CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR))       AS bank_name,
+        SUM(NVL(count_card, 0))                                     AS total_cards
     FROM latest_cards
     WHERE etl_rnk = 1
-    GROUP BY TRUNC(report_month, 'MM'), bank_name
+    GROUP BY TRUNC(report_month, 'MM'), CAST(SUBSTR(bank_name, 1, 200) AS VARCHAR2(200 CHAR))
 ),
 base AS (
     SELECT

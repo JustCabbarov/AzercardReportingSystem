@@ -1,4 +1,4 @@
-﻿using RMS.Contract.Services.Oracle;
+using RMS.Contract.Services.Oracle;
 
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Repositories.Oracle;
@@ -33,7 +33,7 @@ namespace RMS.Application.Services.Oracle
             => _repo.GetRankedByMonthAsync(month, pageReq, regionNameClean, ct);
 
         public Task<PagedResult<MarketBenchmark>> FilterAsync(
-            MarketBenchmark f, PageRequest pageReq, CancellationToken ct = default)
+            MarketBenchmark f, PageRequest? pageReq = null, CancellationToken ct = default)
             => _repo.FilterAsync(f, pageReq, ct);
 
        

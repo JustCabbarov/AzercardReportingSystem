@@ -41,7 +41,7 @@ namespace RMS.Persitence.Repositories.Oracle
         FROM pg_mv_req8_sector_spend
         """;
 
-        private Task<PagedResult<SectorSpend>> QueryAsync(
+        private async Task<PagedResult<SectorSpend>> QueryAsync(
             string? bankName,
             DateTime? month,
             string? mccGroup,
@@ -51,7 +51,7 @@ namespace RMS.Persitence.Repositories.Oracle
             string? sourceCountryCategory,
             int? isAcquiring,
             int? isIssuing,
-            PageRequest pageReq,
+            PageRequest? pageReq,
             CancellationToken ct)
         {
             var filter = new FilterBuilder()
@@ -65,12 +65,30 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("IS_ISSUING = :IsIssuing", "IsIssuing", isIssuing?.ToString())
                 .AddMonth("REPORT_MONTH", "Month", month);
 
-            return QueryPagedAsync<SectorSpend>(
-                SelectColumns + $" {filter.WhereClause}",
-                "ReportMonth DESC, MccGroup",
-                pageReq,
-                filter.Parameters,
-                ct);
+            var baseSql = SelectColumns + $" {filter.WhereClause}";
+
+            if (pageReq is not null)
+            {
+                return await QueryPagedAsync<SectorSpend>(
+                    baseSql,
+                    "ReportMonth DESC, MccGroup",
+                    pageReq,
+                    filter.Parameters,
+                    ct);
+            }
+
+            var fullSql = baseSql + "\nORDER BY ReportMonth DESC, MccGroup";
+            using var conn = CreateConnection();
+            var items = (await conn.QueryAsync<SectorSpend>(
+                new CommandDefinition(fullSql, filter.Parameters, cancellationToken: ct))).ToList();
+
+            return new PagedResult<SectorSpend>
+            {
+                Items = items,
+                TotalCount = items.Count,
+                Page = 1,
+                PageSize = items.Count > 0 ? items.Count : 1
+            };
         }
 
         public Task<PagedResult<SectorSpend>> GetAllAsync(
@@ -90,7 +108,7 @@ namespace RMS.Persitence.Repositories.Oracle
             => QueryAsync(null, null, mccGroup, null, null, null, null, null, null, pageReq, ct);
 
         public Task<PagedResult<SectorSpend>> FilterAsync(
-            SectorSpend f, PageRequest pageReq, CancellationToken ct = default)
+            SectorSpend f, PageRequest? pageReq = null, CancellationToken ct = default)
             => QueryAsync(
                 f.BankName,
                 f.ReportMonth == default ? null : f.ReportMonth,

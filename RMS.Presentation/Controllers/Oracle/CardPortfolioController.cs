@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
 using RMS.Domain.Entities.Oracle.CardPortfolio.RMS.Domain.Entities.Oracle;
@@ -17,8 +17,8 @@ namespace RMS.API.Controllers
         }
 
         [HttpGet("filter-options")]
-        public async Task<IActionResult> GetFilterOptions()
-            => Ok(await _service.GetFilterOptionsAsync());
+        public async Task<IActionResult> GetFilterOptions(CancellationToken ct = default)
+            => Ok(await _service.GetFilterOptionsAsync(ct));
         
         [HttpGet("top-cards")]
         public async Task<IActionResult> GetTopCards([FromQuery] CardPortfolioFilter f, [FromQuery] string? dimension)

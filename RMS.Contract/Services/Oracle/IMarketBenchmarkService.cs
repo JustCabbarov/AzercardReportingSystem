@@ -1,4 +1,4 @@
-﻿
+
 using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Contract.Services.Oracle
@@ -23,7 +23,7 @@ namespace RMS.Contract.Services.Oracle
 
         /// <summary>Universal filter — bütün parametrlər opsionaldır.</summary>
         Task<PagedResult<MarketBenchmark>> FilterAsync(
-            MarketBenchmark f, PageRequest pageReq, CancellationToken ct = default);
+            MarketBenchmark f, PageRequest? pageReq = null, CancellationToken ct = default);
 
        
        

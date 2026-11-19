@@ -13,8 +13,8 @@ public class AcquiringDeviceService : IAcquiringDeviceService
         _repo = repo;
     }
 
-    public Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync()
-        => _repo.GetFilterOptionsAsync();
+    public Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default)
+        => _repo.GetFilterOptionsAsync(ct);
 
     public Task<AcquiringDashboardResponse> GetDashboardAsync(AcquiringDeviceFilter f)
         => _repo.GetDashboardAsync(f);

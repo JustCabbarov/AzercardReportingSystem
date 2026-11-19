@@ -64,7 +64,7 @@ namespace RMS.Application.Services.Oracle
             => _repo.GetByMccGroupAsync(mccGroup, pageReq, ct);
 
         public Task<PagedResult<SectorSpend>> FilterAsync(
-            SectorSpend f, PageRequest pageReq, CancellationToken ct = default)
+            SectorSpend f, PageRequest? pageReq = null, CancellationToken ct = default)
             => _repo.FilterAsync(f, pageReq, ct);
 
         public Task<IEnumerable<SectorSpendTrend>> GetTrendAsync(

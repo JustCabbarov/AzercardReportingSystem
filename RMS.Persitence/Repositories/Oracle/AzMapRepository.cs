@@ -27,17 +27,53 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddMonth("m.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
+        private static string NormalizeCitySql(string expr)
+        {
+            var cleaned = $"REGEXP_REPLACE(UPPER(TRIM({expr})), '[^A-ZƏĞIÖŞÜÇİ]', '')";
+            return $"""
+                CASE
+                    WHEN {cleaned} IN ('BAKU', 'BAKI', 'BAKİ') THEN 'BAKI'
+                    WHEN {cleaned} IN ('GANJA', 'GANCA', 'GƏNCƏ') THEN 'GANCA'
+                    WHEN {cleaned} IN ('SUMGAYIT', 'SUMQAYIT') THEN 'SUMQAYIT'
+                    WHEN {cleaned} IN ('MINGACHEVIR', 'MINGACEVIR', 'MİNGƏÇEVİR') THEN 'MINGACEVIR'
+                    WHEN {cleaned} IN ('SHIRVAN', 'SIRVAN', 'ŞİRVAN') THEN 'SIRVAN'
+                    WHEN {cleaned} IN ('NAKHCHIVAN', 'NAXCIVAN', 'NAXÇIVAN') THEN 'NAXCIVAN'
+                    WHEN {cleaned} IN ('SHAKI', 'SAKI', 'ŞƏKİ') THEN 'SAKI'
+                    WHEN {cleaned} IN ('SHUSHA', 'SUSA', 'ŞUŞA') THEN 'SUSA'
+                    WHEN {cleaned} IN ('LANKARAN', 'LƏNKƏRAN') THEN 'LANKARAN'
+                    WHEN {cleaned} IN ('YEVLAKH', 'YEVLAX') THEN 'YEVLAKH'
+                    ELSE {cleaned}
+                END
+                """;
+        }
+
+        private static string NormCitiesCte()
+        {
+            var normalizedCity = NormalizeCitySql("city_name");
+            return $"""
+                norm_cities AS (
+                    SELECT
+                        {normalizedCity} AS norm_name,
+                        MAX(latitude)    AS latitude,
+                        MAX(longitude)   AS longitude
+                    FROM cities
+                    GROUP BY {normalizedCity}
+                )
+                """;
+        }
+
         public async Task<PagedResult<AzMapTransaction>> FilterAsync(
             AzMapTransaction f,
-            PageRequest pageReq,
+            PageRequest? pageReq = null,
             CancellationToken ct = default)
         {
             var filter = BuildFilter(f);
+            var cityKeyFromMv = NormalizeCitySql("pm.SOURCE_CITY_CLEAN");
+            var innerPagingSql = pageReq is not null
+                ? "ORDER BY m.REPORT_MONTH DESC, m.TOTAL_AMOUNT DESC\n                    OFFSET :Offset ROWS FETCH NEXT :PageSize ROWS ONLY"
+                : string.Empty;
 
-            var countSql = $"SELECT COUNT(*) FROM pg_mv_req4_az_map m {filter.WhereClause}";
-
-            // Əvvəlcə yalnız səhifələnmiş (məs. 20-50) sətri seçirik, sonra cities ilə JOIN edirik
-            var pagedSql = $"""
+            var sql = $"""
                 WITH paged_m AS (
                     SELECT
                         m.REPORT_MONTH,
@@ -49,16 +85,9 @@ namespace RMS.Persitence.Repositories.Oracle
                         m.TOTAL_COUNT
                     FROM pg_mv_req4_az_map m
                     {filter.WhereClause}
-                    ORDER BY m.REPORT_MONTH DESC
-                    OFFSET :Offset ROWS FETCH NEXT :PageSize ROWS ONLY
+                    {innerPagingSql}
                 ),
-                norm_cities AS (
-                    SELECT
-                        latitude,
-                        longitude,
-                        REGEXP_REPLACE(UPPER(TRIM(city_name)), '[^A-ZƏĞIÖŞÜÇ]', '') AS norm_name
-                    FROM cities
-                )
+                {NormCitiesCte()}
                 SELECT
                     pm.REPORT_MONTH         AS ReportMonth,
                     pm.BANK_NAME            AS BankName,
@@ -72,21 +101,37 @@ namespace RMS.Persitence.Repositories.Oracle
                 FROM paged_m pm
                 LEFT JOIN norm_cities c
                        ON pm.SOURCE_CITY_CLEAN IS NOT NULL
-                      AND c.norm_name = REGEXP_REPLACE(UPPER(TRIM(pm.SOURCE_CITY_CLEAN)), '[^A-ZƏĞIÖŞÜÇ]', '')
-                ORDER BY pm.REPORT_MONTH DESC
+                      AND c.norm_name = {cityKeyFromMv}
+                ORDER BY pm.REPORT_MONTH DESC, pm.TOTAL_AMOUNT DESC
                 """;
+
+            using var conn = CreateConnection();
+
+            if (pageReq is null)
+            {
+                var allItems = (await conn.QueryAsync<AzMapTransaction>(
+                    new CommandDefinition(sql, filter.Parameters, cancellationToken: ct))).ToList();
+
+                return new PagedResult<AzMapTransaction>
+                {
+                    Items = allItems,
+                    TotalCount = allItems.Count,
+                    Page = 1,
+                    PageSize = allItems.Count > 0 ? allItems.Count : 1
+                };
+            }
+
+            var countSql = $"SELECT COUNT(*) FROM pg_mv_req4_az_map m {filter.WhereClause}";
 
             var dynParam = new DynamicParameters(filter.Parameters);
             dynParam.Add("Offset", (pageReq.Page - 1) * pageReq.PageSize);
             dynParam.Add("PageSize", pageReq.PageSize);
 
-            using var conn = CreateConnection();
-
             var totalCount = await conn.ExecuteScalarAsync<int>(
                 new CommandDefinition(countSql, filter.Parameters, cancellationToken: ct));
 
             var items = await conn.QueryAsync<AzMapTransaction>(
-                new CommandDefinition(pagedSql, dynParam, cancellationToken: ct));
+                new CommandDefinition(sql, dynParam, cancellationToken: ct));
 
             return new PagedResult<AzMapTransaction>
             {
@@ -108,6 +153,8 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddString("m.SOURCE_CITY = :SourceCity", "SourceCity", sourceCity)
                 .AddMonth("m.REPORT_MONTH", "Month", month);
 
+            var cityKeyFromAgg = NormalizeCitySql("ca.SOURCE_CITY_CLEAN");
+
             // Əvvəlcə MV daxilində şəhər üzrə qruplaşdırılır (~70 sətir), yalnız ondan sonra cities ilə JOIN edilir
             var sql = $"""
                 WITH city_agg AS (
@@ -119,13 +166,7 @@ namespace RMS.Persitence.Repositories.Oracle
                     {filter.WhereClause}
                     GROUP BY m.SOURCE_CITY_CLEAN
                 ),
-                norm_cities AS (
-                    SELECT
-                        latitude,
-                        longitude,
-                        REGEXP_REPLACE(UPPER(TRIM(city_name)), '[^A-ZƏĞIÖŞÜÇ]', '') AS norm_name
-                    FROM cities
-                )
+                {NormCitiesCte()}
                 SELECT
                     ca.SOURCE_CITY_CLEAN AS SourceCityClean,
                     ca.TOTAL_AMOUNT      AS TotalAmount,
@@ -135,7 +176,7 @@ namespace RMS.Persitence.Repositories.Oracle
                 FROM city_agg ca
                 LEFT JOIN norm_cities c
                        ON ca.SOURCE_CITY_CLEAN IS NOT NULL
-                      AND c.norm_name = REGEXP_REPLACE(UPPER(TRIM(ca.SOURCE_CITY_CLEAN)), '[^A-ZƏĞIÖŞÜÇ]', '')
+                      AND c.norm_name = {cityKeyFromAgg}
                 WHERE c.latitude IS NOT NULL AND c.longitude IS NOT NULL
                 """;
 

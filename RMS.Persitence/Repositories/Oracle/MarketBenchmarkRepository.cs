@@ -102,9 +102,9 @@ namespace RMS.Persitence.Repositories.Oracle
             };
         }
 
-        public Task<PagedResult<MarketBenchmark>> FilterAsync(
+        public async Task<PagedResult<MarketBenchmark>> FilterAsync(
             MarketBenchmark f,
-            PageRequest pageReq,
+            PageRequest? pageReq = null,
             CancellationToken ct = default)
         {
             var filter = new FilterBuilder()
@@ -115,12 +115,30 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddMonth("REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : (DateTime?)f.ReportMonth);
 
-            return QueryPagedAsync<MarketBenchmark>(
-                SelectColumns + $" {filter.WhereClause}",
-                "ReportMonth DESC",
-                pageReq,
-                filter.Parameters,
-                ct);
+            var baseSql = SelectColumns + $" {filter.WhereClause}";
+
+            if (pageReq is not null)
+            {
+                return await QueryPagedAsync<MarketBenchmark>(
+                    baseSql,
+                    "ReportMonth DESC",
+                    pageReq,
+                    filter.Parameters,
+                    ct);
+            }
+
+            var fullSql = baseSql + "\nORDER BY ReportMonth DESC";
+            using var conn = CreateConnection();
+            var items = (await conn.QueryAsync<MarketBenchmark>(
+                new CommandDefinition(fullSql, filter.Parameters, cancellationToken: ct))).ToList();
+
+            return new PagedResult<MarketBenchmark>
+            {
+                Items = items,
+                TotalCount = items.Count,
+                Page = 1,
+                PageSize = items.Count > 0 ? items.Count : 1
+            };
         }
         public async Task<IEnumerable<MarketBenchmarkTrend>> GetTrendAsync(
             string bankName, CancellationToken ct = default)

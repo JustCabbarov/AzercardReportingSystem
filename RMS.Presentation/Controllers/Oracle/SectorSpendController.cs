@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.DTOs;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
@@ -28,8 +28,8 @@ namespace RMS.Presentation.Controllers.Oracle
             [FromQuery] string? sourceCountryCategory = null,
             [FromQuery] int? isAcquiring = null,
             [FromQuery] int? isIssuing = null,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 50,
+            [FromQuery] int? page = null,
+            [FromQuery] int? pageSize = null,
             CancellationToken ct = default)
         {
             var f = new SectorSpend
@@ -45,7 +45,11 @@ namespace RMS.Presentation.Controllers.Oracle
                 IsIssuing = isIssuing
             };
 
-            var result = await _service.FilterAsync(f, new PageRequest { Page = page, PageSize = pageSize }, ct);
+            PageRequest? pageReq = pageSize is > 0
+                ? new PageRequest { Page = page ?? 1, PageSize = pageSize.Value }
+                : null;
+
+            var result = await _service.FilterAsync(f, pageReq, ct);
             return Ok(result);
         }
 

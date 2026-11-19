@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle.CardTransaction;
@@ -24,7 +24,7 @@ namespace RMS.Presentation.Controllers.Oracle
         // GET /api/carddashboard/filters
         [HttpGet("filters")]
         [ProducesResponseType(typeof(FilterLookupResponse), 200)]
-        public async Task<ActionResult<FilterLookupResponse>> GetFilters()
-            => Ok(await _svc.GetFilterLookupsAsync());
+        public async Task<ActionResult<FilterLookupResponse>> GetFilters(CancellationToken ct = default)
+            => Ok(await _svc.GetFilterLookupsAsync(ct));
     }
 }

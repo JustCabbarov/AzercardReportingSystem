@@ -1,4 +1,4 @@
-﻿using RMS.Domain.Entities.Oracle.AcquiringTransaction;
+using RMS.Domain.Entities.Oracle.AcquiringTransaction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace RMS.Domain.Repositories.Oracle
 {
     public interface IAcquiringDeviceRepository
     {
-        Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync();
+        Task<AcquiringFilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default);
         Task<DateTime> GetLatestReportDateAsync();
         Task<List<DeviceSummaryRow>> GetDeviceSummaryAsync(AcquiringDeviceFilter f);
         Task<List<AcqPieItem>> GetPieChartAsync(AcquiringDeviceFilter f);

@@ -223,38 +223,39 @@ public class CardDashboardRepository : ICardDashboardRepository
 
     // ── FILTER LOOKUPS ───────────────────────────────────────────────────────
 
-    public async Task<FilterLookupResponse> GetFilterLookupsAsync()
+    public async Task<FilterLookupResponse> GetFilterLookupsAsync(CancellationToken ct = default)
     {
         if (_cachedLookups is not null && DateTime.UtcNow < _lookupsCacheExpiry)
             return _cachedLookups;
 
-        var q = async (string col) =>
+        using var con = Connection;
+        await con.OpenAsync(ct);
+
+        async Task<List<string>> q(string col)
         {
-            using var con = Connection;
-            return (await con.QueryAsync<string>(
-                $"SELECT DISTINCT {col} FROM MV_CARD_DASHBOARD WHERE {col} IS NOT NULL ORDER BY 1"
-            )).ToList();
-        };
+            return (await con.QueryAsync<string>(new CommandDefinition(
+                $"SELECT DISTINCT {col} FROM MV_CARD_DASHBOARD WHERE {col} IS NOT NULL ORDER BY 1",
+                commandTimeout: 30,
+                cancellationToken: ct))).ToList();
+        }
 
-        var psTask = q("PAYMENT_SYSTEM");
-        var ptTask = q("IS_ISSUING_CATEGORY");
-        var otTask = q("OPERATION_TYPE");
-        var ctTask = q("CARD_PRODUCT_TYPE_CATEGORY");
-        var tsTask = q("TOKEN_STATUS");
-        var tgTask = q("TRANS_GROUP");
-        var tbTask = q("TARGET_BANK_NAME");
-
-        await Task.WhenAll(psTask, ptTask, otTask, ctTask, tsTask, tgTask, tbTask);
+        var paymentSystems     = await q("PAYMENT_SYSTEM");
+        var paymentTypes       = await q("IS_ISSUING_CATEGORY");
+        var operationTypes     = await q("OPERATION_TYPE");
+        var cardTypeCategories = await q("CARD_PRODUCT_TYPE_CATEGORY");
+        var tokenStatuses      = await q("TOKEN_STATUS");
+        var transGroups        = await q("TRANS_GROUP");
+        var targetBankNames    = await q("TARGET_BANK_NAME");
 
         var response = new FilterLookupResponse
         {
-            PaymentSystems     = await psTask,
-            PaymentTypes       = await ptTask,
-            OperationTypes     = await otTask,
-            CardTypeCategories = await ctTask,
-            TokenStatuses      = await tsTask,
-            TransGroups        = await tgTask,
-            TargetBankNames    = await tbTask,
+            PaymentSystems     = paymentSystems,
+            PaymentTypes       = paymentTypes,
+            OperationTypes     = operationTypes,
+            CardTypeCategories = cardTypeCategories,
+            TokenStatuses      = tokenStatuses,
+            TransGroups        = transGroups,
+            TargetBankNames    = targetBankNames,
         };
 
         _cachedLookups = response;

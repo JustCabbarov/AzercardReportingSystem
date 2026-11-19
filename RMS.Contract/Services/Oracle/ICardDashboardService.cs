@@ -1,4 +1,4 @@
-﻿using RMS.Domain.Entities.Oracle.CardTransaction;
+using RMS.Domain.Entities.Oracle.CardTransaction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,6 @@ namespace RMS.Contract.Services.Oracle
         Task<List<TrendPoint>> GetTrendWithForecastAsync(DashboardFilterRequest filter);
         Task<BreakdownResponse> GetBreakdownAsync(DashboardFilterRequest filter, BreakdownType type);
         Task<DashboardResponse> GetFullDashboardAsync(DashboardFilterRequest filter);
-        Task<FilterLookupResponse> GetFilterLookupsAsync();
+        Task<FilterLookupResponse> GetFilterLookupsAsync(CancellationToken ct = default);
     }
 }

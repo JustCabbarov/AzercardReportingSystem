@@ -1,4 +1,4 @@
-﻿using RMS.Contract.DTOs;
+using RMS.Contract.DTOs;
 using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Contract.Services.Oracle
@@ -25,7 +25,7 @@ namespace RMS.Contract.Services.Oracle
 
         Task<PagedResult<WorldMapTransaction>> FilterAsync(
             WorldMapTransaction f,
-            PageRequest pageReq,
+            PageRequest? pageReq = null,
             CancellationToken ct = default);
     }
 }

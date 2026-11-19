@@ -16,7 +16,7 @@ namespace RMS.Application.Services.Oracle
 
         public Task<PagedResult<WorldMapTransaction>> FilterAsync(
             WorldMapTransaction f,
-            PageRequest pageReq,
+            PageRequest? pageReq = null,
             CancellationToken ct = default)
             => _repo.FilterAsync(f, pageReq, ct);
 

@@ -19,10 +19,14 @@ namespace RMS.Application.Services.Oracle
             _cache = cache;
         }
 
-        public Task<FilterOptionsResponse> GetFilterOptionsAsync()
+        public Task<FilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default)
             => _cache is null
-                ? _repo.GetFilterOptionsAsync()
-                : _cache.GetOrCreateAsync("oracle:lookup:cards:filter-options", _ => _repo.GetFilterOptionsAsync(), LookupTtl);
+                ? _repo.GetFilterOptionsAsync(ct)
+                : _cache.GetOrCreateAsync(
+                    "oracle:lookup:cards:filter-options",
+                    token => _repo.GetFilterOptionsAsync(token),
+                    LookupTtl,
+                    ct);
 
         public Task<DateTime> GetLatestReportMonthAsync()
             => _cache is null

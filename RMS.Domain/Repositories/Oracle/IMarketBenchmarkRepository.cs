@@ -1,4 +1,4 @@
-﻿
+
 using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Domain.Repositories.Oracle
@@ -21,7 +21,7 @@ namespace RMS.Domain.Repositories.Oracle
             DateTime month, PageRequest pageReq, string? regionNameClean = null, CancellationToken ct = default);
 
         Task<PagedResult<MarketBenchmark>> FilterAsync(
-            MarketBenchmark f, PageRequest pageReq, CancellationToken ct = default);
+            MarketBenchmark f, PageRequest? pageReq = null, CancellationToken ct = default);
         Task<IEnumerable<MarketBenchmarkTrend>> GetTrendAsync(
     string bankName, CancellationToken ct = default);
     }

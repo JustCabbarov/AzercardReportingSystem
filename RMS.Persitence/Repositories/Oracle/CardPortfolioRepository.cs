@@ -99,53 +99,48 @@ namespace RMS.Persistence.Repositories.Cards
         // ─────────────────────────────────────────────
         // FILTER OPTIONS
         // ─────────────────────────────────────────────
-        public async Task<FilterOptionsResponse> GetFilterOptionsAsync()
+        public async Task<FilterOptionsResponse> GetFilterOptionsAsync(CancellationToken ct = default)
         {
             if (_cachedFilterOptions is not null && DateTime.UtcNow < _filterOptionsCacheExpiry)
                 return _cachedFilterOptions;
 
+            using var db = Connect();
+            await db.OpenAsync(ct);
+
             async Task<List<string>> QueryDistinctAsync(string col)
             {
-                using var db = Connect();
-                return (await db.QueryAsync<string>(
-                    $"SELECT DISTINCT {col} FROM mv_card_portfolio WHERE {col} IS NOT NULL ORDER BY {col}")).ToList();
+                return (await db.QueryAsync<string>(new CommandDefinition(
+                    $"SELECT DISTINCT {col} FROM mv_card_portfolio WHERE {col} IS NOT NULL ORDER BY {col}",
+                    commandTimeout: 30,
+                    cancellationToken: ct))).ToList();
             }
 
-            async Task<(DateTime min_month, DateTime max_month)> QueryMinMaxAsync()
-            {
-                using var db = Connect();
-                return await db.QuerySingleAsync<(DateTime min_month, DateTime max_month)>(
-                    "SELECT MIN(report_month) AS min_month, MAX(report_month) AS max_month FROM mv_card_portfolio");
-            }
+            var minMax = await db.QuerySingleAsync<(DateTime min_month, DateTime max_month)>(new CommandDefinition(
+                "SELECT MIN(report_month) AS min_month, MAX(report_month) AS max_month FROM mv_card_portfolio",
+                commandTimeout: 30,
+                cancellationToken: ct));
 
-            var minMaxTask       = QueryMinMaxAsync();
-            var banksTask        = QueryDistinctAsync("bank_name");
-            var regionsTask      = QueryDistinctAsync("region_name");
-            var schemesTask      = QueryDistinctAsync("payment_scheme");
-            var productTypesTask = QueryDistinctAsync("product_type");
-            var contactlessTask  = QueryDistinctAsync("contactless_status");
-            var expStatusesTask  = QueryDistinctAsync("exp_status");
-            var status3DsTask    = QueryDistinctAsync("status_3d");
-            var currenciesTask   = QueryDistinctAsync("base_currency_name");
-            var cardProductsTask = QueryDistinctAsync("card_product_name");
-
-            await Task.WhenAll(
-                minMaxTask, banksTask, regionsTask, schemesTask, productTypesTask,
-                contactlessTask, expStatusesTask, status3DsTask, currenciesTask, cardProductsTask);
-
-            var minMax = await minMaxTask;
+            var banks        = await QueryDistinctAsync("bank_name");
+            var regions      = await QueryDistinctAsync("region_name");
+            var schemes      = await QueryDistinctAsync("payment_scheme");
+            var productTypes = await QueryDistinctAsync("product_type");
+            var contactless  = await QueryDistinctAsync("contactless_status");
+            var expStatuses  = await QueryDistinctAsync("exp_status");
+            var status3Ds    = await QueryDistinctAsync("status_3d");
+            var currencies   = await QueryDistinctAsync("base_currency_name");
+            var cardProducts = await QueryDistinctAsync("card_product_name");
 
             var response = new FilterOptionsResponse
             {
-                Banks               = await banksTask,
-                Regions             = await regionsTask,
-                PaymentSchemes      = await schemesTask,
-                ProductTypes        = await productTypesTask,
-                ContactlessStatuses = await contactlessTask,
-                ExpStatuses         = await expStatusesTask,
-                Status3Ds           = await status3DsTask,
-                Currencies          = await currenciesTask,
-                CardProducts        = await cardProductsTask,
+                Banks               = banks,
+                Regions             = regions,
+                PaymentSchemes      = schemes,
+                ProductTypes        = productTypes,
+                ContactlessStatuses = contactless,
+                ExpStatuses         = expStatuses,
+                Status3Ds           = status3Ds,
+                Currencies          = currencies,
+                CardProducts        = cardProducts,
                 MinMonth            = minMax.min_month,
                 MaxMonth            = minMax.max_month
             };

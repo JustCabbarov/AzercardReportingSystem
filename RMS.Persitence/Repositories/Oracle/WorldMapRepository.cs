@@ -22,59 +22,71 @@ namespace RMS.Persitence.Repositories.Oracle
                 .AddMonth("w.REPORT_MONTH", "Month",
                     f.ReportMonth == default ? null : f.ReportMonth);
 
-        public Task<PagedResult<WorldMapTransaction>> FilterAsync(
+        public async Task<PagedResult<WorldMapTransaction>> FilterAsync(
             WorldMapTransaction f,
-            PageRequest pageReq,
+            PageRequest? pageReq = null,
             CancellationToken ct = default)
         {
             var filter = BuildFilter(f);
             var sql = $"""
         SELECT
-            REPORT_MONTH                    AS ReportMonth,
-            BANK_NAME                       AS BankName,
-            SourceCountry,
-            SOURCE_COUNTRY_CATEGORY         AS SourceCountryCategory,
-            TargetCountry,
-            TARGET_COUNTRY_CATEGORY         AS TargetCountryCategory,
-            PAYMENT_SYSTEM                  AS PaymentSystem,
-            IsIssuing,
-            IsAcquiring,
-            TOTAL_AMOUNT                    AS TotalAmount,
-            TOTAL_COUNT                     AS TotalCount,
-            SourceLatitude,
-            SourceLongitude,
-            TargetLatitude,
-            TargetLongitude
-        FROM (
-            SELECT
-                w.REPORT_MONTH,
-                w.BANK_NAME,
-                INITCAP(w.SOURCE_COUNTRY)         AS SourceCountry,
-                w.SOURCE_COUNTRY_CATEGORY,
-                INITCAP(w.TARGET_COUNTRY)         AS TargetCountry,
-                w.TARGET_COUNTRY_CATEGORY,
-                w.PAYMENT_SYSTEM,
-                CASE WHEN TO_CHAR(w.IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ISSUING) = '0' THEN 0 ELSE NULL END   AS IsIssuing,
-                CASE WHEN TO_CHAR(w.IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
-                w.TOTAL_AMOUNT,
-                w.TOTAL_COUNT,
-                sc.latitude                       AS SourceLatitude,
-                sc.longitude                      AS SourceLongitude,
-                tc.latitude                       AS TargetLatitude,
-                tc.longitude                      AS TargetLongitude
-            FROM pg_mv_req5_world_map w
-            LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
-            LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
-            {filter.WhereClause}
-        ) t_base
+            w.REPORT_MONTH                                                                                      AS ReportMonth,
+            w.BANK_NAME                                                                                         AS BankName,
+            INITCAP(w.SOURCE_COUNTRY)                                                                           AS SourceCountry,
+            w.SOURCE_COUNTRY_CATEGORY                                                                           AS SourceCountryCategory,
+            INITCAP(w.TARGET_COUNTRY)                                                                           AS TargetCountry,
+            w.TARGET_COUNTRY_CATEGORY                                                                           AS TargetCountryCategory,
+            w.PAYMENT_SYSTEM                                                                                    AS PaymentSystem,
+            CASE WHEN TO_CHAR(w.IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ISSUING) = '0' THEN 0 ELSE NULL END   AS IsIssuing,
+            CASE WHEN TO_CHAR(w.IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ACQUIRING) = '0' THEN 0 ELSE NULL END AS IsAcquiring,
+            SUM(w.TOTAL_AMOUNT)                                                                                 AS TotalAmount,
+            SUM(w.TOTAL_COUNT)                                                                                  AS TotalCount,
+            sc.latitude                                                                                         AS SourceLatitude,
+            sc.longitude                                                                                        AS SourceLongitude,
+            tc.latitude                                                                                         AS TargetLatitude,
+            tc.longitude                                                                                        AS TargetLongitude
+        FROM pg_mv_req5_world_map w
+        LEFT JOIN countries sc ON UPPER(sc.name) = UPPER(w.SOURCE_COUNTRY)
+        LEFT JOIN countries tc ON UPPER(tc.name) = UPPER(w.TARGET_COUNTRY)
+        {filter.WhereClause}
+        GROUP BY
+            w.REPORT_MONTH,
+            w.BANK_NAME,
+            INITCAP(w.SOURCE_COUNTRY),
+            w.SOURCE_COUNTRY_CATEGORY,
+            INITCAP(w.TARGET_COUNTRY),
+            w.TARGET_COUNTRY_CATEGORY,
+            w.PAYMENT_SYSTEM,
+            CASE WHEN TO_CHAR(w.IS_ISSUING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ISSUING) = '0' THEN 0 ELSE NULL END,
+            CASE WHEN TO_CHAR(w.IS_ACQUIRING) = '1' THEN 1 WHEN TO_CHAR(w.IS_ACQUIRING) = '0' THEN 0 ELSE NULL END,
+            sc.latitude,
+            sc.longitude,
+            tc.latitude,
+            tc.longitude
         """;
 
-            return QueryPagedAsync<WorldMapTransaction>(
-                sql,
-                "ReportMonth DESC",
-                pageReq,
-                filter.Parameters,
-                ct);
+            if (pageReq is not null)
+            {
+                return await QueryPagedAsync<WorldMapTransaction>(
+                    sql,
+                    "ReportMonth DESC, TotalAmount DESC",
+                    pageReq,
+                    filter.Parameters,
+                    ct);
+            }
+
+            var fullSql = sql + "\nORDER BY ReportMonth DESC, TotalAmount DESC";
+            using var conn = CreateConnection();
+            var items = (await conn.QueryAsync<WorldMapTransaction>(
+                new CommandDefinition(fullSql, filter.Parameters, cancellationToken: ct))).ToList();
+
+            return new PagedResult<WorldMapTransaction>
+            {
+                Items = items,
+                TotalCount = items.Count,
+                Page = 1,
+                PageSize = items.Count > 0 ? items.Count : 1
+            };
         }
 
         private async Task<IEnumerable<WorldMapTransaction>> QueryAggregatedAsync(

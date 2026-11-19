@@ -15,7 +15,7 @@ namespace RMS.Application.Services.Oracle
         }
 
         public Task<PagedResult<AzMapTransaction>> FilterAsync(
-            AzMapFilterRequest f, PageRequest pageReq, CancellationToken ct = default)
+            AzMapFilterRequest f, PageRequest? pageReq = null, CancellationToken ct = default)
         {
             var transaction = new AzMapTransaction
             {

@@ -1,4 +1,4 @@
-﻿using RMS.Domain.Entities.Oracle.CardTransaction;
+using RMS.Domain.Entities.Oracle.CardTransaction;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,6 @@ namespace RMS.Domain.Repositories.Oracle
         Task<KpiSummaryResponse> GetKpiSummaryAsync(DashboardFilterRequest filter);
         Task<List<TrendPoint>> GetTrendAsync(DashboardFilterRequest filter);
         Task<BreakdownResponse> GetBreakdownAsync(DashboardFilterRequest filter, BreakdownType type);
-        Task<FilterLookupResponse> GetFilterLookupsAsync();
+        Task<FilterLookupResponse> GetFilterLookupsAsync(CancellationToken ct = default);
     }
 }

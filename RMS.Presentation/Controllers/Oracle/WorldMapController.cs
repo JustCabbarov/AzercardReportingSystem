@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.DTOs;
 using RMS.Contract.Services.Oracle;
 using RMS.Domain.Entities.Oracle;
@@ -22,9 +22,13 @@ namespace RMS.Presentation.Controllers.Oracle
         [HttpGet("filter")]
         public async Task<ActionResult<PagedResult<WorldMapTransaction>>> Filter(
             [FromQuery] WorldMapTransaction f,
-            [FromQuery] PageRequest pageReq,
+            [FromQuery] int? page = null,
+            [FromQuery] int? pageSize = null,
             CancellationToken ct = default)
         {
+            PageRequest? pageReq = pageSize is > 0
+                ? new PageRequest { Page = page ?? 1, PageSize = pageSize.Value }
+                : null;
             var result = await _service.FilterAsync(f, pageReq, ct);
             return Ok(result);
         }

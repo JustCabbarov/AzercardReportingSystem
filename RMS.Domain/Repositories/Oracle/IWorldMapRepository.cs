@@ -1,4 +1,4 @@
-﻿using RMS.Domain.Entities.Oracle;
+using RMS.Domain.Entities.Oracle;
 
 namespace RMS.Domain.Repositories.Oracle
 {
@@ -12,8 +12,8 @@ namespace RMS.Domain.Repositories.Oracle
         Task<IEnumerable<WorldMapTransaction>> GetIssuingAsync(string bankName, CancellationToken ct = default);
         Task<IEnumerable<WorldMapTransaction>> GetAcquiringAsync(string bankName, CancellationToken ct = default);
         Task<PagedResult<WorldMapTransaction>> FilterAsync(
-    WorldMapTransaction f,
-    PageRequest pageReq,
-    CancellationToken ct = default);
+            WorldMapTransaction f,
+            PageRequest? pageReq = null,
+            CancellationToken ct = default);
     }
 }

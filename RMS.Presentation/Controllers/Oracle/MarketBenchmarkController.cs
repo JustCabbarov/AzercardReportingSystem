@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using RMS.Contract.DTOs;
 using RMS.Contract.Services.Oracle;
 
@@ -46,7 +46,9 @@ namespace RMS.Presentation.Controllers.Oracle
      [FromQuery] MarketBenchmarkFilterRequest f,
      CancellationToken ct = default)
         {
-            var pageReq = new PageRequest { Page = f.Page, PageSize = f.PageSize };
+            PageRequest? pageReq = f.PageSize is > 0
+                ? new PageRequest { Page = f.Page, PageSize = f.PageSize.Value }
+                : null;
 
             var entity = new MarketBenchmark
             {
