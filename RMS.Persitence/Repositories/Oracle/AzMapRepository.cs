@@ -380,12 +380,15 @@ namespace RMS.Persitence.Repositories.Oracle
             if (_cachedCities is not null && DateTime.UtcNow < _citiesExpiry)
                 return _cachedCities;
 
-            var canonCitySql = NormalizeCitySql("COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY)");
+            var canonCitySql = NormalizeCitySql("RAW_CITY");
             var sql = $"""
                 SELECT DISTINCT CITY_NAME FROM (
                     SELECT {canonCitySql} AS CITY_NAME
-                    FROM pg_mv_req4_az_map
-                    WHERE COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY) IS NOT NULL
+                    FROM (
+                        SELECT DISTINCT COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY) AS RAW_CITY
+                        FROM pg_mv_req4_az_map
+                        WHERE COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY) IS NOT NULL
+                    )
                 )
                 WHERE CITY_NAME != 'DIGER'
                 ORDER BY CITY_NAME
@@ -399,30 +402,9 @@ namespace RMS.Persitence.Repositories.Oracle
             return list;
         }
 
-        public async Task<IEnumerable<string>> GetDistinctRegionsAsync(
+        public Task<IEnumerable<string>> GetDistinctRegionsAsync(
             CancellationToken ct = default)
-        {
-            if (_cachedRegions is not null && DateTime.UtcNow < _regionsExpiry)
-                return _cachedRegions;
-
-            var canonCitySql = NormalizeCitySql("COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY)");
-            var sql = $"""
-                SELECT DISTINCT CITY_NAME FROM (
-                    SELECT {canonCitySql} AS CITY_NAME
-                    FROM pg_mv_req4_az_map
-                    WHERE COALESCE(SOURCE_CITY_CLEAN, SOURCE_CITY) IS NOT NULL
-                )
-                WHERE CITY_NAME != 'DIGER'
-                ORDER BY CITY_NAME
-                """;
-            using var conn = CreateConnection();
-            var list = (await conn.QueryAsync<string>(
-                new CommandDefinition(sql, cancellationToken: ct))).ToList();
-
-            _cachedRegions = list;
-            _regionsExpiry = DateTime.UtcNow.AddMinutes(30);
-            return list;
-        }
+            => GetDistinctCitiesAsync(ct);
 
         public async Task<IEnumerable<string>> GetDistinctBanksAsync(
             CancellationToken ct = default)
@@ -460,12 +442,15 @@ namespace RMS.Persitence.Repositories.Oracle
             string sql;
             if (normalizeCity)
             {
-                var canonSql = NormalizeCitySql(columnName);
+                var canonSql = NormalizeCitySql("RAW_VAL");
                 sql = $"""
                     SELECT DISTINCT VAL FROM (
                         SELECT {canonSql} AS VAL
-                        FROM pg_mv_req4_az_map
-                        WHERE {columnName} IS NOT NULL
+                        FROM (
+                            SELECT DISTINCT {columnName} AS RAW_VAL
+                            FROM pg_mv_req4_az_map
+                            WHERE {columnName} IS NOT NULL
+                        )
                     )
                     WHERE VAL != 'DIGER'
                     ORDER BY VAL
