@@ -79,6 +79,7 @@ public class CardDashboardRepository : ICardDashboardRepository
         public DateTime? PeriodDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal? TotalTxCount { get; set; }
+        public decimal? MaxAmount { get; set; }
         public decimal? PrevAmount { get; set; }
         public decimal? PrevTxCount { get; set; }
     }
@@ -88,6 +89,7 @@ public class CardDashboardRepository : ICardDashboardRepository
         public string? Category { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal? TotalTxCount { get; set; }
+        public decimal? MaxAmount { get; set; }
         public decimal? AmountPct { get; set; }
         public decimal? TxCountPct { get; set; }
     }
@@ -132,6 +134,7 @@ public class CardDashboardRepository : ICardDashboardRepository
                 {col}                                           AS PeriodDate,
                 SUM(TOTAL_AMOUNT)                               AS TotalAmount,
                 SUM(TOTAL_TX_COUNT)                             AS TotalTxCount,
+                MAX(MAX_AMOUNT)                                 AS MaxAmount,
                 LAG(SUM(TOTAL_AMOUNT))   OVER (ORDER BY {col}) AS PrevAmount,
                 LAG(SUM(TOTAL_TX_COUNT)) OVER (ORDER BY {col}) AS PrevTxCount
             FROM MV_CARD_DASHBOARD
@@ -161,6 +164,7 @@ public class CardDashboardRepository : ICardDashboardRepository
                 },
                 TotalAmount = Round(total, filter.RoundTo),
                 TotalTxCount = (long)totalTx,
+                MaxAmount = Round(r.MaxAmount ?? 0m, filter.RoundTo),
                 PrevAmount = prev == null ? null : Round(prev.Value, filter.RoundTo),
                 PrevTxCount = prevTx,
                 AmountChangePct = Pct(total, prev),
@@ -190,6 +194,7 @@ public class CardDashboardRepository : ICardDashboardRepository
                 {categoryCol}                                               AS Category,
                 SUM(TOTAL_AMOUNT)                                           AS TotalAmount,
                 SUM(TOTAL_TX_COUNT)                                         AS TotalTxCount,
+                MAX(MAX_AMOUNT)                                             AS MaxAmount,
                 ROUND(
                     SUM(TOTAL_AMOUNT) * 100.0
                     / NULLIF(SUM(SUM(TOTAL_AMOUNT)) OVER (), 0), 2)         AS AmountPct,
@@ -212,6 +217,7 @@ public class CardDashboardRepository : ICardDashboardRepository
                 Category = r.Category ?? "",
                 TotalAmount = Round(r.TotalAmount ?? 0m, filter.RoundTo),
                 TotalTxCount = (long)(r.TotalTxCount ?? 0m),
+                MaxAmount = Round(r.MaxAmount ?? 0m, filter.RoundTo),
                 AmountPct = r.AmountPct ?? 0m,
                 TxCountPct = r.TxCountPct ?? 0m,
             }).ToList()

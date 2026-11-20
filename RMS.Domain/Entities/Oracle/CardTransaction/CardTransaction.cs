@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,6 +54,7 @@ namespace RMS.Domain.Entities.Oracle.CardTransaction
         // Real data (mövcud aylar)
         public decimal TotalAmount { get; set; }
         public long TotalTxCount { get; set; }
+        public decimal MaxAmount { get; set; }
         public decimal? PrevAmount { get; set; }
         public decimal? PrevTxCount { get; set; }
         public decimal? AmountChangePct { get; set; }
@@ -77,6 +78,7 @@ namespace RMS.Domain.Entities.Oracle.CardTransaction
         public string Category { get; set; } = "";
         public decimal TotalAmount { get; set; }
         public long TotalTxCount { get; set; }
+        public decimal MaxAmount { get; set; }
         public decimal AmountPct { get; set; }
         public decimal TxCountPct { get; set; }
     }

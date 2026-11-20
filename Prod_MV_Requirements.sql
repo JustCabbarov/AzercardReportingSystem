@@ -83,9 +83,10 @@ GROUP BY
     s.source_bank_name,
     s.payment_system;
 
-CREATE INDEX idx_mv_azmap_month   ON pg_mv_req4_az_map (REPORT_MONTH);
-CREATE INDEX idx_mv_azmap_bank    ON pg_mv_req4_az_map (SOURCE_BANK_NAME, TARGET_BANK_NAME);
-CREATE INDEX idx_mv_azmap_filters ON pg_mv_req4_az_map (PAYMENT_SYSTEM, TRANS_GROUP, OPERATION_TYPE);
+CREATE INDEX idx_mv_azmap_month       ON pg_mv_req4_az_map (REPORT_MONTH);
+CREATE INDEX idx_mv_azmap_src_bank    ON pg_mv_req4_az_map (SOURCE_BANK_NAME);
+CREATE INDEX idx_mv_azmap_tgt_bank    ON pg_mv_req4_az_map (TARGET_BANK_NAME);
+CREATE INDEX idx_mv_azmap_pay_sys     ON pg_mv_req4_az_map (PAYMENT_SYSTEM);
 
 
 -- ============================================================================
@@ -141,6 +142,8 @@ GROUP BY
     t.operation_type,
     t.token_status;
 
-CREATE INDEX idx_mv_worldmap_month   ON pg_mv_req5_world_map (REPORT_MONTH);
-CREATE INDEX idx_mv_worldmap_country ON pg_mv_req5_world_map (SOURCE_COUNTRY, TARGET_COUNTRY);
-CREATE INDEX idx_mv_worldmap_filters ON pg_mv_req5_world_map (PAYMENT_SYSTEM, SOURCE_BANK_NAME, CARD_ACCOUNT_CURRENCY);
+CREATE INDEX idx_mv_worldmap_month       ON pg_mv_req5_world_map (REPORT_MONTH);
+CREATE INDEX idx_mv_worldmap_src_country ON pg_mv_req5_world_map (SOURCE_COUNTRY);
+CREATE INDEX idx_mv_worldmap_tgt_country ON pg_mv_req5_world_map (TARGET_COUNTRY);
+CREATE INDEX idx_mv_worldmap_pay_sys     ON pg_mv_req5_world_map (PAYMENT_SYSTEM);
+CREATE INDEX idx_mv_worldmap_src_bank    ON pg_mv_req5_world_map (SOURCE_BANK_NAME);
