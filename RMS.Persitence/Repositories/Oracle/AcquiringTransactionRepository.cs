@@ -75,6 +75,14 @@ namespace RMS.Persitence.Repositories.Oracle
         private static AcquiringFilterOptionsResponse? _cachedFilterOptions;
         private static DateTime _filterOptionsCacheExpiry = DateTime.MinValue;
 
+        private sealed class FilterOptionRow
+        {
+            public string Col_Key { get; set; } = "";
+            public string? Col_Val { get; set; }
+            public DateTime? Min_Date { get; set; }
+            public DateTime? Max_Date { get; set; }
+        }
+
         // ─────────────────────────────────────────────
         // FILTER OPTIONS
         // ─────────────────────────────────────────────
@@ -83,49 +91,93 @@ namespace RMS.Persitence.Repositories.Oracle
             if (_cachedFilterOptions is not null && DateTime.UtcNow < _filterOptionsCacheExpiry)
                 return _cachedFilterOptions;
 
+            const string sql = """
+                SELECT
+                    CASE
+                        WHEN GROUPING(acquiring_device_type_calc) = 0 THEN 'device'
+                        WHEN GROUPING(trans_group) = 0                THEN 'trans'
+                        WHEN GROUPING(operation_type) = 0             THEN 'op'
+                        WHEN GROUPING(token_status) = 0               THEN 'token'
+                        WHEN GROUPING(mcc) = 0                        THEN 'mcc'
+                        WHEN GROUPING(is_acquiring_category) = 0      THEN 'acq_cat'
+                        WHEN GROUPING(target_bank_name) = 0           THEN 'tgt_bank'
+                        WHEN GROUPING(source_bank_name) = 0           THEN 'src_bank'
+                        WHEN GROUPING(target_city) = 0                THEN 'tgt_city'
+                        WHEN GROUPING(payment_system) = 0             THEN 'pay_sys'
+                        WHEN GROUPING(is_contactless) = 0             THEN 'contactless'
+                        ELSE 'minmax'
+                    END AS col_key,
+                    CASE
+                        WHEN GROUPING(acquiring_device_type_calc) = 0 THEN TO_CHAR(acquiring_device_type_calc)
+                        WHEN GROUPING(trans_group) = 0                THEN TO_CHAR(trans_group)
+                        WHEN GROUPING(operation_type) = 0             THEN TO_CHAR(operation_type)
+                        WHEN GROUPING(token_status) = 0               THEN TO_CHAR(token_status)
+                        WHEN GROUPING(mcc) = 0                        THEN TO_CHAR(mcc)
+                        WHEN GROUPING(is_acquiring_category) = 0      THEN TO_CHAR(is_acquiring_category)
+                        WHEN GROUPING(target_bank_name) = 0           THEN TO_CHAR(target_bank_name)
+                        WHEN GROUPING(source_bank_name) = 0           THEN TO_CHAR(source_bank_name)
+                        WHEN GROUPING(target_city) = 0                THEN TO_CHAR(target_city)
+                        WHEN GROUPING(payment_system) = 0             THEN TO_CHAR(payment_system)
+                        WHEN GROUPING(is_contactless) = 0             THEN TO_CHAR(is_contactless)
+                        ELSE NULL
+                    END AS col_val,
+                    CASE WHEN GROUPING_ID(
+                        acquiring_device_type_calc, trans_group, operation_type, token_status,
+                        mcc, is_acquiring_category, target_bank_name, source_bank_name,
+                        target_city, payment_system, is_contactless) = 2047 THEN MIN(report_date) END AS min_date,
+                    CASE WHEN GROUPING_ID(
+                        acquiring_device_type_calc, trans_group, operation_type, token_status,
+                        mcc, is_acquiring_category, target_bank_name, source_bank_name,
+                        target_city, payment_system, is_contactless) = 2047 THEN MAX(report_date) END AS max_date
+                FROM mv_acquiring_device_transaction
+                GROUP BY GROUPING SETS (
+                    (acquiring_device_type_calc),
+                    (trans_group),
+                    (operation_type),
+                    (token_status),
+                    (mcc),
+                    (is_acquiring_category),
+                    (target_bank_name),
+                    (source_bank_name),
+                    (target_city),
+                    (payment_system),
+                    (is_contactless),
+                    ()
+                )
+                """;
+
             using var db = Connect();
             await db.OpenAsync(ct);
 
-            async Task<List<string>> QueryDistinctAsync(string colExpr)
-            {
-                return (await db.QueryAsync<string>(new CommandDefinition(
-                    $"SELECT DISTINCT {colExpr} FROM mv_acquiring_device_transaction WHERE {colExpr} IS NOT NULL ORDER BY {colExpr}",
-                    commandTimeout: 30,
-                    cancellationToken: ct))).ToList();
-            }
+            var rows = (await db.QueryAsync<FilterOptionRow>(new CommandDefinition(
+                sql,
+                commandTimeout: 60,
+                cancellationToken: ct))).ToList();
 
-            var minMax = await db.QuerySingleAsync<(DateTime min_date, DateTime max_date)>(new CommandDefinition(
-                "SELECT MIN(report_date) AS min_date, MAX(report_date) AS max_date FROM mv_acquiring_device_transaction",
-                commandTimeout: 30,
-                cancellationToken: ct));
+            List<string> Pick(string key) => rows
+                .Where(r => r.Col_Key == key && !string.IsNullOrEmpty(r.Col_Val))
+                .Select(r => r.Col_Val!)
+                .Distinct()
+                .OrderBy(v => v, StringComparer.Ordinal)
+                .ToList();
 
-            var deviceTypes    = await QueryDistinctAsync("acquiring_device_type_calc");
-            var transGroups    = await QueryDistinctAsync("trans_group");
-            var opTypes        = await QueryDistinctAsync("operation_type");
-            var tokenStatuses  = await QueryDistinctAsync("token_status");
-            var mccs           = await QueryDistinctAsync("mcc");
-            var acqCategories  = await QueryDistinctAsync("is_acquiring_category");
-            var targetBanks    = await QueryDistinctAsync("target_bank_name");
-            var sourceBanks    = await QueryDistinctAsync("source_bank_name");
-            var targetCities   = await QueryDistinctAsync("target_city");
-            var paymentSystems = await QueryDistinctAsync("payment_system");
-            var contactless    = await QueryDistinctAsync("TO_CHAR(is_contactless)");
+            var minmax = rows.FirstOrDefault(r => r.Col_Key == "minmax");
 
             var response = new AcquiringFilterOptionsResponse
             {
-                AcquiringDeviceTypes = deviceTypes,
-                TransGroups          = transGroups,
-                OperationTypes       = opTypes,
-                TokenStatuses        = tokenStatuses,
-                Mccs                 = mccs,
-                AcquiringCategories  = acqCategories,
-                TargetBanks          = targetBanks,
-                SourceBanks          = sourceBanks,
-                TargetCities         = targetCities,
-                PaymentSystems       = paymentSystems,
-                ContactlessStatuses  = contactless,
-                MinDate              = minMax.min_date,
-                MaxDate              = minMax.max_date,
+                AcquiringDeviceTypes = Pick("device"),
+                TransGroups          = Pick("trans"),
+                OperationTypes       = Pick("op"),
+                TokenStatuses        = Pick("token"),
+                Mccs                 = Pick("mcc"),
+                AcquiringCategories  = Pick("acq_cat"),
+                TargetBanks          = Pick("tgt_bank"),
+                SourceBanks          = Pick("src_bank"),
+                TargetCities         = Pick("tgt_city"),
+                PaymentSystems       = Pick("pay_sys"),
+                ContactlessStatuses  = Pick("contactless"),
+                MinDate              = minmax?.Min_Date ?? DateTime.MinValue,
+                MaxDate              = minmax?.Max_Date ?? DateTime.MinValue,
             };
 
             _cachedFilterOptions = response;
